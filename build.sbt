@@ -17,7 +17,3 @@ lazy val `skylark-measure-market` = project.dependsOn(`skylark-time`, `skylark-m
 lazy val skylark = project.in(file(".")).aggregate(`skylark-natural-language`, `skylark-measure`, `skylark-measure-market`)
 
 fork in run := true
-
-useGpg := true
-
-usePgpKeyHex("389FB928")

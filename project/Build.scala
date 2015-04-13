@@ -31,16 +31,4 @@ object Build
   val slickExtensionsVersion = "2.1.0"
   val sprayVersion = "1.3.2"
   val sprayJsonVersion = "1.3.0"
-
-  val artifactoryRealm = "Artifactory Realm"
-
-  val artifactoryUrl = "http://localhost:8081/artifactory"
-
-  val publishRealm =
-    if (version.trim.endsWith("SNAPSHOT"))
-      Some(artifactoryRealm at s"$artifactoryUrl/libs-snapshot-local")
-    else
-      Some(artifactoryRealm at s"$artifactoryUrl/libs-release-local")
-
-  val publishRealmCredentials = Credentials(artifactoryRealm, "localhost", "sbt", "cT7GyKvjJd8thHjrQzUa")
 }
