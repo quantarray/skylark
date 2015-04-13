@@ -27,10 +27,10 @@ import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
-* Measure spec.
-*
-* @author Araik Grigoryan
-*/
+ * Measure spec.
+ *
+ * @author Araik Grigoryan
+ */
 class MeasureSpec extends FlatSpec with Matchers with PhysicalSubstances
 {
   implicit val constantConversion = new PhysicalConstantConversionProvider()
@@ -84,6 +84,12 @@ class MeasureSpec extends FlatSpec with Matchers with PhysicalSubstances
       (kg of cotton) at Here.on(DateTime.now)
       (kg of cotton) on DateTime.now
       (kg of cotton) on Earth
+    }
+
+  "bbl" should "be convertible to gal depending on the substance" in
+    {
+      (bbl to gal).value should equal(31.5)
+      (bbl of wti to gal).value should equal(42)
     }
 
 }
