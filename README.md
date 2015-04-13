@@ -4,8 +4,8 @@ Skylark is a set of libraries for quantitative and financial computation.
 
 # skylark-measure
 
-skylark-measure is a library dealing with unit-of-measure conversions. Many libraries provide similar functionality on their surface 
-but in the end lack the richness and versatility necessary to use in real enterprise applications.
+skylark-measure is a library dealing with unit-of-measure conversions in a type-safe manner. Many libraries provide similar functionality on 
+their surface but in the end lack the richness and versatility necessary to use in real enterprise applications.
 
 Many units of measure are defined for you, e.g.
 
@@ -34,9 +34,9 @@ a barrel of water.
 (bbl to gal).value should equal(31.5)
 (bbl of wti to gal).value should equal(42)
 ```
-Conversions are done though implicit ConversionProviders. Default ConversionProviders should suffice for most needs but you can roll your own at any time.
+Conversions are done though implicit *ConversionProviders*. The default *ConversionProviders* should suffice for most needs but you can roll your own at any time.
 
-Too many systems omit units of measure when storing or presenting numerical results. Now you can store units of meausre along with a numeric value as a plain string.
+Too many systems omit units of measure when storing or presenting numerical quantities. Now you can store units of meausre along with a numeric value as a plain string.
 With *MeasureParsers* you can turn that string back into a measure.
  
 ```scala
@@ -63,11 +63,8 @@ Arithmetic on different units may result in raw unit representation that may not
 
 ```scala
 val potOfGold = 30000.USD
-
 val rate = 5.percent
-
 val panOfGold = potOfGold * rate
-
 panOfGold should equal(1500 * (USD * UnitMeasure))
 panOfGold.measure.compact should equal(USD)
 ```
