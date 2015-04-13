@@ -12,6 +12,8 @@ Many units of measure are defined for you.
 ```scala
 kg
 lb
+Pa
+Hz
 ```
 
 Any unit of measure will have a set of basic properties that you would naturally expect to interrogate.
@@ -36,8 +38,8 @@ You can find our the conversion factor from one *to* another.  No conversion fac
 ```
 
 You can attach substances (or, in general, assets) to units of measure to distinguish substances of different quality or composition, 
-which can impact the conversion factor. For example, [West Texas Intermediate](http://en.wikipedia.org/wiki/West_Texas_Intermediate) (WTI) barrel of oil has a different conversion factor to gallons than
-a barrel of water.
+which can impact the conversion factor. For example, [West Texas Intermediate](http://en.wikipedia.org/wiki/West_Texas_Intermediate) (WTI) barrel of 
+oil has a different conversion factor to gallons than a barrel of water.
 
 ```scala
 (bbl to gal).value should equal(31.5)
@@ -93,4 +95,54 @@ Even when measures have non-trivial structural complexity, quantity conversions 
 val rhoPercent = 2.5 * ((USD / MMBtu) / percent)
 val rhoBasisPoint = rhoPercent to ((USD / MMBtu) / bp)
 rhoBasisPoint should equal(0.025 * ((USD / MMBtu) / bp))
+```
+
+## skylark-measure-market
+
+**skylark-measure-market** is a library that extends **skylark-measure** to the financial domain, where unit conversion factors are not fixed 
+and normally vary as a function of time or space or both. For example, the conversion factor from US Dollars (`USD`) to Japanese Yen (`JPY`) will
+depend on the observed time; similarly, a tanker of oil at two different locations around the globe will be worth a 
+different quantity of dollars, even when controlling for the currency exchange rate between the two locations.
+
+You can control the variability of a particular unit of measure with respect to another (e.g. how does `bbl of WTI` vary with respect to `USD`, otherwise known as a price)
+by constructing a market manifold, which is a fancy name for a curve or a surface. In general, a market manifold is a function; in can be discrete or continuous and can
+give you a value given a key.
+
+In finance, a forward curve carries a price - a value of something vs. something else (e.g. `bbl of wti / USD` or `USD / GBP`).
+
+```scala
+val wtiForwardCurve = DiscreteForwardCurve(USD / (bbl of wti), Seq(("2014-04-01".d, 100.0), ("2017-01-01".d, 150.0)))
+```
+
+You can combine multiple manifolds to a `Market`, which is a special kind of a bag carrying all data relevant to a given observation date/time.
+
+```scala
+val observationDate: DateTime = "2014-04-01".d
+val market = new GlobalMarket(
+    Seq(
+      TimeInstantCurve(observationDate),
+      DiscreteForwardCurve(USD / (bbl of wti), Seq(("2014-04-01".d, 100.0), ("2017-01-01".d, 150.0))),
+      DiscreteForwardCurve.flat(1.2 * (CAD / USD), observationDate.until("2018-01-01".d).by(Days.ONE)),
+      DiscreteForwardCurve.flat(120 * (CAD / JPY), observationDate.until("2018-01-01".d).by(Days.ONE)),
+      DiscreteForwardCurve.flat(100 * (USD / JPY), observationDate.until("2018-01-01".d).by(Days.ONE))
+    )
+  )
+```
+
+Note that `observationDate` is attached to a `Market` via a special `TimeInstantCurve` instead of making it a special property of the `Market`.
+
+With the above assembled, you can do a lot of neat stuff.
+
+```scala
+val barrelPrice = 42 * (USD / (bbl of wti))
+val gallonPrice = 1 * (CAD / gal)
+
+val price1 = (barrelPrice + gallonPrice) to (CAD / gal)
+val price2 = (gallonPrice + barrelPrice) to (USD / (bbl of wti))
+
+price1.value should equal(2.2 +- 0.0000000000001)
+price1.measure should be(CAD / gal)
+
+price2.value should equal(77.0 +- 0.0000000000001)
+price2.measure should be(USD / (bbl of wti))
 ```
