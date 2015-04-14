@@ -43,7 +43,16 @@ case class Quantity[M <: Measure](value: Double, measure: M)
     quantity.measure.dimension match
     {
       case _: NoDimension.type => Quantity(value * quantity.value * quantity.measure.multBaseValue, measure * UnitMeasure)
-      case _ => Quantity(value * quantity.value, measure.*(quantity.measure))
+      case _ => Quantity(value * quantity.value, measure * quantity.measure)
+    }
+  }
+
+  def /[N <: Measure](quantity: Quantity[N]): Quantity[RatioMeasure] =
+  {
+    quantity.measure.dimension match
+    {
+      case _: NoDimension.type => Quantity(value / (quantity.value * quantity.measure.multBaseValue), measure / UnitMeasure)
+      case _ => Quantity(value / quantity.value, measure / quantity.measure)
     }
   }
 

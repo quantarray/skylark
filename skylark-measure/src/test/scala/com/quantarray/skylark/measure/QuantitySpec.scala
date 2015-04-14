@@ -45,6 +45,10 @@ class QuantitySpec extends FlatSpec with Matchers with PhysicalSubstances
   it should "perform quantity arithmetic" in
     {
       10.kg * 4.m should be(40 * (kg * m))
+      4.oz_troy * 7.percent should be(0.28 * (oz_troy * UnitMeasure))
+
+      10.kg / 2.m should be(5 * (kg / m))
+      10.USD / 2.percent should be(500 * (USD / UnitMeasure))
     }
 
   it should "be passable to typesafe method" in
@@ -57,7 +61,7 @@ class QuantitySpec extends FlatSpec with Matchers with PhysicalSubstances
       multiply(10.kg, 2)
     }
 
-  it should "" in
+  it should "convertible to lb" in
     {
       ((10 kg) to lb) should be(22.04625 lb)
     }
