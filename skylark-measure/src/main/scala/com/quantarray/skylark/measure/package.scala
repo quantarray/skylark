@@ -755,9 +755,351 @@ package object measure
     /**
      * Currency.
      */
-    def USD = Quantity(toDouble, measure.USD)
+    def AED = Quantity(toDouble, measure.AED)
+
+    def AFN = Quantity(toDouble, measure.AFN)
+
+    def ALL = Quantity(toDouble, measure.ALL)
+
+    def AMD = Quantity(toDouble, measure.AMD)
+
+    def ANG = Quantity(toDouble, measure.ANG)
+
+    def AOA = Quantity(toDouble, measure.AOA)
+
+    def ARS = Quantity(toDouble, measure.ARS)
+
+    def AUD = Quantity(toDouble, measure.AUD)
+
+    def AWG = Quantity(toDouble, measure.AWG)
+
+    def AZN = Quantity(toDouble, measure.AZN)
+
+    def BAM = Quantity(toDouble, measure.BAM)
+
+    def BBD = Quantity(toDouble, measure.BBD)
+
+    def BDT = Quantity(toDouble, measure.BDT)
+
+    def BGN = Quantity(toDouble, measure.BGN)
+
+    def BHD = Quantity(toDouble, measure.BHD)
+
+    def BIF = Quantity(toDouble, measure.BIF)
+
+    def BMD = Quantity(toDouble, measure.BMD)
+
+    def BND = Quantity(toDouble, measure.BND)
+
+    def BOB = Quantity(toDouble, measure.BOB)
+
+    def BOV = Quantity(toDouble, measure.BOV)
+
+    def BRL = Quantity(toDouble, measure.BRL)
+
+    def BSD = Quantity(toDouble, measure.BSD)
+
+    def BTN = Quantity(toDouble, measure.BTN)
+
+    def BWP = Quantity(toDouble, measure.BWP)
+
+    def BYR = Quantity(toDouble, measure.BYR)
+
+    def BZD = Quantity(toDouble, measure.BZD)
 
     def CAD = Quantity(toDouble, measure.CAD)
+
+    def CDF = Quantity(toDouble, measure.CDF)
+
+    def CHF = Quantity(toDouble, measure.CHF)
+
+    def CLF = Quantity(toDouble, measure.CLF)
+
+    def CLP = Quantity(toDouble, measure.CLP)
+
+    def CNY = Quantity(toDouble, measure.CNY)
+
+    def COP = Quantity(toDouble, measure.COP)
+
+    def CRC = Quantity(toDouble, measure.CRC)
+
+    def CUC = Quantity(toDouble, measure.CUC)
+
+    def CUP = Quantity(toDouble, measure.CUP)
+
+    def CVE = Quantity(toDouble, measure.CVE)
+
+    def CZK = Quantity(toDouble, measure.CZK)
+
+    def DJF = Quantity(toDouble, measure.DJF)
+
+    def DKK = Quantity(toDouble, measure.DKK)
+
+    def DOP = Quantity(toDouble, measure.DOP)
+
+    def DZD = Quantity(toDouble, measure.DZD)
+
+    def EGP = Quantity(toDouble, measure.EGP)
+
+    def ERN = Quantity(toDouble, measure.ERN)
+
+    def ETB = Quantity(toDouble, measure.ETB)
+
+    def EUR = Quantity(toDouble, measure.EUR)
+
+    def FJD = Quantity(toDouble, measure.FJD)
+
+    def FKP = Quantity(toDouble, measure.FKP)
+
+    def GBP = Quantity(toDouble, measure.GBP)
+
+    def GEL = Quantity(toDouble, measure.GEL)
+
+    def GHS = Quantity(toDouble, measure.GHS)
+
+    def GIP = Quantity(toDouble, measure.GIP)
+
+    def GMD = Quantity(toDouble, measure.GMD)
+
+    def GNF = Quantity(toDouble, measure.GNF)
+
+    def GTQ = Quantity(toDouble, measure.GTQ)
+
+    def GYD = Quantity(toDouble, measure.GYD)
+
+    def HKD = Quantity(toDouble, measure.HKD)
+
+    def HNL = Quantity(toDouble, measure.HNL)
+
+    def HRK = Quantity(toDouble, measure.HRK)
+
+    def HTG = Quantity(toDouble, measure.HTG)
+
+    def HUF = Quantity(toDouble, measure.HUF)
+
+    def IDR = Quantity(toDouble, measure.IDR)
+
+    def ILS = Quantity(toDouble, measure.ILS)
+
+    def INR = Quantity(toDouble, measure.INR)
+
+    def IQD = Quantity(toDouble, measure.IQD)
+
+    def IRR = Quantity(toDouble, measure.IRR)
+
+    def ISK = Quantity(toDouble, measure.ISK)
+
+    def JMD = Quantity(toDouble, measure.JMD)
+
+    def JOD = Quantity(toDouble, measure.JOD)
+
+    def JPY = Quantity(toDouble, measure.JPY)
+
+    def KES = Quantity(toDouble, measure.KES)
+
+    def KGS = Quantity(toDouble, measure.KGS)
+
+    def KHR = Quantity(toDouble, measure.KHR)
+
+    def KMF = Quantity(toDouble, measure.KMF)
+
+    def KPW = Quantity(toDouble, measure.KPW)
+
+    def KRW = Quantity(toDouble, measure.KRW)
+
+    def KWD = Quantity(toDouble, measure.KWD)
+
+    def KYD = Quantity(toDouble, measure.KYD)
+
+    def KZT = Quantity(toDouble, measure.KZT)
+
+    def LAK = Quantity(toDouble, measure.LAK)
+
+    def LBP = Quantity(toDouble, measure.LBP)
+
+    def LKR = Quantity(toDouble, measure.LKR)
+
+    def LRD = Quantity(toDouble, measure.LRD)
+
+    def LSL = Quantity(toDouble, measure.LSL)
+
+    def LTL = Quantity(toDouble, measure.LTL)
+
+    def LVL = Quantity(toDouble, measure.LVL)
+
+    def LYD = Quantity(toDouble, measure.LYD)
+
+    def MAD = Quantity(toDouble, measure.MAD)
+
+    def MDL = Quantity(toDouble, measure.MDL)
+
+    def MGA = Quantity(toDouble, measure.MGA)
+
+    def MKD = Quantity(toDouble, measure.MKD)
+
+    def MMK = Quantity(toDouble, measure.MMK)
+
+    def MNT = Quantity(toDouble, measure.MNT)
+
+    def MOP = Quantity(toDouble, measure.MOP)
+
+    def MRO = Quantity(toDouble, measure.MRO)
+
+    def MUR = Quantity(toDouble, measure.MUR)
+
+    def MVR = Quantity(toDouble, measure.MVR)
+
+    def MWK = Quantity(toDouble, measure.MWK)
+
+    def MXN = Quantity(toDouble, measure.MXN)
+
+    def MXV = Quantity(toDouble, measure.MXV)
+
+    def MYR = Quantity(toDouble, measure.MYR)
+
+    def MZN = Quantity(toDouble, measure.MZN)
+
+    def NAD = Quantity(toDouble, measure.NAD)
+
+    def NGN = Quantity(toDouble, measure.NGN)
+
+    def NIO = Quantity(toDouble, measure.NIO)
+
+    def NOK = Quantity(toDouble, measure.NOK)
+
+    def NPR = Quantity(toDouble, measure.NPR)
+
+    def NZD = Quantity(toDouble, measure.NZD)
+
+    def OMR = Quantity(toDouble, measure.OMR)
+
+    def PAB = Quantity(toDouble, measure.PAB)
+
+    def PEN = Quantity(toDouble, measure.PEN)
+
+    def PGK = Quantity(toDouble, measure.PGK)
+
+    def PHP = Quantity(toDouble, measure.PHP)
+
+    def PKR = Quantity(toDouble, measure.PKR)
+
+    def PLN = Quantity(toDouble, measure.PLN)
+
+    def PYG = Quantity(toDouble, measure.PYG)
+
+    def QAR = Quantity(toDouble, measure.QAR)
+
+    def RON = Quantity(toDouble, measure.RON)
+
+    def RSD = Quantity(toDouble, measure.RSD)
+
+    def RUB = Quantity(toDouble, measure.RUB)
+
+    def RWF = Quantity(toDouble, measure.RWF)
+
+    def SAR = Quantity(toDouble, measure.SAR)
+
+    def SBD = Quantity(toDouble, measure.SBD)
+
+    def SCR = Quantity(toDouble, measure.SCR)
+
+    def SDG = Quantity(toDouble, measure.SDG)
+
+    def SEK = Quantity(toDouble, measure.SEK)
+
+    def SGD = Quantity(toDouble, measure.SGD)
+
+    def SHP = Quantity(toDouble, measure.SHP)
+
+    def SLL = Quantity(toDouble, measure.SLL)
+
+    def SOS = Quantity(toDouble, measure.SOS)
+
+    def SRD = Quantity(toDouble, measure.SRD)
+
+    def STD = Quantity(toDouble, measure.STD)
+
+    def SYP = Quantity(toDouble, measure.SYP)
+
+    def SZL = Quantity(toDouble, measure.SZL)
+
+    def THB = Quantity(toDouble, measure.THB)
+
+    def TJS = Quantity(toDouble, measure.TJS)
+
+    def TMT = Quantity(toDouble, measure.TMT)
+
+    def TND = Quantity(toDouble, measure.TND)
+
+    def TOP = Quantity(toDouble, measure.TOP)
+
+    def TRY = Quantity(toDouble, measure.TRY)
+
+    def TTD = Quantity(toDouble, measure.TTD)
+
+    def TWD = Quantity(toDouble, measure.TWD)
+
+    def TZS = Quantity(toDouble, measure.TZS)
+
+    def UAH = Quantity(toDouble, measure.UAH)
+
+    def UGX = Quantity(toDouble, measure.UGX)
+
+    def USD = Quantity(toDouble, measure.USD)
+
+    def USN = Quantity(toDouble, measure.USN)
+
+    def USS = Quantity(toDouble, measure.USS)
+
+    def UYU = Quantity(toDouble, measure.UYU)
+
+    def UZS = Quantity(toDouble, measure.UZS)
+
+    def VEF = Quantity(toDouble, measure.VEF)
+
+    def VND = Quantity(toDouble, measure.VND)
+
+    def VUV = Quantity(toDouble, measure.VUV)
+
+    def WST = Quantity(toDouble, measure.WST)
+
+    def XAF = Quantity(toDouble, measure.XAF)
+
+    def XAG = Quantity(toDouble, measure.XAG)
+
+    def XAU = Quantity(toDouble, measure.XAU)
+
+    def XBA = Quantity(toDouble, measure.XBA)
+
+    def XBB = Quantity(toDouble, measure.XBB)
+
+    def XBC = Quantity(toDouble, measure.XBC)
+
+    def XBD = Quantity(toDouble, measure.XBD)
+
+    def XCD = Quantity(toDouble, measure.XCD)
+
+    def XDR = Quantity(toDouble, measure.XDR)
+
+    def XFU = Quantity(toDouble, measure.XFU)
+
+    def XOF = Quantity(toDouble, measure.XOF)
+
+    def XPD = Quantity(toDouble, measure.XPD)
+
+    def XPF = Quantity(toDouble, measure.XPF)
+
+    def XPT = Quantity(toDouble, measure.XPT)
+
+    def XTS = Quantity(toDouble, measure.XTS)
+
+    def XXX = Quantity(toDouble, measure.XXX)
+
+    def YER = Quantity(toDouble, measure.YER)
+
+    def ZAR = Quantity(toDouble, measure.ZAR)
+
+    def ZMW = Quantity(toDouble, measure.ZMW)
   }
 
   implicit final class IntQuantity(private val value: Int) extends AnyVal with Units
