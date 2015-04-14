@@ -114,7 +114,7 @@ In finance, a forward curve carries a price - a value of something vs. something
 val wtiForwardCurve = DiscreteForwardCurve(USD / (bbl of wti), Seq(("2014-04-01".d, 100.0), ("2017-01-01".d, 150.0)))
 ```
 
-You can combine multiple manifolds to a `Market`, which is a special kind of a bag carrying all data relevant to a given observation date/time.
+You can combine multiple manifolds into a `Market`, which is a special kind of a bag carrying all data relevant to a given observation date/time.
 
 ```scala
 val observationDate: DateTime = "2014-04-01".d
@@ -129,7 +129,7 @@ val market = new GlobalMarket(
   )
 ```
 
-Note that `observationDate` is attached to a `Market` via a special `TimeInstantCurve` instead of making it a special property of the `Market`.
+Note that `observationDate` is attached to the `Market` via a special `TimeInstantCurve` instead of making it a special property of the `Market`.
 
 With the above assembled, you can do a lot of neat stuff.
 
