@@ -55,7 +55,7 @@ class MarketConversionProviderSpec extends FlatSpec with Matchers with PhysicalS
 
   implicit val mcp = new GlobalMarketConversionProvider(substanceConversion)
 
-  "USD/bbl price" should "be addable to USD/gal price with results in right-hand-side units" in
+  "USD/bbl price" should "be addable to USD/gal price" in
     {
       val barrelPrice = 42 * (USD / bbl)
       val gallonPrice = 1 * (USD / (gal of wti))
@@ -66,6 +66,16 @@ class MarketConversionProviderSpec extends FlatSpec with Matchers with PhysicalS
       price1 should equal(84 * (USD / bbl))
 
       price2 should equal(2 * (USD / (gal of wti)))
+    }
+
+  it should "be subtractable from USD/gal price" in
+    {
+      val barrelPrice = 84 * (USD / bbl)
+      val gallonPrice = 1 * (USD / (gal of wti))
+
+      val price1 = barrelPrice - gallonPrice
+
+      price1 should equal(42 * (USD / bbl))
     }
 
   it should "be addable to CAD/gal price" in

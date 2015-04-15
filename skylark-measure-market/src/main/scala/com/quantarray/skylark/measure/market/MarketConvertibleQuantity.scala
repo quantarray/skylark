@@ -45,6 +45,16 @@ object MarketConvertibleQuantity
 
       }
 
+      def -[N <: Measure](quantity: Quantity[N])(implicit market: Market, mcp: MarketConversionProvider): Quantity[M] =
+      {
+        import Quantity.Implicits._
+
+        val sum = QuantityToMarketConvertibleQuantity.to(this.quantity, -quantity)
+
+        new Quantity(sum._1, sum._2)
+
+      }
+
       def to[N <: Measure](measure: N)(implicit market: Market, mcp: MarketConversionProvider): Quantity[N] =
       {
         import Quantity.Implicits._
