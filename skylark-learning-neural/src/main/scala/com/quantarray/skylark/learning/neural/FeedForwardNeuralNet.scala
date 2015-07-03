@@ -26,8 +26,13 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-case class FeedForwardNeuralNet(connections: Seq[Synapse]) extends NeuralNet[Neuron, Nucleus, Synapse]
+case class FeedForwardNeuralNet(connections: Seq[Synapse]) extends NeuralNet
 {
+  type C = Neuron
+
+  type L = Nucleus
+
+  type T = Synapse
 }
 
 object FeedForwardNeuralNet
@@ -35,9 +40,38 @@ object FeedForwardNeuralNet
   /**
    * Connects layers in feed-forward fashion.
    */
-  def apply(activation: Activation, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2: Int, numberOfNeuronsInLayer3toN: Int*): FeedForwardNeuralNet =
+  def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNeuralNet =
   {
-    // TODO: Create layers, neurons, and synapses
-    FeedForwardNeuralNet(Seq.empty[Synapse])
+    val layer0 = Nucleus(0, activation, numberOfNeuronsInLayer0)
+
+    val layer1 = Nucleus(1, activation, numberOfNeuronsInLayer1)
+
+    val layers2AndUp = numberOfNeuronsInLayer2AndUp.zipWithIndex.map(x => Nucleus(x._2 + 2, activation, x._1))
+
+    val layers = layer0 +: layer1 +: layers2AndUp
+
+    val synapses = layers.zipWithIndex.foldLeft(List.empty[Synapse])((synapsesSoFar, layerIndex) =>
+    {
+
+      if (layerIndex._2 == layers.size - 1)
+      {
+        synapsesSoFar
+      }
+      else
+      {
+        val sourceLayer = layerIndex._1
+        val targetLayer = layers(layerIndex._2 + 1)
+
+        val newSynapses = for
+        {
+          sourceNeuron <- sourceLayer.cells
+          targetNeuron <- targetLayer.cells
+        } yield Synapse(sourceNeuron, targetNeuron, 1) // TODO: Assign initial weight
+
+        synapsesSoFar ++ newSynapses
+      }
+    })
+
+    FeedForwardNeuralNet(synapses)
   }
 }

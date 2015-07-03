@@ -24,9 +24,10 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-trait NeuralConnection[C <: NeuralCell]
+trait NeuralConnection
 {
-  // TODO: Recode with types
+  type C <: NeuralCell
+
   def source: C
 
   def target: C

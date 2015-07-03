@@ -24,8 +24,13 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-trait NeuralNet[C <: NeuralCell, L <: NeuralLayer[C], T <: NeuralConnection[C]]
+trait NeuralNet
 {
-  // TODO: Recode with types
+  type C <: NeuralCell
+
+  type L <: NeuralLayer
+
+  type T <: NeuralConnection
+
   def connections: Seq[T]
 }

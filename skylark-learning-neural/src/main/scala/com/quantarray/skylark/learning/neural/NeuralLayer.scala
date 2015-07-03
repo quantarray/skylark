@@ -24,8 +24,9 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-trait NeuralLayer[C <: NeuralCell]
+trait NeuralLayer
 {
-  // TODO: Recode with types
+  type C <: NeuralCell
+
   def cells: Seq[C]
 }

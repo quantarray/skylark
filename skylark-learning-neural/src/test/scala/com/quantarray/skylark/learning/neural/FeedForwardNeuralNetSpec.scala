@@ -22,16 +22,18 @@ package com.quantarray.skylark.learning.neural
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
- * Neural net spec.
+ * Feed-forward Neural net spec.
  *
  * @author Araik Grigoryan
  */
-class NeuralNetSpec extends FlatSpec with Matchers
+class FeedForwardNeuralNetSpec extends FlatSpec with Matchers
 {
   "" should "" in
     {
 
       val net = FeedForwardNeuralNet(SigmoidActivation, 4, 3, 3)
+
+      net.connections.size should be(21)
 
       //val trainer =
     }

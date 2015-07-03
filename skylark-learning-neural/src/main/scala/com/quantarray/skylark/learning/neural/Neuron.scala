@@ -24,11 +24,11 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-case class Neuron(activation: Activation, layer: Nucleus) extends NeuralCell
+case class Neuron(index: Int, activation: Activation, layer: Nucleus) extends NeuralCell
 {
   type Repr = Neuron
 
   type L = Nucleus
 
-  override def toString: String = s"neuron in $layer with $activation"
+  override def toString: String = s"neuron $index in $layer"
 }

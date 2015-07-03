@@ -28,7 +28,7 @@ trait NeuralCell
 {
   type Repr <: NeuralCell
 
-  type L <: NeuralLayer[Repr]
+  type L <: NeuralLayer
 
   def repr: Repr = this.asInstanceOf[Repr]
 

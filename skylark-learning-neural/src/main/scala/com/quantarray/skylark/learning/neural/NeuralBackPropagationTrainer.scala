@@ -28,11 +28,11 @@ trait NeuralBackPropagationTrainer extends Trainer
 {
   type C <: NeuralCell
 
-  type L <: NeuralLayer[C]
+  type L <: NeuralLayer
 
-  type T <: NeuralConnection[C]
+  type T <: NeuralConnection
 
-  type N <: NeuralNet[C, L, T]
+  type N <: NeuralNet
 
   override def train(client: N): N = client
 }
