@@ -34,5 +34,5 @@ trait NeuralCell
 
   def layer: L
 
-  def activation: Activation
+  def activation: NeuralActivation
 }

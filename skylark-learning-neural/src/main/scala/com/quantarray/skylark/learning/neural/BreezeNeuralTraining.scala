@@ -20,19 +20,11 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neural back propagation trainer.
+ * Breeze neural training.
  *
  * @author Araik Grigoryan
  */
-trait NeuralBackPropagationTrainer extends Trainer
+trait BreezeNeuralTraining[N <: NeuralNet]
 {
-  type C <: NeuralCell
-
-  type L <: NeuralLayer
-
-  type T <: NeuralConnection
-
-  type N <: NeuralNet
-
-  override def train(client: N): N = client
+  self: NeuralTrainer[N] =>
 }

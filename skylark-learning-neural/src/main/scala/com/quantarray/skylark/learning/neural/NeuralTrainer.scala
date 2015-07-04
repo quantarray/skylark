@@ -20,15 +20,11 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neuron.
+ * Neural trainer.
  *
  * @author Araik Grigoryan
  */
-case class Neuron(index: Int, activation: NeuralActivation, layer: Nucleus) extends NeuralCell
+trait NeuralTrainer[N <: NeuralNet]
 {
-  type Repr = Neuron
-
-  type L = Nucleus
-
-  override def toString: String = s"Neuron $index in $layer"
+  def train(net: N, dataSet: SupervisedDataSet): N
 }

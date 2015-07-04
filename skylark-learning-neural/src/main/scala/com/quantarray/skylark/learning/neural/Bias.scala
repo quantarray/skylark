@@ -20,15 +20,17 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neuron.
+ * Bias.
  *
  * @author Araik Grigoryan
  */
-case class Neuron(index: Int, activation: NeuralActivation, layer: Nucleus) extends NeuralCell
+case class Bias(output: Double, layer: Nucleus) extends NeuralCell
 {
-  type Repr = Neuron
+  type Repr = Bias
 
   type L = Nucleus
 
-  override def toString: String = s"Neuron $index in $layer"
+  override def activation: NeuralActivation = IdentityActivation
+
+  override def toString: String = s"Bias in $layer"
 }

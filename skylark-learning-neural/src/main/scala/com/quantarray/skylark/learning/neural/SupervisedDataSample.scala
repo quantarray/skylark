@@ -20,22 +20,13 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Activation function.
+ * Supervised data sample.
  *
  * @author Araik Grigoryan
  */
-trait Activation extends (Double => Double)
-
-object SigmoidActivation extends Activation
+trait SupervisedDataSample
 {
-  override def apply(x: Double): Double = 1.0 / (1.0 + math.exp(-x))
+  def input: Seq[Double]
 
-  override def toString(): String = "sigmoid"
-}
-
-object HyperbolicTangentActivation extends Activation
-{
-  override def apply(x: Double): Double = (math.exp(2 * x) - 1) / (math.exp(2 * x) + 1)
-
-  override def toString(): String = s"tanh"
+  def target: Seq[Double]
 }

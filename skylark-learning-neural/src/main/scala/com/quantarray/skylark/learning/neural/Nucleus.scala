@@ -25,7 +25,7 @@ package com.quantarray.skylark.learning.neural
  * @author Araik Grigoryan
  */
 // TODO: Handle bias
-case class Nucleus(index: Int, activation: Activation, numberOfNeurons: Int) extends NeuralLayer
+case class Nucleus(index: Int, activation: NeuralActivation, numberOfNeurons: Int) extends NeuralLayer
 {
   type C = Neuron
 

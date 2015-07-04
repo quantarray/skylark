@@ -20,15 +20,11 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neuron.
+ * Supervised data set.
  *
  * @author Araik Grigoryan
  */
-case class Neuron(index: Int, activation: NeuralActivation, layer: Nucleus) extends NeuralCell
+trait SupervisedDataSet
 {
-  type Repr = Neuron
-
-  type L = Nucleus
-
-  override def toString: String = s"Neuron $index in $layer"
+  def samples: Seq[SupervisedDataSample]
 }

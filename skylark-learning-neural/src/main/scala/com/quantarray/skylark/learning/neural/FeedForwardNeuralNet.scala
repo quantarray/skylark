@@ -40,7 +40,7 @@ object FeedForwardNeuralNet
   /**
    * Connects layers in feed-forward fashion.
    */
-  def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNeuralNet =
+  def apply(activation: NeuralActivation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNeuralNet =
   {
     val layer0 = Nucleus(0, activation, numberOfNeuronsInLayer0)
 
@@ -52,7 +52,6 @@ object FeedForwardNeuralNet
 
     val synapses = layers.zipWithIndex.foldLeft(List.empty[Synapse])((synapsesSoFar, layerIndex) =>
     {
-
       if (layerIndex._2 == layers.size - 1)
       {
         synapsesSoFar
@@ -62,13 +61,18 @@ object FeedForwardNeuralNet
         val sourceLayer = layerIndex._1
         val targetLayer = layers(layerIndex._2 + 1)
 
-        val newSynapses = for
+        val neuronSynapses = for
         {
           sourceNeuron <- sourceLayer.cells
           targetNeuron <- targetLayer.cells
-        } yield Synapse(sourceNeuron, targetNeuron, 1) // TODO: Assign initial weight
+        } yield Synapse(sourceNeuron, targetNeuron, 0.33) // TODO: Assign initial weight randomly using Gaussian(0, 1)
 
-        synapsesSoFar ++ newSynapses
+        val biasSynapses = for
+        {
+          targetNeuron <- targetLayer.cells
+        } yield Synapse(Bias(0.14, targetLayer), targetNeuron, 1) // TODO: Assign bias randomly using Gaussian(0, 1)
+
+        synapsesSoFar ++ neuronSynapses ++ biasSynapses
       }
     })
 

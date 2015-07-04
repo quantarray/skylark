@@ -24,9 +24,11 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-case class Synapse(source: Neuron, target: Neuron, weight: Double) extends NeuralConnection
+case class Synapse(source: NeuralCell, target: Neuron, weight: Double) extends NeuralConnection
 {
-  type C = Neuron
+  type S = NeuralCell
 
-  override def toString: String = s"$source - ($weight) -> $target"
+  type T = Neuron
+
+  override def toString: String = s"$source -($weight)-> $target"
 }

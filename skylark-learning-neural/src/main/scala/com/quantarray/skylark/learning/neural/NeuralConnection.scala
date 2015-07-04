@@ -26,11 +26,13 @@ package com.quantarray.skylark.learning.neural
  */
 trait NeuralConnection
 {
-  type C <: NeuralCell
+  type S <: NeuralCell
 
-  def source: C
+  type T <: NeuralCell
 
-  def target: C
+  def source: S
+
+  def target: T
 
   def weight: Double
 }

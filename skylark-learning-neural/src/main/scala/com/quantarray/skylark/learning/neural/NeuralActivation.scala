@@ -20,13 +20,29 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Trainer.
+ * Neural activation function.
  *
  * @author Araik Grigoryan
  */
-trait Trainer
-{
-  type N
+trait NeuralActivation extends (Double => Double)
 
-  def train(client: N): N
+object IdentityActivation extends NeuralActivation
+{
+  override def apply(x: Double): Double = x
+
+  override def toString(): String = "identity"
+}
+
+object SigmoidActivation extends NeuralActivation
+{
+  override def apply(x: Double): Double = 1.0 / (1.0 + math.exp(-x))
+
+  override def toString(): String = "sigmoid"
+}
+
+object HyperbolicTangentActivation extends NeuralActivation
+{
+  override def apply(x: Double): Double = (math.exp(2 * x) - 1) / (math.exp(2 * x) + 1)
+
+  override def toString(): String = s"tanh"
 }
