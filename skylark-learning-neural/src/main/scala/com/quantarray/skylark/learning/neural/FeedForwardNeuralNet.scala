@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.learning.neural
 
+import scala.collection.immutable.SortedMap
+
 /**
  * Feed-forward neural net.
  *
@@ -33,6 +35,22 @@ case class FeedForwardNeuralNet(connections: Seq[Synapse]) extends NeuralNet
   type L = Nucleus
 
   type T = Synapse
+
+  val layerTargetGroups = connections.groupBy(_.target.layer).map((ls) => (ls._1, ls._2.groupBy(_.target)))
+
+  /**
+   * Creates a map of weights, in order or layer and target neuron index.
+   */
+  def weights(select: Neuron => Boolean): Map[Int, Map[Int, Seq[Double]]] =
+  {
+    layerTargetGroups.foldLeft(SortedMap.empty[Int, SortedMap[Int, Seq[Double]]])((m, x) =>
+    {
+      m + (x._1.index -> x._2.foldLeft(SortedMap.empty[Int, Seq[Double]])((n, y) =>
+      {
+        n + (y._1.index -> y._2.filter(synapse => select(synapse.source)).map(_.weight))
+      }))
+    })
+  }
 }
 
 object FeedForwardNeuralNet

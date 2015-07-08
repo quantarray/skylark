@@ -19,8 +19,6 @@
 
 package com.quantarray.skylark.learning.neural
 
-import scala.collection.immutable.SortedMap
-
 /**
  * Back propagation neural trainer.
  *
@@ -31,30 +29,9 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
 {
   override def train(net: FeedForwardNeuralNet, dataSet: SupervisedDataSet): FeedForwardNeuralNet =
   {
-    val layerTargetGroups = net.connections.groupBy(_.target.layer).map((ls) => (ls._1, ls._2.groupBy(_.target)))
+    val weights = net.weights(_.nonBias)
 
-    println(layerTargetGroups)
-
-    // TODO: Generalize collection of weight and biases into one function
-    val weights = layerTargetGroups.foldLeft(SortedMap.empty[Int, SortedMap[Int, Seq[Double]]])((m, x) =>
-    {
-      m + (x._1.index -> x._2.foldLeft(SortedMap.empty[Int, Seq[Double]])((n, y) =>
-      {
-        n + (y._1.index -> y._2.filter(_.source.nonBias).map(_.weight))
-      }))
-    })
-
-    println(weights)
-
-    val biases = layerTargetGroups.foldLeft(SortedMap.empty[Int, SortedMap[Int, Seq[Double]]])((m, x) =>
-    {
-      m + (x._1.index -> x._2.foldLeft(SortedMap.empty[Int, Seq[Double]])((n, y) =>
-      {
-        n + (y._1.index -> y._2.filter(_.source.isBias).map(_.weight))
-      }))
-    })
-
-    println(biases)
+    val biases = net.weights(_.isBias)
 
     dataSet.samples.map(sample =>
     {

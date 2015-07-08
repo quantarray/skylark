@@ -35,6 +35,16 @@ class FeedForwardNeuralNetSpec extends FlatSpec with Matchers
 
       net.connections.size should be((4 + 1) * 3 + (3 + 1) * 2) // +1s are to account for the Biases
 
+      val weights = net.weights(_.nonBias)
+      weights.size should be(2)
+      weights(1).size should be(3)
+      weights(2).size should be(2)
+
+      val biases = net.weights(_.isBias)
+      biases.size should be(2)
+      biases(1).size should be(3)
+      biases(2).size should be(2)
+
       val dataSet = new SupervisedDataSet
       {
         override def samples: Seq[SupervisedDataSample] =
