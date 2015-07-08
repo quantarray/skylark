@@ -11,6 +11,7 @@ object Build
   val scalaXmlVersion = "1.0.2"
 
   val akkaVersion = "2.3.6"
+  val breezeVersion = "0.11.2"
   val c3p0Version = "0.9.5-pre10"
   val commonsMath3Version = "3.2"
   val dispatchVersion = "0.11.2"

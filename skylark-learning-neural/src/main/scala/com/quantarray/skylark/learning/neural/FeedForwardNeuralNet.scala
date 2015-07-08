@@ -39,6 +39,9 @@ object FeedForwardNeuralNet
 {
   /**
    * Connects layers in feed-forward fashion.
+   *
+   * In addition to the requested neurons, a bias cell will be created for each layer. By convention,
+   * the zeroth layer will not receive a bias cell because it will directly absorb the inputs.
    */
   def apply(activation: NeuralActivation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNeuralNet =
   {
@@ -52,7 +55,7 @@ object FeedForwardNeuralNet
 
     val synapses = layers.zipWithIndex.foldLeft(List.empty[Synapse])((synapsesSoFar, layerIndex) =>
     {
-      if (layerIndex._2 == layers.size - 1)
+      if (layerIndex._1 == layers.last)
       {
         synapsesSoFar
       }
@@ -65,12 +68,14 @@ object FeedForwardNeuralNet
         {
           sourceNeuron <- sourceLayer.cells
           targetNeuron <- targetLayer.cells
-        } yield Synapse(sourceNeuron, targetNeuron, 0.33) // TODO: Assign initial weight randomly using Gaussian(0, 1)
+        } yield Synapse(sourceNeuron, targetNeuron, 0.1 * (sourceNeuron.index + targetNeuron.index)) // TODO: Assign initial weight randomly using Gaussian(0, 1)
 
-        val biasSynapses = for
-        {
-          targetNeuron <- targetLayer.cells
-        } yield Synapse(Bias(0.14, targetLayer), targetNeuron, 1) // TODO: Assign bias randomly using Gaussian(0, 1)
+        val biasSynapses =
+
+          for
+          {
+            targetNeuron <- targetLayer.cells
+          } yield Synapse(Neuron(0, IdentityActivation, targetLayer), targetNeuron, 0.1 * targetNeuron.index) // TODO: Assign bias randomly using Gaussian(0, 1)
 
         synapsesSoFar ++ neuronSynapses ++ biasSynapses
       }

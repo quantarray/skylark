@@ -31,9 +31,9 @@ class FeedForwardNeuralNetSpec extends FlatSpec with Matchers
   "" should "" in
     {
 
-      val net = FeedForwardNeuralNet(SigmoidActivation, 4, 3, 3)
+      val net = FeedForwardNeuralNet(SigmoidActivation, 4, 3, 2)
 
-      net.connections.size should be((4 + 1) * 3 + (3 + 1) * 3) // +1s are to account for the Biases
+      net.connections.size should be((4 + 1) * 3 + (3 + 1) * 2) // +1s are to account for the Biases
 
       val dataSet = new SupervisedDataSet
       {
@@ -48,7 +48,7 @@ class FeedForwardNeuralNetSpec extends FlatSpec with Matchers
           )
       }
 
-      val trainer = BackPropagationNeuralTrainer[FeedForwardNeuralNet](100, 0.5, 0.5)
+      val trainer = BackPropagationNeuralTrainer(100, 0.5, 0.5)
 
       trainer.train(net, dataSet)
     }

@@ -30,5 +30,9 @@ case class Neuron(index: Int, activation: NeuralActivation, layer: Nucleus) exte
 
   type L = Nucleus
 
-  override def toString: String = s"Neuron $index in $layer"
+  val isBias: Boolean = index == 0 // FIXME: Better logic for determining bias
+
+  val nonBias: Boolean = !isBias
+
+  override def toString: String = s"Neuron(isBias=$isBias) $index in $layer"
 }

@@ -24,12 +24,11 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-// TODO: Handle bias
 case class Nucleus(index: Int, activation: NeuralActivation, numberOfNeurons: Int) extends NeuralLayer
 {
   type C = Neuron
 
-  lazy val cells = (0 until numberOfNeurons).map(Neuron(_, activation, this))
+  lazy val cells = (1 to numberOfNeurons).map(Neuron(_, activation, this))
 
   override def toString: String = s"layer $index"
 }
