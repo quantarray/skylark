@@ -26,7 +26,7 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-case class FeedForwardNeuralNet(connections: Seq[Synapse]) extends NeuralNet
+case class FeedForwardNeuralNet(activation: NeuralActivation, connections: Seq[Synapse]) extends NeuralNet
 {
   type C = Neuron
 
@@ -41,20 +41,20 @@ case class FeedForwardNeuralNet(connections: Seq[Synapse]) extends NeuralNet
   /**
    * Creates a map of weights, in order or layer and source neuron index.
    */
-  def weightsBySource(select: Synapse => Boolean): NeuralNetWeightMap = weightsBy(layerSourceGroups, select)
+  def weightsBySource(select: Synapse => Boolean): NeuralNetMap[Double] = propsBy(layerSourceGroups, select, _.weight)
 
   /**
-   * Creates a map of weights, in order or layer and target neuron index.
+   * Creates a map of weights, in order of layer and target neuron index.
    */
-  def weightsByTarget(select: Synapse => Boolean): NeuralNetWeightMap = weightsBy(layerTargetGroups, select)
+  def weightsByTarget(select: Synapse => Boolean): NeuralNetMap[Double] = propsBy(layerTargetGroups, select, _.weight)
 
-  private def weightsBy(groups: Map[Nucleus, Map[Neuron, Seq[Synapse]]], select: Synapse => Boolean): NeuralNetWeightMap =
+  private def propsBy[T](groups: Map[Nucleus, Map[Neuron, Seq[Synapse]]], select: Synapse => Boolean, prop: Synapse => T): NeuralNetMap[T] =
   {
-    groups.foldLeft(NeuralNetWeightMap.empty)((m, x) =>
+    groups.foldLeft(NeuralNetMap.empty[T])((m, x) =>
     {
-      val lss = x._2.foldLeft(NeuralLayerWeightMap.empty)((n, y) =>
+      val lss = x._2.foldLeft(NeuralLayerMap.empty[T])((n, y) =>
       {
-        val weights = y._2.filter(select).map(_.weight)
+        val weights = y._2.filter(select).map(prop)
         if (weights.isEmpty) n else n + (y._1.index -> weights)
       })
       if (lss.isEmpty) m else m + (x._1.index -> lss)
@@ -108,6 +108,6 @@ object FeedForwardNeuralNet
       }
     })
 
-    FeedForwardNeuralNet(synapses)
+    FeedForwardNeuralNet(activation, synapses)
   }
 }

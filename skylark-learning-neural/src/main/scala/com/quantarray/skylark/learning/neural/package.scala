@@ -10,17 +10,17 @@ import scala.collection.immutable.SortedMap
  */
 package object neural
 {
-  type NeuralLayerWeightMap = Map[Int, Seq[Double]]
+  type NeuralLayerMap[T] = Map[Int, Seq[T]]
 
-  object NeuralLayerWeightMap
+  object NeuralLayerMap
   {
-    def empty = SortedMap.empty[Int, Seq[Double]]
+    def empty[T] = SortedMap.empty[Int, Seq[T]]
   }
 
-  type NeuralNetWeightMap = Map[Int, NeuralLayerWeightMap]
+  type NeuralNetMap[T] = Map[Int, NeuralLayerMap[T]]
 
-  object NeuralNetWeightMap
+  object NeuralNetMap
   {
-    def empty = SortedMap.empty[Int, NeuralLayerWeightMap]
+    def empty[T] = SortedMap.empty[Int, NeuralLayerMap[T]]
   }
 }
