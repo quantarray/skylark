@@ -72,11 +72,11 @@ object FeedForwardNeuralNet
    */
   def apply(activation: NeuralActivation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNeuralNet =
   {
-    val layer0 = Nucleus(0, activation, numberOfNeuronsInLayer0)
+    val layer0 = Nucleus(0, numberOfNeuronsInLayer0)
 
-    val layer1 = Nucleus(1, activation, numberOfNeuronsInLayer1)
+    val layer1 = Nucleus(1, numberOfNeuronsInLayer1)
 
-    val layers2AndUp = numberOfNeuronsInLayer2AndUp.zipWithIndex.map(x => Nucleus(x._2 + 2, activation, x._1))
+    val layers2AndUp = numberOfNeuronsInLayer2AndUp.zipWithIndex.map(x => Nucleus(x._2 + 2, x._1))
 
     val layers = layer0 +: layer1 +: layers2AndUp
 
@@ -102,7 +102,7 @@ object FeedForwardNeuralNet
           for
           {
             targetNeuron <- targetLayer.cells
-          } yield Synapse(Neuron(0, IdentityActivation, targetLayer), targetNeuron, 0.1 * targetNeuron.index) // TODO: Assign bias randomly using Gaussian(0, 1)
+          } yield Synapse(Neuron(0, targetLayer), targetNeuron, 0.1 * targetNeuron.index) // TODO: Assign bias randomly using Gaussian(0, 1)
 
         synapsesSoFar ++ neuronSynapses ++ biasSynapses
       }

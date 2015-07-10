@@ -70,5 +70,10 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
     })
 
     println(xs)
+
+    // Backward-propagate errors
+    val outputX = xs.head
+    //val delta = (outputX - DenseMatrix(dataSample.target: _*)) *
+
   }
 }

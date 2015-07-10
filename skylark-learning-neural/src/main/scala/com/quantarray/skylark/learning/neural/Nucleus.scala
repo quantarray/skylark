@@ -24,11 +24,11 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-case class Nucleus(index: Int, activation: NeuralActivation, numberOfNeurons: Int) extends NeuralLayer
+case class Nucleus(index: NeuralCellIndex, numberOfNeurons: Int) extends NeuralLayer
 {
   type C = Neuron
 
-  lazy val cells = (1 to numberOfNeurons).map(Neuron(_, activation, this))
+  lazy val cells = (1 to numberOfNeurons).map(Neuron(_, this))
 
   override def toString: String = s"layer $index"
 }

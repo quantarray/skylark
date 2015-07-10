@@ -28,5 +28,7 @@ trait NeuralLayer
 {
   type C <: NeuralCell
 
+  def index: NeuralLayerIndex
+
   def cells: Seq[C]
 }

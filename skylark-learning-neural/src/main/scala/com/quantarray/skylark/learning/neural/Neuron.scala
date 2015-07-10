@@ -24,7 +24,7 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-case class Neuron(index: Int, activation: NeuralActivation, layer: Nucleus) extends NeuralCell
+case class Neuron(index: NeuralCellIndex, layer: Nucleus) extends NeuralCell
 {
   type Repr = Neuron
 

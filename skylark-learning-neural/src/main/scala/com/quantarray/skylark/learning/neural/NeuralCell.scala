@@ -32,7 +32,7 @@ trait NeuralCell
 
   def repr: Repr = this.asInstanceOf[Repr]
 
-  def layer: L
+  def index: NeuralCellIndex
 
-  def activation: NeuralActivation
+  def layer: L
 }
