@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.learning.neural
 
+import breeze.linalg.DenseMatrix
+
 /**
  * Back propagation neural trainer.
  *
@@ -29,9 +31,11 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
 {
   override def train(net: FeedForwardNeuralNet, dataSet: SupervisedDataSet): FeedForwardNeuralNet =
   {
-    val weights = net.weights(_.nonBias)
+    val weights = net.weightsBySource(_.source.nonBias)
 
-    val biases = net.weights(_.isBias)
+    val biases = net.weightsByTarget(_.source.isBias)
+
+    train(weights, biases, dataSet.samples.head)
 
     dataSet.samples.map(sample =>
     {
@@ -43,8 +47,21 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
     net
   }
 
-  def backprop(targetNeuronToSynapses: Map[Neuron, Seq[Synapse]], dataSample: SupervisedDataSample) =
+  def train(weights: NeuralNetWeightMap, biases: NeuralNetWeightMap, dataSample: SupervisedDataSample) =
   {
+    val xs = weights.keys.foldLeft(List(DenseMatrix(dataSample.input: _*)))((xs, layerIndex) =>
+    {
+      val x = xs.head
 
+      val w = DenseMatrix(weights(layerIndex).values.toSeq: _*)
+      val b = DenseMatrix(biases(layerIndex + 1).values.toSeq: _*)
+
+      val newX = (w.t * x: DenseMatrix[Double]) + b
+
+      newX :: xs
+    })
+
+    // TODO: Reverse xs?
+    println(xs)
   }
 }

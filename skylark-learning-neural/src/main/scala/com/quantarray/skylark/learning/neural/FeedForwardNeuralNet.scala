@@ -19,8 +19,6 @@
 
 package com.quantarray.skylark.learning.neural
 
-import scala.collection.immutable.SortedMap
-
 /**
  * Feed-forward neural net.
  *
@@ -36,19 +34,30 @@ case class FeedForwardNeuralNet(connections: Seq[Synapse]) extends NeuralNet
 
   type T = Synapse
 
-  val layerTargetGroups = connections.groupBy(_.target.layer).map((ls) => (ls._1, ls._2.groupBy(_.target)))
+  lazy val layerSourceGroups = connections.groupBy(_.source.layer).map((ls) => (ls._1, ls._2.groupBy(_.source)))
+
+  lazy val layerTargetGroups = connections.groupBy(_.target.layer).map((ls) => (ls._1, ls._2.groupBy(_.target)))
+
+  /**
+   * Creates a map of weights, in order or layer and source neuron index.
+   */
+  def weightsBySource(select: Synapse => Boolean): NeuralNetWeightMap = weightsBy(layerSourceGroups, select)
 
   /**
    * Creates a map of weights, in order or layer and target neuron index.
    */
-  def weights(select: Neuron => Boolean): Map[Int, Map[Int, Seq[Double]]] =
+  def weightsByTarget(select: Synapse => Boolean): NeuralNetWeightMap = weightsBy(layerTargetGroups, select)
+
+  private def weightsBy(groups: Map[Nucleus, Map[Neuron, Seq[Synapse]]], select: Synapse => Boolean): NeuralNetWeightMap =
   {
-    layerTargetGroups.foldLeft(SortedMap.empty[Int, SortedMap[Int, Seq[Double]]])((m, x) =>
+    groups.foldLeft(NeuralNetWeightMap.empty)((m, x) =>
     {
-      m + (x._1.index -> x._2.foldLeft(SortedMap.empty[Int, Seq[Double]])((n, y) =>
+      val lss = x._2.foldLeft(NeuralLayerWeightMap.empty)((n, y) =>
       {
-        n + (y._1.index -> y._2.filter(synapse => select(synapse.source)).map(_.weight))
-      }))
+        val weights = y._2.filter(select).map(_.weight)
+        if (weights.isEmpty) n else n + (y._1.index -> weights)
+      })
+      if (lss.isEmpty) m else m + (x._1.index -> lss)
     })
   }
 }
@@ -86,7 +95,7 @@ object FeedForwardNeuralNet
         {
           sourceNeuron <- sourceLayer.cells
           targetNeuron <- targetLayer.cells
-        } yield Synapse(sourceNeuron, targetNeuron, 0.1 * (sourceNeuron.index + targetNeuron.index)) // TODO: Assign initial weight randomly using Gaussian(0, 1)
+        } yield Synapse(sourceNeuron, targetNeuron, 10 * sourceNeuron.index + targetNeuron.index) // TODO: Assign initial weight randomly using Gaussian(0, 1)
 
         val biasSynapses =
 
