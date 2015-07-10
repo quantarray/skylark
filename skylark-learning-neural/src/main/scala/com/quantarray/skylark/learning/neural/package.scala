@@ -10,6 +10,7 @@ import scala.collection.immutable.SortedMap
  */
 package object neural
 {
+  // Map of NeuralCell's index to a Seq of elements
   type NeuralLayerMap[T] = Map[Int, Seq[T]]
 
   object NeuralLayerMap
@@ -17,6 +18,7 @@ package object neural
     def empty[T] = SortedMap.empty[Int, Seq[T]]
   }
 
+  // Map of NeuralLayer's index to a NeuralLayerMap
   type NeuralNetMap[T] = Map[Int, NeuralLayerMap[T]]
 
   object NeuralNetMap
