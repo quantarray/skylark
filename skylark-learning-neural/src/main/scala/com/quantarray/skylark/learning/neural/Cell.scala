@@ -20,11 +20,19 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Breeze neural training.
+ * Cell.
  *
  * @author Araik Grigoryan
  */
-trait BreezeNeuralTraining[N <: NeuralNet]
+trait Cell
 {
-  self: NeuralTrainer[N] =>
+  type Repr <: Cell
+
+  type L <: Layer
+
+  def repr: Repr = this.asInstanceOf[Repr]
+
+  def index: CellIndex
+
+  def layer: L
 }

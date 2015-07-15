@@ -20,19 +20,11 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neural connection.
+ * Trainer.
  *
  * @author Araik Grigoryan
  */
-trait NeuralConnection
+trait Trainer[N <: Net]
 {
-  type S <: NeuralCell
-
-  type T <: NeuralCell
-
-  def source: S
-
-  def target: T
-
-  def weight: Double
+  def train(net: N, dataSet: SupervisedDataSet): N
 }

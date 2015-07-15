@@ -20,19 +20,17 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neural cell.
+ * Net.
  *
  * @author Araik Grigoryan
  */
-trait NeuralCell
+trait Net
 {
-  type Repr <: NeuralCell
+  type C <: Cell
 
-  type L <: NeuralLayer
+  type L <: Layer
 
-  def repr: Repr = this.asInstanceOf[Repr]
+  type T <: Connection
 
-  def index: NeuralCellIndex
-
-  def layer: L
+  def connections: Seq[T]
 }

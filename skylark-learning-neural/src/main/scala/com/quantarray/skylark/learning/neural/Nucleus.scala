@@ -20,11 +20,11 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Nucleus: a compact collection of neurons forming a layer inside a neural net.
+ * Nucleus. A compact collection of neurons forming a layer inside a net.
  *
  * @author Araik Grigoryan
  */
-case class Nucleus(index: NeuralCellIndex, numberOfNeurons: Int) extends NeuralLayer
+case class Nucleus(index: CellIndex, numberOfNeurons: Int) extends Layer
 {
   type C = Neuron
 

@@ -22,14 +22,13 @@ package com.quantarray.skylark.learning.neural
 import breeze.linalg.DenseMatrix
 
 /**
- * Back propagation neural trainer.
+ * Back propagation trainer.
  *
  * @author Araik Grigoryan
  */
-case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Double, momentum: Double)
-  extends NeuralTrainer[FeedForwardNeuralNet] with BreezeNeuralTraining[FeedForwardNeuralNet]
+case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, momentum: Double) extends Trainer[FeedForwardNet]
 {
-  override def train(net: FeedForwardNeuralNet, dataSet: SupervisedDataSet): FeedForwardNeuralNet =
+  override def train(net: FeedForwardNet, dataSet: SupervisedDataSet): FeedForwardNet =
   {
     val weights = net.weightsBySource(_.source.nonBias)
 
@@ -47,16 +46,16 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
     net
   }
 
-  def train(activation: NeuralActivation, weights: NeuralNetMap[Double], biases: NeuralNetMap[Double], dataSample: SupervisedDataSample) =
+  def train(activation: Activation, weights: NetMap[Double], biases: NetMap[Double], dataSample: SupervisedDataSample) =
   {
     // Forward-propagate the input
-    val xszs = weights.keys.foldLeft((List(DenseMatrix(dataSample.input: _*)), List.empty[DenseMatrix[Double]]))((xszs, layerIndex) =>
+    val aszs = weights.keys.foldLeft((List(DenseMatrix(dataSample.input: _*)), List.empty[DenseMatrix[Double]]))((aszs, layerIndex) =>
     {
-      val xs = xszs._1
-      val zs = xszs._2
+      val as = aszs._1
+      val zs = aszs._2
 
       // m by 1 vector, where m is the number of inputs to the layer identified by the layerIndex
-      val x = xs.head
+      val a = as.head
 
       // m by n matrix, where m is number of inputs to the layer identified by the layerIndex
       // n is the number inputs to the layer identified by layerIndex + 1
@@ -65,38 +64,38 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
       // n by 1 vector, where m is the number of inputs for to layer identified by the layerIndex + 1
       val b = DenseMatrix(biases(layerIndex + 1).values.toSeq: _*)
 
-      val z = (w.t * x: DenseMatrix[Double]) + b
+      val z = (w.t * a: DenseMatrix[Double]) + b
 
-      val newX = z.map(activation)
+      val newA = z.map(activation)
 
-      (newX :: xs, z :: zs)
+      (newA :: as, z :: zs)
     })
 
     // FIXME: Make explicit the assumption that there are at least 2 layers in the network
 
     // Backward-propagate errors
-    val xs = xszs._1
-    val zs = xszs._2
+    val as = aszs._1
+    val zs = aszs._2
 
     // Activation output
-    val x = xs.head
+    val a = as.head
     // Target output
     val y = DenseMatrix(dataSample.target: _*)
     val z = zs.head
-    val delta = QuadraticObjective.d(z, x, y) :* z.map(activation.d)
+    val delta = QuadraticObjective.d(z, a, y) :* z.map(activation.d)
 
     val nablaB = delta
-    val nablaW: DenseMatrix[Double] = delta * xs.tail.head.t
+    val nablaW: DenseMatrix[Double] = delta * as.tail.head.t
 
-    (xs.tail.tail, zs.tail, 2 until xs.size).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBWs, xzLayerIndexes) =>
+    val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, 2 until as.size).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
     {
-      val nablaBs = nablaBWs._1
-      val nablaWs = nablaBWs._2
-      val delta = nablaBWs._3
+      val nablaBs = nablaBsNablaWsDelta._1
+      val nablaWs = nablaBsNablaWsDelta._2
+      val delta = nablaBsNablaWsDelta._3
 
-      val x = xzLayerIndexes._1
-      val z = xzLayerIndexes._2
-      val layerIndex = xzLayerIndexes._3
+      val a = azLayerIndexes._1
+      val z = azLayerIndexes._2
+      val layerIndex = azLayerIndexes._3
 
       val w = DenseMatrix(weights(layerIndex - 1).values.toSeq: _*)
 
@@ -105,7 +104,7 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
       val newDelta = wd :* z.map(activation.d)
 
       val nablaB = newDelta
-      val dx: DenseMatrix[Double] = newDelta * x.t
+      val dx: DenseMatrix[Double] = newDelta * a.t
       val nablaW = dx
 
       (nablaB :: nablaBs, nablaW :: nablaWs, newDelta)

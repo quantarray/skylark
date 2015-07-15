@@ -20,11 +20,11 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Synapse: a neural connection that passes information from one neuron to another.
+ * Synapse. A neural connection that passes information from one neuron to another.
  *
  * @author Araik Grigoryan
  */
-case class Synapse(source: Neuron, target: Neuron, weight: Double) extends NeuralConnection
+case class Synapse(source: Neuron, target: Neuron, weight: Double) extends Connection
 {
   type S = Neuron
 

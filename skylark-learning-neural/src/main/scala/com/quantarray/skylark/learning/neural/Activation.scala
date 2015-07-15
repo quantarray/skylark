@@ -20,11 +20,11 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neural activation function.
+ * Activation function.
  *
  * @author Araik Grigoryan
  */
-trait NeuralActivation extends (Double => Double)
+trait Activation extends (Double => Double)
 {
   /**
    * Derivative of this function.
@@ -32,7 +32,7 @@ trait NeuralActivation extends (Double => Double)
   def d(x: Double): Double
 }
 
-object IdentityActivation extends NeuralActivation
+object IdentityActivation extends Activation
 {
   override def apply(x: Double): Double = x
 
@@ -44,7 +44,7 @@ object IdentityActivation extends NeuralActivation
   override def toString(): String = "identity"
 }
 
-object SigmoidActivation extends NeuralActivation
+object SigmoidActivation extends Activation
 {
   override def apply(x: Double): Double = 1.0 / (1.0 + math.exp(-x))
 
@@ -56,7 +56,7 @@ object SigmoidActivation extends NeuralActivation
   override def toString(): String = "sigmoid"
 }
 
-case class LogisticActivation(x0: Double, l: Double, k: Double) extends NeuralActivation
+case class LogisticActivation(x0: Double, l: Double, k: Double) extends Activation
 {
   override def apply(x: Double): Double = l / (1.0 + math.exp(-k * (x - x0)))
 
@@ -68,7 +68,7 @@ case class LogisticActivation(x0: Double, l: Double, k: Double) extends NeuralAc
   override def toString(): String = "logistic"
 }
 
-object HyperbolicTangentActivation extends NeuralActivation
+object HyperbolicTangentActivation extends Activation
 {
   override def apply(x: Double): Double = (math.exp(2 * x) - 1) / (math.exp(2 * x) + 1)
 

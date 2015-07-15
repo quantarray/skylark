@@ -20,13 +20,13 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Feed-forward neural net.
+ * Feed-forward net.
  *
  * The head of the layers is considered the input layer.
  *
  * @author Araik Grigoryan
  */
-case class FeedForwardNeuralNet(activation: NeuralActivation, connections: Seq[Synapse]) extends NeuralNet
+case class FeedForwardNet(activation: Activation, connections: Seq[Synapse]) extends Net
 {
   type C = Neuron
 
@@ -41,18 +41,18 @@ case class FeedForwardNeuralNet(activation: NeuralActivation, connections: Seq[S
   /**
    * Creates a map of weights, in order or layer and source neuron index.
    */
-  def weightsBySource(select: Synapse => Boolean): NeuralNetMap[Double] = propsBy(layerSourceGroups, select, _.weight)
+  def weightsBySource(select: Synapse => Boolean): NetMap[Double] = propsBy(layerSourceGroups, select, _.weight)
 
   /**
    * Creates a map of weights, in order of layer and target neuron index.
    */
-  def weightsByTarget(select: Synapse => Boolean): NeuralNetMap[Double] = propsBy(layerTargetGroups, select, _.weight)
+  def weightsByTarget(select: Synapse => Boolean): NetMap[Double] = propsBy(layerTargetGroups, select, _.weight)
 
-  private def propsBy[T](groups: Map[Nucleus, Map[Neuron, Seq[Synapse]]], select: Synapse => Boolean, prop: Synapse => T): NeuralNetMap[T] =
+  private def propsBy[T](groups: Map[Nucleus, Map[Neuron, Seq[Synapse]]], select: Synapse => Boolean, prop: Synapse => T): NetMap[T] =
   {
-    groups.foldLeft(NeuralNetMap.empty[T])((m, x) =>
+    groups.foldLeft(NetMap.empty[T])((m, x) =>
     {
-      val lss = x._2.foldLeft(NeuralLayerMap.empty[T])((n, y) =>
+      val lss = x._2.foldLeft(LayerMap.empty[T])((n, y) =>
       {
         val weights = y._2.filter(select).map(prop)
         if (weights.isEmpty) n else n + (y._1.index -> weights)
@@ -62,7 +62,7 @@ case class FeedForwardNeuralNet(activation: NeuralActivation, connections: Seq[S
   }
 }
 
-object FeedForwardNeuralNet
+object FeedForwardNet
 {
   /**
    * Connects layers in feed-forward fashion.
@@ -70,7 +70,7 @@ object FeedForwardNeuralNet
    * In addition to the requested neurons, a bias cell will be created for each layer. By convention,
    * the zeroth layer will not receive a bias cell because it will directly absorb the inputs.
    */
-  def apply(activation: NeuralActivation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNeuralNet =
+  def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNet =
   {
     val layer0 = Nucleus(0, numberOfNeuronsInLayer0)
 
@@ -108,6 +108,6 @@ object FeedForwardNeuralNet
       }
     })
 
-    FeedForwardNeuralNet(activation, synapses)
+    FeedForwardNet(activation, synapses)
   }
 }

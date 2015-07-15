@@ -20,11 +20,11 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neuron.
+ * Neuron. A specific type of [[Cell]] used in most [[Net]]s.
  *
  * @author Araik Grigoryan
  */
-case class Neuron(index: NeuralCellIndex, layer: Nucleus) extends NeuralCell
+case class Neuron(index: CellIndex, layer: Nucleus) extends Cell
 {
   type Repr = Neuron
 

@@ -10,23 +10,24 @@ import scala.collection.immutable.SortedMap
  */
 package object neural
 {
-  type NeuralCellIndex = Int
+  type CellIndex = Int
 
-  type NeuralLayerIndex = Int
+  type LayerIndex = Int
 
-  // Map of NeuralCell's index to a Seq of properties
-  type NeuralLayerMap[T] = Map[NeuralCellIndex, Seq[T]]
+  // Map of Cell's index to a Seq of properties
+  type LayerMap[T] = Map[CellIndex, Seq[T]]
 
-  object NeuralLayerMap
+  object LayerMap
   {
-    def empty[T] = SortedMap.empty[NeuralCellIndex, Seq[T]]
+    def empty[T] = SortedMap.empty[CellIndex, Seq[T]]
   }
 
-  // Map of NeuralLayer's index to a NeuralLayerMap
-  type NeuralNetMap[T] = Map[NeuralLayerIndex, NeuralLayerMap[T]]
+  // Map of Layer's index to a LayerMap
+  type NetMap[T] = Map[LayerIndex, LayerMap[T]]
 
-  object NeuralNetMap
+  object NetMap
   {
-    def empty[T] = SortedMap.empty[NeuralLayerIndex, NeuralLayerMap[T]]
+    def empty[T] = SortedMap.empty[LayerIndex, LayerMap[T]]
   }
+
 }

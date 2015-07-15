@@ -20,17 +20,15 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Neural net.
+ * Layer.
  *
  * @author Araik Grigoryan
  */
-trait NeuralNet
+trait Layer
 {
-  type C <: NeuralCell
+  type C <: Cell
 
-  type L <: NeuralLayer
+  def index: LayerIndex
 
-  type T <: NeuralConnection
-
-  def connections: Seq[T]
+  def cells: Seq[C]
 }

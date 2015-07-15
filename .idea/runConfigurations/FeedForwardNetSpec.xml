@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="FeedForwardNeuralNetSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" singleton="true">
+  <configuration default="false" name="FeedForwardNetSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" singleton="true">
     <module name="skylark-learning-neural" />
-    <setting name="path" value="com.quantarray.skylark.learning.neural.FeedForwardNeuralNetSpec" />
+    <setting name="path" value="com.quantarray.skylark.learning.neural.FeedForwardNetSpec" />
     <setting name="package" value="" />
     <setting name="vmparams" value="" />
     <setting name="params" value="" />
