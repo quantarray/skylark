@@ -50,9 +50,12 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
   def train(activation: NeuralActivation, weights: NeuralNetMap[Double], biases: NeuralNetMap[Double], dataSample: SupervisedDataSample) =
   {
     // Forward-propagate the input
-    val xs = weights.keys.foldLeft(List(DenseMatrix(dataSample.input: _*)))((xs, layerIndex) =>
+    val xszs = weights.keys.foldLeft((List(DenseMatrix(dataSample.input: _*)), List.empty[DenseMatrix[Double]]))((xszs, layerIndex) =>
     {
-      // m by 1 vector, where m is the number of inputs for to layer identified by the layerIndex
+      val xs = xszs._1
+      val zs = xszs._2
+
+      // m by 1 vector, where m is the number of inputs to the layer identified by the layerIndex
       val x = xs.head
 
       // m by n matrix, where m is number of inputs to the layer identified by the layerIndex
@@ -66,14 +69,48 @@ case class BackPropagationNeuralTrainer(numberOfEpochs: Int, learningRate: Doubl
 
       val newX = z.map(activation)
 
-      newX :: xs
+      (newX :: xs, z :: zs)
     })
 
-    println(xs)
+    // FIXME: Make explicit the assumption that there are at least 2 layers in the network
 
     // Backward-propagate errors
-    val outputX = xs.head
-    //val delta = (outputX - DenseMatrix(dataSample.target: _*)) *
+    val xs = xszs._1
+    val zs = xszs._2
 
+    // Activation output
+    val x = xs.head
+    // Target output
+    val y = DenseMatrix(dataSample.target: _*)
+    val z = zs.head
+    val delta = QuadraticObjective.d(z, x, y) :* z.map(activation.d)
+
+    val nablaB = delta
+    val nablaW: DenseMatrix[Double] = delta * xs.tail.head.t
+
+    (xs.tail.tail, zs.tail, 2 until xs.size).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBWs, xzLayerIndexes) =>
+    {
+      val nablaBs = nablaBWs._1
+      val nablaWs = nablaBWs._2
+      val delta = nablaBWs._3
+
+      val x = xzLayerIndexes._1
+      val z = xzLayerIndexes._2
+      val layerIndex = xzLayerIndexes._3
+
+      val w = DenseMatrix(weights(layerIndex - 1).values.toSeq: _*)
+
+      val wd: DenseMatrix[Double] = w * delta
+
+      val newDelta = wd :* z.map(activation.d)
+
+      val nablaB = newDelta
+      val dx: DenseMatrix[Double] = newDelta * x.t
+      val nablaW = dx
+
+      (nablaB :: nablaBs, nablaW :: nablaWs, newDelta)
+    })
+
+    println()
   }
 }

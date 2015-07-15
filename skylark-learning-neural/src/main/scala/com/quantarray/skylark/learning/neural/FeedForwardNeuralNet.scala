@@ -95,7 +95,7 @@ object FeedForwardNeuralNet
         {
           sourceNeuron <- sourceLayer.cells
           targetNeuron <- targetLayer.cells
-        } yield Synapse(sourceNeuron, targetNeuron, 10 * sourceNeuron.index + targetNeuron.index) // TODO: Assign initial weight randomly using Gaussian(0, 1)
+        } yield Synapse(sourceNeuron, targetNeuron, 0.1 * sourceNeuron.index + targetNeuron.index) // TODO: Assign initial weight randomly using Gaussian(0, 1)
 
         val biasSynapses =
 

@@ -57,7 +57,7 @@ class FeedForwardNeuralNetSpec extends FlatSpec with Matchers
             {
               override def input: Seq[Double] = Seq(1, 1, 0, 0)
 
-              override def target: Seq[Double] = Seq(1, 0, 1)
+              override def target: Seq[Double] = Seq(1, 0)
             }
           )
       }
