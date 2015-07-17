@@ -28,6 +28,8 @@ import breeze.linalg.DenseMatrix
  */
 case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, momentum: Double) extends Trainer[FeedForwardNet]
 {
+  type Matrix = DenseMatrix[Double]
+
   override def train(net: FeedForwardNet, dataSet: SupervisedDataSet): FeedForwardNet =
   {
     val weights = net.weightsBySource(_.source.nonBias)
@@ -46,10 +48,10 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
     net
   }
 
-  def train(activation: Activation, weights: NetMap[Double], biases: NetMap[Double], dataSample: SupervisedDataSample) =
+  def train(activation: Activation, weights: NetMap[Double], biases: NetMap[Double], dataSample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
   {
     // Forward-propagate the input
-    val aszs = weights.keys.foldLeft((List(DenseMatrix(dataSample.input: _*)), List.empty[DenseMatrix[Double]]))((aszs, layerIndex) =>
+    val aszs = weights.keys.foldLeft((List(DenseMatrix(dataSample.input: _*)), List.empty[Matrix]))((aszs, layerIndex) =>
     {
       val as = aszs._1
       val zs = aszs._2
@@ -64,7 +66,7 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
       // n by 1 vector, where m is the number of inputs for to layer identified by the layerIndex + 1
       val b = DenseMatrix(biases(layerIndex + 1).values.toSeq: _*)
 
-      val z = (w.t * a: DenseMatrix[Double]) + b
+      val z = (w.t * a: Matrix) + b
 
       val newA = z.map(activation)
 
@@ -85,7 +87,7 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
     val delta = QuadraticObjective.d(z, a, y) :* z.map(activation.d)
 
     val nablaB = delta
-    val nablaW: DenseMatrix[Double] = delta * as.tail.head.t
+    val nablaW: Matrix = delta * as.tail.head.t
 
     val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, 2 until as.size).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
     {
@@ -99,17 +101,17 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
 
       val w = DenseMatrix(weights(layerIndex - 1).values.toSeq: _*)
 
-      val wd: DenseMatrix[Double] = w * delta
+      val wd: Matrix = w * delta
 
       val newDelta = wd :* z.map(activation.d)
 
       val nablaB = newDelta
-      val dx: DenseMatrix[Double] = newDelta * a.t
+      val dx: Matrix = newDelta * a.t
       val nablaW = dx
 
       (nablaB :: nablaBs, nablaW :: nablaWs, newDelta)
     })
 
-    println()
+    (nablaBs, nablaWs)
   }
 }
