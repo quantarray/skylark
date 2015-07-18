@@ -46,8 +46,8 @@ trait Net
     {
       val lss = x._2.foldLeft(LayerPropMap.empty[P])((n, y) =>
       {
-        val weights = y._2.filter(select).map(prop)
-        if (weights.isEmpty) n else n + (y._1.index -> weights)
+        val props = y._2.filter(select).map(prop)
+        if (props.isEmpty) n else n + (y._1.index -> props)
       })
       if (lss.isEmpty) m else m + (x._1.index -> lss)
     })

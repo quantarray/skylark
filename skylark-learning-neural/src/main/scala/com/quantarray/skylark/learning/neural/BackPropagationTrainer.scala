@@ -26,30 +26,44 @@ import breeze.linalg.DenseMatrix
  *
  * @author Araik Grigoryan
  */
-case class BackPropagationTrainer[C <: Cell, T <: Connection, N <: Net](numberOfEpochs: Int, learningRate: Double, momentum: Double) extends Trainer[C, T, N]
+case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, momentum: Double) extends Trainer
 {
   type Matrix = DenseMatrix[Double]
 
-  override def train(net: N, dataSet: SupervisedDataSet)(implicit cbf: NetCanBuildFrom[N, C, T, N]): N =
+  type Weights = NetPropMap[Double]
+
+  type Biases = NetPropMap[Double]
+
+  override def train[N <: Net](net: N, numberOfEpochs: Int, dataSet: SupervisedDataSet)(implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
   {
     val weights = net.weightsBySource(_.source.nonBias)
 
     val biases = net.weightsByTarget(_.source.isBias)
 
-    train(net.activation, weights, biases, dataSet.samples.head)
-
-    dataSet.samples.map(sample =>
+    val newWeightsBiases = (0 until numberOfEpochs).foldLeft((weights, biases))((wb, epochIndex) =>
     {
-      val activation = sample.input
-
-      sample
+      train(net.activation, wb, dataSet.samples)
     })
 
-    net
+//    dataSet.samples.foldLeft((weights, biases))((wb, sample) =>
+//    {
+//      //train(net.activation, wb, sample)
+//      wb
+//    })
+
+    net // FIXME: Build new net
   }
 
-  def train(activation: Activation, weights: NetPropMap[Double], biases: NetPropMap[Double], dataSample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
+  private def train(activation: Activation, wb: (Weights, Biases), dataSamples: Seq[SupervisedDataSample]): (Weights, Biases) =
   {
+    wb
+  }
+
+  private def train(activation: Activation, wb: (Weights, Biases), dataSample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
+  {
+    val weights = wb._1
+    val biases = wb._2
+
     // Forward-propagate the input
     val aszs = weights.keys.foldLeft((List(DenseMatrix(dataSample.input: _*)), List.empty[Matrix]))((aszs, layerIndex) =>
     {

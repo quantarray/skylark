@@ -62,8 +62,10 @@ class FeedForwardNetSpec extends FlatSpec with Matchers
           )
       }
 
-      val trainer = BackPropagationTrainer[Neuron, Synapse, FeedForwardNet](100, 0.5, 0.5)
+      val trainer = BackPropagationTrainer(100, 0.5, 0.5)
 
-      trainer.train(net, dataSet)
+      val trainedNet = trainer.train(net, 6, dataSet)
+
+      trainedNet.connections.size should equal(net.connections.size)
     }
 }
