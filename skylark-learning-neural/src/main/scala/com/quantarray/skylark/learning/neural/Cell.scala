@@ -35,4 +35,8 @@ trait Cell
   def index: CellIndex
 
   def layer: L
+
+  val isBias: Boolean = index == 0 // FIXME: Better logic for determining bias
+
+  val nonBias: Boolean = !isBias
 }

@@ -41,36 +41,19 @@ case class FeedForwardNet(activation: Activation, connections: Seq[Synapse]) ext
   /**
    * Creates a map of weights, in order or layer and source neuron index.
    */
-  def weightsBySource(select: Synapse => Boolean): NetMap[Double] = propsBy(layerSourceGroups, select, _.weight)
+  def weightsBySource(select: Synapse => Boolean): NetPropMap[Double] = props(layerSourceGroups, select, _.weight)
 
   /**
    * Creates a map of weights, in order of layer and target neuron index.
    */
-  def weightsByTarget(select: Synapse => Boolean): NetMap[Double] = propsBy(layerTargetGroups, select, _.weight)
-
-  private def propsBy[T](groups: Map[Nucleus, Map[Neuron, Seq[Synapse]]], select: Synapse => Boolean, prop: Synapse => T): NetMap[T] =
-  {
-    groups.foldLeft(NetMap.empty[T])((m, x) =>
-    {
-      val lss = x._2.foldLeft(LayerMap.empty[T])((n, y) =>
-      {
-        val weights = y._2.filter(select).map(prop)
-        if (weights.isEmpty) n else n + (y._1.index -> weights)
-      })
-      if (lss.isEmpty) m else m + (x._1.index -> lss)
-    })
-  }
+  def weightsByTarget(select: Synapse => Boolean): NetPropMap[Double] = props(layerTargetGroups, select, _.weight)
 }
 
 object FeedForwardNet
 {
-  /**
-   * Connects layers in feed-forward fashion.
-   *
-   * In addition to the requested neurons, a bias cell will be created for each layer. By convention,
-   * the zeroth layer will not receive a bias cell because it will directly absorb the inputs.
-   */
-  def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNet =
+
+  case class FromScratchBuilder(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*)
+    extends NetBuilder[Neuron, Synapse, FeedForwardNet]
   {
     val layer0 = Nucleus(0, numberOfNeuronsInLayer0)
 
@@ -95,19 +78,46 @@ object FeedForwardNet
         {
           sourceNeuron <- sourceLayer.cells
           targetNeuron <- targetLayer.cells
-        } yield Synapse(sourceNeuron, targetNeuron, 0.1 * sourceNeuron.index + targetNeuron.index) // TODO: Assign initial weight randomly using Gaussian(0, 1)
+        } yield connection(sourceNeuron, targetNeuron, 0.1 * sourceNeuron.index + targetNeuron.index) // TODO: Assign initial weight randomly using Gaussian(0, 1)
 
-        val biasSynapses =
-
-          for
-          {
-            targetNeuron <- targetLayer.cells
-          } yield Synapse(Neuron(0, targetLayer), targetNeuron, 0.1 * targetNeuron.index) // TODO: Assign bias randomly using Gaussian(0, 1)
+        val biasSynapses = for
+        {
+          targetNeuron <- targetLayer.cells
+        } yield connection(Neuron(0, targetLayer), targetNeuron, 0.1 * targetNeuron.index) // TODO: Assign bias randomly using Gaussian(0, 1)
 
         synapsesSoFar ++ neuronSynapses ++ biasSynapses
       }
     })
 
-    FeedForwardNet(activation, synapses)
+    override def connection(source: Neuron, target: Neuron, weight: Double): Synapse = Synapse(source, target, weight)
+
+    override def net: FeedForwardNet = FeedForwardNet(activation, synapses)
+  }
+
+  implicit val canBuildFrom = new NetCanBuildFrom[FeedForwardNet, Neuron, Synapse, FeedForwardNet]
+  {
+    /**
+     * Creates a new builder on request of a net.
+     */
+    override def apply(from: FeedForwardNet) = ???
+
+    /**
+     * Creates a new builder from scratch.
+     */
+    override def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*) =
+    {
+      FromScratchBuilder(activation, numberOfNeuronsInLayer0, numberOfNeuronsInLayer1, numberOfNeuronsInLayer2AndUp: _*)
+    }
+  }
+
+  /**
+   * Connects layers in feed-forward fashion.
+   *
+   * In addition to the requested neurons, a bias cell will be created for each layer. By convention,
+   * the zeroth layer will not receive a bias cell because it will directly absorb the inputs.
+   */
+  def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNet =
+  {
+    canBuildFrom(activation, numberOfNeuronsInLayer0, numberOfNeuronsInLayer1, numberOfNeuronsInLayer2AndUp: _*).net
   }
 }

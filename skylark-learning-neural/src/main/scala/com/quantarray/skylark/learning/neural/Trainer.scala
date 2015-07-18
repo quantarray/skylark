@@ -24,7 +24,7 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-trait Trainer[N <: Net]
+trait Trainer[C <: Cell, T <: Connection, N <: Net]
 {
-  def train(net: N, dataSet: SupervisedDataSet): N
+  def train(net: N, dataSet: SupervisedDataSet)(implicit cbf: NetCanBuildFrom[N, C, T, N]): N
 }

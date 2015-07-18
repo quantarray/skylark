@@ -15,19 +15,19 @@ package object neural
   type LayerIndex = Int
 
   // Map of Cell's index to a Seq of properties
-  type LayerMap[T] = Map[CellIndex, Seq[T]]
+  type LayerPropMap[T] = Map[CellIndex, Seq[T]]
 
-  object LayerMap
+  object LayerPropMap
   {
     def empty[T] = SortedMap.empty[CellIndex, Seq[T]]
   }
 
   // Map of Layer's index to a LayerMap
-  type NetMap[T] = Map[LayerIndex, LayerMap[T]]
+  type NetPropMap[T] = Map[LayerIndex, LayerPropMap[T]]
 
-  object NetMap
+  object NetPropMap
   {
-    def empty[T] = SortedMap.empty[LayerIndex, LayerMap[T]]
+    def empty[T] = SortedMap.empty[LayerIndex, LayerPropMap[T]]
   }
 
 }

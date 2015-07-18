@@ -26,11 +26,11 @@ import breeze.linalg.DenseMatrix
  *
  * @author Araik Grigoryan
  */
-case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, momentum: Double) extends Trainer[FeedForwardNet]
+case class BackPropagationTrainer[C <: Cell, T <: Connection, N <: Net](numberOfEpochs: Int, learningRate: Double, momentum: Double) extends Trainer[C, T, N]
 {
   type Matrix = DenseMatrix[Double]
 
-  override def train(net: FeedForwardNet, dataSet: SupervisedDataSet): FeedForwardNet =
+  override def train(net: N, dataSet: SupervisedDataSet)(implicit cbf: NetCanBuildFrom[N, C, T, N]): N =
   {
     val weights = net.weightsBySource(_.source.nonBias)
 
@@ -48,7 +48,7 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
     net
   }
 
-  def train(activation: Activation, weights: NetMap[Double], biases: NetMap[Double], dataSample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
+  def train(activation: Activation, weights: NetPropMap[Double], biases: NetPropMap[Double], dataSample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
   {
     // Forward-propagate the input
     val aszs = weights.keys.foldLeft((List(DenseMatrix(dataSample.input: _*)), List.empty[Matrix]))((aszs, layerIndex) =>

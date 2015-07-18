@@ -20,36 +20,19 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Net.
+ * Net can build from.
  *
  * @author Araik Grigoryan
  */
-trait Net
+trait NetCanBuildFrom[-From <: Net, C <: Cell, T <: Connection, +To <: Net]
 {
-  type C <: Cell
+  /**
+   * Creates a new builder on request of a net.
+   */
+  def apply(from: From): NetBuilder[C, T, To]
 
-  type L <: Layer
-
-  type T <: Connection
-
-  def activation: Activation
-
-  def connections: Seq[T]
-
-  def weightsBySource(select: T => Boolean): NetPropMap[Double]
-
-  def weightsByTarget(select: Synapse => Boolean): NetPropMap[Double]
-
-  protected def props[P](groups: Map[L, Map[C, Seq[T]]], select: T => Boolean, prop: T => P): NetPropMap[P] =
-  {
-    groups.foldLeft(NetPropMap.empty[P])((m, x) =>
-    {
-      val lss = x._2.foldLeft(LayerPropMap.empty[P])((n, y) =>
-      {
-        val weights = y._2.filter(select).map(prop)
-        if (weights.isEmpty) n else n + (y._1.index -> weights)
-      })
-      if (lss.isEmpty) m else m + (x._1.index -> lss)
-    })
-  }
+  /**
+   * Creates a new builder from scratch.
+   */
+  def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): NetBuilder[C, T, To]
 }
