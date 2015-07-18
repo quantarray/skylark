@@ -54,18 +54,27 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
     net // FIXME: Build new net
   }
 
-  private def train(activation: Activation, wb: (Weights, Biases), dataSamples: Seq[SupervisedDataSample]): (Weights, Biases) =
+  private def train(activation: Activation, wb: (Weights, Biases), samples: Seq[SupervisedDataSample]): (Weights, Biases) =
   {
-    wb
+    val newWB = samples.foldLeft(wb)((wb, sample) =>
+    {
+      val (deltaNablaBs, deltaNablaWs) = train(activation, wb, sample)
+
+
+
+      wb
+    })
+
+    newWB
   }
 
-  private def train(activation: Activation, wb: (Weights, Biases), dataSample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
+  private def train(activation: Activation, wb: (Weights, Biases), sample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
   {
     val weights = wb._1
     val biases = wb._2
 
     // Forward-propagate the input
-    val aszs = weights.keys.foldLeft((List(DenseMatrix(dataSample.input: _*)), List.empty[Matrix]))((aszs, layerIndex) =>
+    val aszs = weights.keys.foldLeft((List(DenseMatrix(sample.input: _*)), List.empty[Matrix]))((aszs, layerIndex) =>
     {
       val as = aszs._1
       val zs = aszs._2
@@ -87,8 +96,6 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
       (newA :: as, z :: zs)
     })
 
-    // FIXME: Make explicit the assumption that there are at least 2 layers in the network
-
     // Backward-propagate errors
     val as = aszs._1
     val zs = aszs._2
@@ -96,7 +103,7 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
     // Activation output
     val a = as.head
     // Target output
-    val y = DenseMatrix(dataSample.target: _*)
+    val y = DenseMatrix(sample.target: _*)
     val z = zs.head
     val delta = QuadraticObjective.d(z, a, y) :* z.map(activation.d)
 
