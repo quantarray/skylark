@@ -36,9 +36,9 @@ trait Net
 
   def connections: Seq[T]
 
-  def weightsBySource(select: T => Boolean): NetPropMap[Double]
+  def weightsBySourceLayer(select: T => Boolean): NetPropMap[Double]
 
-  def weightsByTarget(select: Synapse => Boolean): NetPropMap[Double]
+  def weightsByTargetLayer(select: T => Boolean): NetPropMap[Double]
 
   protected def props[P](groups: Map[L, Map[C, Seq[T]]], select: T => Boolean, prop: T => P): NetPropMap[P] =
   {

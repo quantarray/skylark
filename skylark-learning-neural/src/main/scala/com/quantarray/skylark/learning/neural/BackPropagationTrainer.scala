@@ -36,9 +36,9 @@ case class BackPropagationTrainer(numberOfEpochs: Int, learningRate: Double, mom
 
   override def train[N <: Net](net: N, numberOfEpochs: Int, dataSet: SupervisedDataSet)(implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
   {
-    val weights = net.weightsBySource(_.source.nonBias)
+    val weights = net.weightsBySourceLayer(_.source.nonBias)
 
-    val biases = net.weightsByTarget(_.source.isBias)
+    val biases = net.weightsByTargetLayer(_.source.isBias)
 
     val newWeightsBiases = (0 until numberOfEpochs).foldLeft((weights, biases))((wb, epochIndex) =>
     {

@@ -34,19 +34,19 @@ case class FeedForwardNet(activation: Activation, connections: Seq[Synapse]) ext
 
   type T = Synapse
 
-  lazy val layerSourceGroups = connections.groupBy(_.source.layer).map((ls) => (ls._1, ls._2.groupBy(_.source)))
+  lazy val sourceLayerGroups = connections.groupBy(_.source.layer).map((lc) => (lc._1, lc._2.groupBy(_.source)))
 
-  lazy val layerTargetGroups = connections.groupBy(_.target.layer).map((ls) => (ls._1, ls._2.groupBy(_.target)))
+  lazy val targetLayerGroups = connections.groupBy(_.target.layer).map((lc) => (lc._1, lc._2.groupBy(_.target)))
 
   /**
-   * Creates a map of weights, in order or layer and source neuron index.
+   * Creates a map of weights, in order of layer and source neuron index.
    */
-  def weightsBySource(select: Synapse => Boolean): NetPropMap[Double] = props(layerSourceGroups, select, _.weight)
+  def weightsBySourceLayer(select: Synapse => Boolean): NetPropMap[Double] = props(sourceLayerGroups, select, _.weight)
 
   /**
    * Creates a map of weights, in order of layer and target neuron index.
    */
-  def weightsByTarget(select: Synapse => Boolean): NetPropMap[Double] = props(layerTargetGroups, select, _.weight)
+  def weightsByTargetLayer(select: Synapse => Boolean): NetPropMap[Double] = props(targetLayerGroups, select, _.weight)
 }
 
 object FeedForwardNet
