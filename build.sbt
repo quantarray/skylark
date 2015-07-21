@@ -14,8 +14,10 @@ lazy val `skylark-measure` = project.dependsOn(`skylark-natural-language`)
 
 lazy val `skylark-measure-market` = project.dependsOn(`skylark-time`, `skylark-measure`)
 
-lazy val `skylark-learning-neural` = project
+lazy val `skylark-learning` = project
 
-lazy val skylark = project.in(file(".")).aggregate(`skylark-natural-language`, `skylark-measure`, `skylark-measure-market`, `skylark-learning-neural`)
+lazy val `skylark-learning-neural` = project.dependsOn(`skylark-learning`)
+
+lazy val skylark = project.in(file(".")).aggregate(`skylark-natural-language`, `skylark-measure`, `skylark-measure-market`, `skylark-learning`, `skylark-learning-neural`)
 
 fork in run := true
