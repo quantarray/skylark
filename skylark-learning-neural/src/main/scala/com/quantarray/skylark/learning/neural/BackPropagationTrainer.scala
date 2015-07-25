@@ -30,19 +30,19 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 {
   type Matrix = DenseMatrix[Double]
 
-  type Weights = NetPropMap[Double]
-
   type Biases = NetPropMap[Double]
+
+  type Weights = NetPropMap[Double]
 
   override def train[N <: Net](net: N, numberOfEpochs: Int, dataSet: SupervisedDataSet)(implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
   {
-    val weights = net.weights
-
     val biases = net.biases
 
-    val newWeightsBiases = (0 until numberOfEpochs).foldLeft((weights, biases))((wb, epochIndex) =>
+    val weights = net.weights
+
+    val newBiasesWeights = (0 until numberOfEpochs).foldLeft((biases, weights))((bsws, epochIndex) =>
     {
-      train(net.activation, wb, dataSet.samples)
+      train(net.activation, bsws, dataSet.samples)
     })
 
     //    dataSet.samples.foldLeft((weights, biases))((wsbs, sample) =>
@@ -54,13 +54,21 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     net // FIXME: Build new net
   }
 
+  // TODO: Move matrices and zeros to a NetStructural type?
+
   /**
    * Constructs matrix representation of biases and weights.
    */
-  private def matrices(wsbs: (Weights, Biases)): (Seq[Matrix], Seq[Matrix]) =
+  private def matrices(bsws: (Biases, Weights)): (Seq[Matrix], Seq[Matrix]) =
   {
-    val weights = wsbs._1
-    val biases = wsbs._2
+    val biases = bsws._1
+    val weights = bsws._2
+
+    val bs = weights.keys.map(layerIndex =>
+    {
+      // n by 1 vector, where m is the number of inputs for to layer identified by the layerIndex + 1
+      DenseMatrix(biases(layerIndex + 1).values.toSeq: _*)
+    })
 
     val ws = weights.keys.map(layerIndex =>
     {
@@ -69,13 +77,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
       DenseMatrix(weights(layerIndex).values.toSeq: _*)
     })
 
-    val bs = weights.keys.map(layerIndex =>
-    {
-      // n by 1 vector, where m is the number of inputs for to layer identified by the layerIndex + 1
-      DenseMatrix(biases(layerIndex + 1).values.toSeq: _*)
-    })
-
-    (ws.toSeq, bs.toSeq)
+    (bs.toSeq, ws.toSeq)
   }
 
   private def zeros(wsbs: (Weights, Biases)): (Seq[Matrix], Seq[Matrix]) =
@@ -99,11 +101,11 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     (ws.toSeq, bs.toSeq)
   }
 
-  private def train(activation: Activation, wsbs: (Weights, Biases), samples: Seq[SupervisedDataSample]): (Weights, Biases) =
+  private def train(activation: Activation, bsws: (Weights, Biases), samples: Seq[SupervisedDataSample]): (Weights, Biases) =
   {
     val nablaBsNablaWs = samples.foldLeft[Option[(Seq[Matrix], Seq[Matrix])]](None)((nablaBsNablaWs, sample) =>
     {
-      val (deltaNablaBs, deltaNablaWs) = train(activation, wsbs, sample)
+      val (deltaNablaBs, deltaNablaWs) = train2(activation, matrices(bsws), sample)
       // (3x1, 2x1)
       // (3x4, 2x3)
 
@@ -122,9 +124,71 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
     //nablaBsNablaWs.fold(wsbs)(nBsnWs => (nBsnWs._1.zip()))
 
-    matrices(wsbs)
+    bsws
+  }
 
-    wsbs
+  private def train2(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), sample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
+  {
+    val biases = bsws._1
+    val weights = bsws._2
+
+    // Forward-propagate the input
+    val aszs = biases.zip(weights).foldLeft((List(DenseMatrix(sample.input: _*)), List.empty[Matrix]))((aszs, bw) =>
+    {
+      val as = aszs._1
+      val zs = aszs._2
+
+      val b = bw._1
+      val w = bw._2
+
+      // m by 1 vector, where m is the number of inputs to the layer
+      val a = as.head
+
+      val z = (w.t * a: Matrix) + b
+
+      val newA = z.map(activation)
+
+      (newA :: as, z :: zs)
+    })
+
+    // Backward-propagate errors
+    val as = aszs._1
+    val zs = aszs._2
+
+    // Activation output
+    val a = as.head
+    // Target output
+    val y = DenseMatrix(sample.target: _*)
+    val z = zs.head
+    val delta = QuadraticObjective.d(z, a, y) :* z.map(activation.d)
+
+    val nablaB = delta
+    val nablaW: Matrix = delta * as.tail.head.t
+
+    val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, 2 until as.size).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
+    {
+      val nablaBs = nablaBsNablaWsDelta._1
+      val nablaWs = nablaBsNablaWsDelta._2
+      val delta = nablaBsNablaWsDelta._3
+
+      val a = azLayerIndexes._1
+      val z = azLayerIndexes._2
+      val layerIndex = azLayerIndexes._3
+
+      val w = weights(layerIndex - 1)
+
+      val wd: Matrix = w * delta
+
+      val newDelta = wd :* z.map(activation.d)
+
+      val nablaB = newDelta
+      val dx: Matrix = newDelta * a.t
+      val nablaW = dx
+
+      (nablaB :: nablaBs, nablaW :: nablaWs, newDelta)
+    })
+
+    (nablaBs, nablaWs)
   }
 
   private def train(activation: Activation, wsbs: (Weights, Biases), sample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
