@@ -34,17 +34,12 @@ class FeedForwardNetSpec extends FlatSpec with Matchers
 
       net.connections.size should be((4 + 1) * 3 + (3 + 1) * 2) // +1s are to account for the Biases
 
-      val weightsBySource = net.weightsBySourceLayer(_.source.nonBias)
-      weightsBySource.size should be(2)
-      weightsBySource(0).size should be(4)
-      weightsBySource(1).size should be(3)
+      val weights = net.weights
+      weights.size should be(2)
+      weights(0).size should be(4)
+      weights(1).size should be(3)
 
-      val weightsByTarget = net.weightsByTargetLayer(_.source.nonBias)
-      weightsByTarget.size should be(2)
-      weightsByTarget(1).size should be(3)
-      weightsByTarget(2).size should be(2)
-
-      val biases = net.weightsByTargetLayer(_.source.isBias)
+      val biases = net.biases
       biases.size should be(2)
       biases(1).size should be(3)
       biases(2).size should be(2)
@@ -62,7 +57,7 @@ class FeedForwardNetSpec extends FlatSpec with Matchers
           )
       }
 
-      val trainer = BackPropagationTrainer(100, 0.5, 0.5)
+      val trainer = BackPropagationTrainer(0.5, 0.5)
 
       val trainedNet = trainer.train(net, 6, dataSet)
 

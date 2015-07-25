@@ -41,12 +41,12 @@ case class FeedForwardNet(activation: Activation, connections: Seq[Synapse]) ext
   /**
    * Creates a map of weights, in order of layer and source neuron index.
    */
-  def weightsBySourceLayer(select: Synapse => Boolean): NetPropMap[Double] = props(sourceLayerGroups, select, _.weight)
+  def weights: NetPropMap[Double] = props(sourceLayerGroups, _.source.nonBias, _.weight)
 
   /**
    * Creates a map of weights, in order of layer and target neuron index.
    */
-  def weightsByTargetLayer(select: Synapse => Boolean): NetPropMap[Double] = props(targetLayerGroups, select, _.weight)
+  def biases: NetPropMap[Double] = props(targetLayerGroups, _.source.isBias, _.weight)
 }
 
 object FeedForwardNet
