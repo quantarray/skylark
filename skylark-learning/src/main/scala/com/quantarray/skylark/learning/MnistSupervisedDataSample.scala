@@ -17,16 +17,20 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.learning.neural
+package com.quantarray.skylark.learning
 
 /**
- * Supervised data sample.
+ * MNIST supervised data sample.
  *
  * @author Araik Grigoryan
  */
-trait SupervisedDataSample
+case class MnistSupervisedDataSample(imageLabel: (Array[Array[Int]], Int)) extends SupervisedDataSample
 {
-  def input: Seq[Double]
+  private lazy val zeros = Seq.fill(10)(0.0)
 
-  def target: Seq[Double]
+  lazy val input: Seq[Double] = imageLabel._1.flatten.map(_.toDouble)
+
+  lazy val target: Seq[Double] = zeros.patch(imageLabel._2, Seq(1.0), 1)
+
+  override def toString: String = s"MNIST label ${imageLabel._2}"
 }

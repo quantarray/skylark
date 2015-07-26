@@ -17,17 +17,16 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.learning.neural
-
-import com.quantarray.skylark.learning.SupervisedDataSet
+package com.quantarray.skylark.learning
 
 /**
- * Trainer.
+ * Supervised data sample.
  *
  * @author Araik Grigoryan
  */
-trait Trainer
+trait SupervisedDataSample
 {
-  def train[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: Option[SupervisedDataSet])
-                     (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N
+  def input: Seq[Double]
+
+  def target: Seq[Double]
 }

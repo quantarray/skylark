@@ -17,14 +17,11 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.learning.neural
+package com.quantarray.skylark.learning
 
 /**
- * Supervised data set.
+ * MNIST supervised data set.
  *
  * @author Araik Grigoryan
  */
-trait SupervisedDataSet
-{
-  def samples: Seq[SupervisedDataSample]
-}
+case class MnistSupervisedDataSet(samples: Seq[MnistSupervisedDataSample]) extends SupervisedDataSet

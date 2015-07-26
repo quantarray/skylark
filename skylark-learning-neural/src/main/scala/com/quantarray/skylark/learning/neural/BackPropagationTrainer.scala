@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.learning.neural
 
+import com.quantarray.skylark.learning.{SupervisedDataSet, SupervisedDataSample}
+
 /**
  * Back propagation trainer.
  *
@@ -42,8 +44,12 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
         {
           val output = feedForward(net.activation, bsws, sample.input)
 
+          val guess = output.zipWithIndex.maxBy(_._1)._2
+
+          println(s"Sample: $sample")
           println(s"Target: ${sample.target}")
           println(s"Output: $output")
+          println(s"Guess : $guess")
           println("--------")
         })
 

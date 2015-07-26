@@ -53,6 +53,8 @@ class MnistDataProvider(imagesFile: String, labelsFile: String)
     }
 
     def currentIndex: (Long, Long) = (images.currentIndex, labels.currentIndex)
+
+    def set: MnistSupervisedDataSet = MnistSupervisedDataSet((0 until count).map(imageLabel(_)).map(MnistSupervisedDataSample))
   }
 
   class MnistDataWriter()

@@ -19,6 +19,7 @@
 
 package com.quantarray.skylark.learning.neural
 
+import com.quantarray.skylark.learning.{SupervisedDataSet, SupervisedDataSample}
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
@@ -28,7 +29,7 @@ import org.scalatest.{FlatSpec, Matchers}
  */
 class FeedForwardNetSpec extends FlatSpec with Matchers
 {
-  "FeedForwardNet" should "trainable" in
+  "FeedForwardNet" should "be trainable" in
     {
       val net = FeedForwardNet(SigmoidActivation, 4, 3, 2)
 
