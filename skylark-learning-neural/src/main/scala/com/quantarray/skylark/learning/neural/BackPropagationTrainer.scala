@@ -26,19 +26,31 @@ package com.quantarray.skylark.learning.neural
  */
 case class BackPropagationTrainer(learningRate: Double, momentum: Double) extends Trainer with BreezeMatrixOps
 {
-  override def train[N <: Net](net: N, numberOfEpochs: Int, dataSet: SupervisedDataSet)(implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
+  override def train[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: Option[SupervisedDataSet] = None)
+                              (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
   {
-    val biases = net.biases
-
-    val weights = net.weights
-
-    val newBiasesWeights = (0 until numberOfEpochs).foldLeft((biases, weights))((bsws, epochIndex) =>
+    val bsws = (0 until numberOfEpochs).foldLeft(matrices(net.biases, net.weights))((bsws, epochIndex) =>
     {
-      train(net.activation, matrices(bsws), dataSet.samples)
-      bsws
+      train(net.activation, bsws, trainingSet.samples)
     })
 
-    net // FIXME: Build new net
+    testSet match
+    {
+      case Some(ts) =>
+
+        ts.samples.foreach(sample =>
+        {
+          val output = feedForward(net.activation, bsws, sample.input)
+
+          println(s"Target: ${sample.target}")
+          println(s"Output: $output")
+          println("--------")
+        })
+
+      case _ =>
+    }
+
+    net // FIXME: Build new net from (newBs, newWs)
   }
 
   private def train(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
@@ -123,71 +135,24 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     (nablaBs, nablaWs)
   }
 
-//  private def train(activation: Activation, wsbs: (Weights, Biases), sample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
-//  {
-//    val weights = wsbs._1
-//    val biases = wsbs._2
-//
-//    // Forward-propagate the input
-//    val aszs = weights.keys.foldLeft((List(DenseMatrix(sample.input: _*)), List.empty[Matrix]))((aszs, layerIndex) =>
-//    {
-//      val as = aszs._1
-//      val zs = aszs._2
-//
-//      // m by 1 vector, where m is the number of inputs to the layer identified by the layerIndex
-//      val a = as.head
-//
-//      // m by n matrix, where m is number of inputs to the layer identified by the layerIndex
-//      // n is the number inputs to the layer identified by layerIndex + 1
-//      val w = DenseMatrix(weights(layerIndex).values.toSeq: _*)
-//
-//      // n by 1 vector, where m is the number of inputs for to layer identified by the layerIndex + 1
-//      val b = DenseMatrix(biases(layerIndex + 1).values.toSeq: _*)
-//
-//      val z = (w.t * a: Matrix) + b
-//
-//      val newA = z.map(activation)
-//
-//      (newA :: as, z :: zs)
-//    })
-//
-//    // Backward-propagate errors
-//    val as = aszs._1
-//    val zs = aszs._2
-//
-//    // Activation output
-//    val a = as.head
-//    // Target output
-//    val y = DenseMatrix(sample.target: _*)
-//    val z = zs.head
-//    val delta = QuadraticObjective.d(z, a, y) :* z.map(activation.d)
-//
-//    val nablaB = delta
-//    val nablaW: Matrix = delta * as.tail.head.t
-//
-//    val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, 2 until as.size).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
-//    {
-//      val nablaBs = nablaBsNablaWsDelta._1
-//      val nablaWs = nablaBsNablaWsDelta._2
-//      val delta = nablaBsNablaWsDelta._3
-//
-//      val a = azLayerIndexes._1
-//      val z = azLayerIndexes._2
-//      val layerIndex = azLayerIndexes._3
-//
-//      val w = DenseMatrix(weights(layerIndex - 1).values.toSeq: _*)
-//
-//      val wd: Matrix = w * delta
-//
-//      val newDelta = wd :* z.map(activation.d)
-//
-//      val nablaB = newDelta
-//      val dx: Matrix = newDelta * a.t
-//      val nablaW = dx
-//
-//      (nablaB :: nablaBs, nablaW :: nablaWs, newDelta)
-//    })
-//
-//    (nablaBs, nablaWs)
-//  }
+  def feedForward(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), input: Seq[Double]): Seq[Double] =
+  {
+    val biases = bsws._1
+    val weights = bsws._2
+
+    // Forward-propagate the input
+    val a = biases.zip(weights).foldLeft(Matrix(input))((a, bw) =>
+    {
+      val b = bw._1
+      val w = bw._2
+
+      val z = (w.t * a: Matrix) + b
+
+      val newA = z.map(activation)
+
+      newA
+    })
+
+    a.toArray
+  }
 }
