@@ -30,4 +30,8 @@ package object neural
     def empty[T] = SortedMap.empty[LayerIndex, LayerPropMap[T]]
   }
 
+  type Biases = NetPropMap[Double]
+
+  type Weights = NetPropMap[Double]
+
 }

@@ -36,9 +36,9 @@ trait Net
 
   def connections: Seq[T]
 
-  def weights: NetPropMap[Double]
+  def biases: Biases
 
-  def biases: NetPropMap[Double]
+  def weights: Weights
 
   protected def props[P](groups: Map[L, Map[C, Seq[T]]], select: T => Boolean, prop: T => P): NetPropMap[P] =
   {

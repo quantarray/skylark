@@ -39,14 +39,14 @@ case class FeedForwardNet(activation: Activation, connections: Seq[Synapse]) ext
   lazy val targetLayerGroups = connections.groupBy(_.target.layer).map((lc) => (lc._1, lc._2.groupBy(_.target)))
 
   /**
-   * Creates a map of weights, in order of layer and source neuron index.
-   */
-  def weights: NetPropMap[Double] = props(sourceLayerGroups, _.source.nonBias, _.weight)
-
-  /**
    * Creates a map of weights, in order of layer and target neuron index.
    */
-  def biases: NetPropMap[Double] = props(targetLayerGroups, _.source.isBias, _.weight)
+  def biases: Biases = props(targetLayerGroups, _.source.isBias, _.weight)
+
+  /**
+   * Creates a map of weights, in order of layer and source neuron index.
+   */
+  def weights: Weights = props(sourceLayerGroups, _.source.nonBias, _.weight)
 }
 
 object FeedForwardNet
