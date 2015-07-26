@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.learning.neural
 
+import scala.util.Random
+
 /**
  * Feed-forward net.
  *
@@ -55,6 +57,8 @@ object FeedForwardNet
   case class FromScratchBuilder(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*)
     extends NetBuilder[Neuron, Synapse, FeedForwardNet]
   {
+    val random = new Random()
+
     val layer0 = Nucleus(0, numberOfNeuronsInLayer0)
 
     val layer1 = Nucleus(1, numberOfNeuronsInLayer1)
@@ -78,12 +82,12 @@ object FeedForwardNet
         {
           sourceNeuron <- sourceLayer.cells
           targetNeuron <- targetLayer.cells
-        } yield connection(sourceNeuron, targetNeuron, 0.1 * sourceNeuron.index + targetNeuron.index) // TODO: Assign initial weight randomly using Gaussian(0, 1)
+        } yield connection(sourceNeuron, targetNeuron, random.nextGaussian())
 
         val biasSynapses = for
         {
           targetNeuron <- targetLayer.cells
-        } yield connection(Neuron(0, targetLayer), targetNeuron, 0.1 * targetNeuron.index) // TODO: Assign bias randomly using Gaussian(0, 1)
+        } yield connection(Neuron(0, targetLayer), targetNeuron, random.nextGaussian())
 
         synapsesSoFar ++ neuronSynapses ++ biasSynapses
       }
