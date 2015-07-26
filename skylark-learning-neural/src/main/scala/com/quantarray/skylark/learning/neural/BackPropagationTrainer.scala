@@ -34,42 +34,29 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
     val newBiasesWeights = (0 until numberOfEpochs).foldLeft((biases, weights))((bsws, epochIndex) =>
     {
-      train(net.activation, bsws, dataSet.samples)
+      train(net.activation, matrices(bsws), dataSet.samples)
+      bsws
     })
-
-    //    dataSet.samples.foldLeft((weights, biases))((wsbs, sample) =>
-    //    {
-    //      //train(net.activation, wsbs, sample)
-    //      wsbs
-    //    })
 
     net // FIXME: Build new net
   }
 
-  private def train(activation: Activation, bsws: (Weights, Biases), samples: Seq[SupervisedDataSample]): (Weights, Biases) =
+  private def train(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
   {
-    val nablaBsNablaWs = samples.foldLeft(zeros(bsws))((nablaBsNablaWs, sample) =>
+    val (nablaBs, nablaWs) = samples.foldLeft(zeros(bsws))((nablaBsNablaWs, sample) =>
     {
-      val (deltaNablaBs, deltaNablaWs) = train(activation, matrices(bsws), sample)
-      // (3x1, 2x1)
-      // (3x4, 2x3)
-
+      val (deltaNablaBs, deltaNablaWs) = train(activation, bsws, sample)
       (nablaBsNablaWs._1.zip(deltaNablaBs).map(m => m._1 + m._2), nablaBsNablaWs._2.zip(deltaNablaWs).map(m => m._1 + m._2))
     })
 
-    //    val newWB = samples.foldLeft(wsbs)((wb, sample) =>
-    //    {
-    //      val (deltaNablaBs, deltaNablaWs) = train(activation, wb, sample)
-    //      // (3x1, 2x1)
-    //      // (3x4, 2x3)
-    //
-    //
-    //      wb
-    //    })
+    val biases = bsws._1
+    val weights = bsws._2
+    val lr = learningRate / samples.length
 
-    //nablaBsNablaWs.fold(wsbs)(nBsnWs => (nBsnWs._1.zip()))
+    val newBs = biases.zip(nablaBs).map(bnb => bnb._1 - bnb._2 * lr)
+    val newWs = weights.zip(nablaWs).map(wnw => wnw._1 - wnw._2 * lr)
 
-    bsws
+    (newBs, newWs)
   }
 
   private def train(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), sample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =

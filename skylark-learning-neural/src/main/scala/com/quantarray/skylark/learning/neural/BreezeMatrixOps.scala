@@ -40,6 +40,8 @@ trait BreezeMatrixOps
     {
       DenseMatrix[R, V](rows: _*)
     }
+
+    def zeros(rows: Int, cols: Int) = DenseMatrix.zeros[Double](rows, cols)
   }
 
   /**
@@ -66,25 +68,11 @@ trait BreezeMatrixOps
     (bs.toSeq, ws.toSeq)
   }
 
-  // TODO: Refactor to use DenseMatrix.zeros
-  def zeros(bsws: (Biases, Weights)): (Seq[Matrix], Seq[Matrix]) =
+  /**
+   * Constructs matrices of suppled shape, containing zeros.
+   */
+  def zeros(bsws: (Seq[Matrix], Seq[Matrix])): (Seq[Matrix], Seq[Matrix]) =
   {
-    val biases = bsws._1
-    val weights = bsws._2
-
-    val bs = weights.keys.map(layerIndex =>
-    {
-      // n by 1 vector, where m is the number of inputs for to layer identified by the layerIndex + 1
-      Matrix(biases(layerIndex + 1).values.map(_.map(_ => 0.0)).toSeq)
-    })
-
-    val ws = weights.keys.map(layerIndex =>
-    {
-      // m by n matrix, where m is number of inputs to the layer identified by the layerIndex
-      // n is the number inputs to the layer identified by layerIndex + 1
-      Matrix(weights(layerIndex).values.map(_.map(_ => 0.0)).toSeq)
-    })
-
-    (bs.toSeq, ws.toSeq)
+    (bsws._1.map(m => Matrix.zeros(m.rows, m.cols)), bsws._2.map(m => Matrix.zeros(m.rows, m.cols)))
   }
 }
