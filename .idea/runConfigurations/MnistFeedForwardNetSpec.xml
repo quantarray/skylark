@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MnistFeedForwardNetSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" singleton="true">
+    <module name="skylark-learning-neural" />
+    <setting name="path" value="com.quantarray.skylark.learning.neural.MnistFeedForwardNetSpec" />
+    <setting name="package" value="" />
+    <setting name="vmparams" value="" />
+    <setting name="params" value="" />
+    <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+    <setting name="searchForTest" value="Across module dependencies" />
+    <setting name="testName" value="" />
+    <setting name="testKind" value="Class" />
+    <setting name="showProgressMessages" value="true" />
+    <envs />
+    <method />
+  </configuration>
+</component>

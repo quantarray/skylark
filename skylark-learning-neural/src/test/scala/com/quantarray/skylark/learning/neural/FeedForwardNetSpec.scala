@@ -48,12 +48,12 @@ class FeedForwardNetSpec extends FlatSpec with Matchers
       val trainingSet = new SupervisedDataSet
       {
         override def samples: Seq[SupervisedDataSample] =
-          Seq.fill(10000)(
+          Seq( //.fill(10000)(
             new SupervisedDataSample
             {
-              override def input: Seq[Double] = Seq(1, 1, 0, 0)
+              override def input: Seq[Double] = Seq(1, 2, 3, 4)
 
-              override def target: Seq[Double] = Seq(1, 0)
+              override def target: Seq[Double] = Seq(4, 2.5)
             }
           )
       }
@@ -71,9 +71,9 @@ class FeedForwardNetSpec extends FlatSpec with Matchers
           )
       }
 
-      val trainer = BackPropagationTrainer(0.5, 0.5)
+      val trainer = BackPropagationTrainer(0.3, 0.5)
 
-      val trainedNet = trainer.train(net, 1000, trainingSet, Some(testSet))
+      val trainedNet = trainer.train(net, 1, trainingSet, Some(testSet))
 
       trainedNet.connections.size should equal(net.connections.size)
     }

@@ -29,21 +29,21 @@ import breeze.linalg.DenseMatrix
 trait Objective extends ((DenseMatrix[Double], DenseMatrix[Double]) => Double)
 {
   /**
-   * Partial derivative of the objective function with respect to output activation x.
+   * Partial derivative of the objective function with respect to output activation a.
    */
-  def d(z: DenseMatrix[Double], x: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double]
+  def d(z: DenseMatrix[Double], a: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double]
 }
 
 case object QuadraticObjective extends Objective
 {
-  override def apply(x: DenseMatrix[Double], y: DenseMatrix[Double]): Double =
+  override def apply(a: DenseMatrix[Double], y: DenseMatrix[Double]): Double =
   {
-    //    val n = norm(x - y) // FIXME: How to compute norm of a DenseMatrix?
+    //    val n = norm(a - y) // FIXME: How to compute norm of a DenseMatrix?
     //    0.5 * n * n
     ???
   }
 
-  override def d(z: DenseMatrix[Double], x: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double] = x - y
+  override def d(z: DenseMatrix[Double], a: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double] = a - y
 }
 
 

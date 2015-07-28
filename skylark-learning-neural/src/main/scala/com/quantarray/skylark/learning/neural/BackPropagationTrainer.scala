@@ -31,10 +31,15 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
   override def train[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: Option[SupervisedDataSet] = None)
                               (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
   {
-    val bsws = (0 until numberOfEpochs).foldLeft(matrices(net.biases, net.weights))((bsws, epochIndex) =>
+    val initialBsWs = matrices(net.biases, net.weights)
+
+    val bsws = (0 until numberOfEpochs).foldLeft(initialBsWs)((bsws, epochIndex) =>
     {
       train(net.activation, bsws, trainingSet.samples)
     })
+
+    println(s"Initial weights: ${initialBsWs._2}")
+    println(s"Final   weights: ${bsws._2}")
 
     testSet match
     {
@@ -69,7 +74,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
     val biases = bsws._1
     val weights = bsws._2
-    val lr = learningRate / samples.length
+    val lr = learningRate // FIXME: Adjust for batch size
 
     val newBs = biases.zip(nablaBs).map(bnb => bnb._1 - bnb._2 * lr)
     val newWs = weights.zip(nablaWs).map(wnw => wnw._1 - wnw._2 * lr)
@@ -141,7 +146,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     (nablaBs, nablaWs)
   }
 
-  def feedForward(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), input: Seq[Double]): Seq[Double] =
+  private def feedForward(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), input: Seq[Double]): Seq[Double] =
   {
     val biases = bsws._1
     val weights = bsws._2
@@ -154,9 +159,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
       val z = (w.t * a: Matrix) + b
 
-      val newA = z.map(activation)
-
-      newA
+      z.map(activation)
     })
 
     a.toArray
