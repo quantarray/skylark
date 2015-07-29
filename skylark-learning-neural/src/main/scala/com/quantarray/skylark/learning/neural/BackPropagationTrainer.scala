@@ -35,33 +35,47 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
     val bsws = (0 until numberOfEpochs).foldLeft(initialBsWs)((bsws, epochIndex) =>
     {
-      train(net.activation, bsws, trainingSet.samples)
+      val newBsWs = trainingSet.samples.foldLeft(bsws)((bsws, sample) => {
+        train(net.activation, bsws, Seq(sample))
+      })
+
+      testSet match
+      {
+        case Some(ts) => evaluate(net.activation, newBsWs, ts)
+        case _ =>
+      }
+
+      newBsWs
     })
 
-    println(s"Initial weights: ${initialBsWs._2}")
-    println(s"Final   weights: ${bsws._2}")
-
-    testSet match
-    {
-      case Some(ts) =>
-
-        ts.samples.foreach(sample =>
-        {
-          val output = feedForward(net.activation, bsws, sample.input)
-
-          val guess = output.zipWithIndex.maxBy(_._1)._2
-
-          println(s"Sample: $sample")
-          println(s"Target: ${sample.target}")
-          println(s"Output: $output")
-          println(s"Guess : $guess")
-          println("--------")
-        })
-
-      case _ =>
-    }
+//    println(s"Initial biases: ${initialBsWs._1}")
+//    println(s"Final   biases: ${bsws._1}")
+//
+//    println(s"Initial weights: ${initialBsWs._2.map(_.t)}")
+//    println(s"Final   weights: ${bsws._2.map(_.t)}")
 
     net // FIXME: Build new net from (newBs, newWs)
+  }
+
+  private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSet: SupervisedDataSet): Unit =
+  {
+    val numberOfCorrectGuesses = testSet.samples.map(sample =>
+    {
+      val output = feedForward(activation, bsws, sample.input)
+
+      val guess = output.zipWithIndex.maxBy(_._1)._2
+      val target = sample.target.zipWithIndex.maxBy(_._1)._2
+
+      //          println(s"Sample: $sample")
+      //          println(s"Target: $target")
+      //          println(s"Output: $output")
+      //          println(s"Guess : $guess")
+      //          println("--------")
+
+      if (guess == target) 1.0 else 0.0
+    }).sum
+
+    println(s"Percent correct: $numberOfCorrectGuesses / ${testSet.samples.size}")
   }
 
   private def train(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
@@ -69,7 +83,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     val (nablaBs, nablaWs) = samples.foldLeft(zeros(bsws))((nablaBsNablaWs, sample) =>
     {
       val (deltaNablaBs, deltaNablaWs) = train(activation, bsws, sample)
-      (nablaBsNablaWs._1.zip(deltaNablaBs).map(m => m._1 + m._2), nablaBsNablaWs._2.zip(deltaNablaWs).map(m => m._1 + m._2))
+      (nablaBsNablaWs._1.zip(deltaNablaBs).map(m => m._1 + m._2), nablaBsNablaWs._2.zip(deltaNablaWs).map(m => m._1 + m._2.t))
     })
 
     val biases = bsws._1
@@ -120,6 +134,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     val nablaB = delta
     val nablaW: Matrix = delta * as.tail.head.t
 
+    // FIXME: Is (2 until as.size) correct range? Should it be backwards?
     val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, 2 until as.size).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
     {
       val nablaBs = nablaBsNablaWsDelta._1
