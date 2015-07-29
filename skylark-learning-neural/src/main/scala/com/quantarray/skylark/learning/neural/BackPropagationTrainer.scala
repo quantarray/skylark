@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.learning.neural
 
-import com.quantarray.skylark.learning.{SupervisedDataSet, SupervisedDataSample}
+import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
 
 /**
  * Back propagation trainer.
@@ -28,7 +28,7 @@ import com.quantarray.skylark.learning.{SupervisedDataSet, SupervisedDataSample}
  */
 case class BackPropagationTrainer(learningRate: Double, momentum: Double) extends Trainer with BreezeMatrixOps
 {
-  override def train[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: Option[SupervisedDataSet] = None)
+  override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: Option[SupervisedDataSet] = None)
                               (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
   {
     val initialBsWs = matrices(net.biases, net.weights)

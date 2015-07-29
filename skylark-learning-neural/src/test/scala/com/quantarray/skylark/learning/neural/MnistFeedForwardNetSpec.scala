@@ -33,13 +33,13 @@ class MnistFeedForwardNetSpec extends FlatSpec with Matchers
     {
       val net = FeedForwardNet(SigmoidActivation, 784, 30, 10)
 
-      val trainer = BackPropagationTrainer(0.3, 0.5)
+      val trainer = BackPropagationTrainer(0.005, 0.5)
 
       val trainingDataProvider = new MnistDataProvider("data/mnist/train-images-idx3-ubyte", "data/mnist/train-labels-idx1-ubyte")
 
       val testDataProvider = new MnistDataProvider("data/mnist/t10k-images-idx3-ubyte", "data/mnist/t10k-labels-idx1-ubyte")
 
-      trainer.train(net, 5, trainingDataProvider.read.set(2000), Some(testDataProvider.read.set))
+      trainer.trainAndTest(net, 10, trainingDataProvider.read.set, testDataProvider.read.set)
 
       trainingDataProvider.close()
       testDataProvider.close()

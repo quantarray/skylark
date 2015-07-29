@@ -28,6 +28,9 @@ import com.quantarray.skylark.learning.SupervisedDataSet
  */
 trait Trainer
 {
-  def train[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: Option[SupervisedDataSet])
-                     (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N
+  def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: Option[SupervisedDataSet])
+                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N
+
+  def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: SupervisedDataSet)
+                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N = trainAndTest(net, numberOfEpochs, trainingSet, Some(testSet))
 }
