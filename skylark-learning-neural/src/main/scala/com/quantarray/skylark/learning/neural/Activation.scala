@@ -75,7 +75,7 @@ object HyperbolicTangentActivation extends Activation
   /**
    * Derivative of this function.
    */
-  override def d(x: Double): Double = ??? // FIXME: Implement derivative of tanh activation function
+  override def d(x: Double): Double = 1.0 - HyperbolicTangentActivation(x) * HyperbolicTangentActivation(x)
 
   override def toString(): String = s"tanh"
 }
