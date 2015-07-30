@@ -28,53 +28,36 @@ import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
  */
 case class BackPropagationTrainer(learningRate: Double, momentum: Double) extends Trainer with BreezeMatrixOps
 {
-  override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSet: Option[SupervisedDataSet] = None)
-                              (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
+  override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)] = None)
+                                     (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
   {
     val initialBsWs = matrices(net.biases, net.weights)
 
     val bsws = (0 until numberOfEpochs).foldLeft(initialBsWs)((bsws, epochIndex) =>
     {
-      val newBsWs = trainingSet.samples.foldLeft(bsws)((bsws, sample) => {
+      val newBsWs = trainingSet.samples.foldLeft(bsws)((bsws, sample) =>
+      {
         train(net.activation, bsws, Seq(sample))
       })
 
-      testSet match
+      testSetFit match
       {
-        case Some(ts) => evaluate(net.activation, newBsWs, ts)
+        case Some(tsf) => evaluate(net.activation, newBsWs, tsf)
         case _ =>
       }
 
       newBsWs
     })
 
-//    println(s"Initial biases: ${initialBsWs._1}")
-//    println(s"Final   biases: ${bsws._1}")
-//
-//    println(s"Initial weights: ${initialBsWs._2.map(_.t)}")
-//    println(s"Final   weights: ${bsws._2.map(_.t)}")
-
     net // FIXME: Build new net from (newBs, newWs)
   }
 
-  private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSet: SupervisedDataSet): Unit =
+  private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSetFit: (SupervisedDataSet, (Seq[Double], SupervisedDataSample) => Boolean)): Unit =
   {
-    val numberOfCorrectGuesses = testSet.samples.map(sample =>
-    {
-      val output = feedForward(activation, bsws, sample.input)
+    val testSet = testSetFit._1
+    val fit = testSetFit._2
 
-      val guess = output.zipWithIndex.maxBy(_._1)._2
-      val target = sample.target.zipWithIndex.maxBy(_._1)._2
-
-      //          println(s"Sample: $sample")
-      //          println(s"Target: $target")
-      //          println(s"Output: $output")
-      //          println(s"Guess : $guess")
-      //          println("--------")
-
-      if (guess == target) 1.0 else 0.0
-    }).sum
-
+    val numberOfCorrectGuesses = testSet.samples.map(sample =>  if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum
     println(s"Percent correct: $numberOfCorrectGuesses / ${testSet.samples.size}")
   }
 

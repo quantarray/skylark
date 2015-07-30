@@ -58,7 +58,7 @@ class MnistDataProvider(imagesFile: String, labelsFile: String)
 
     def set(count: Int): MnistSupervisedDataSet = set(0, count)
 
-    def set(start: Int, count: Int): MnistSupervisedDataSet = MnistSupervisedDataSet((start until math.min(start + count, this.count)).map(imageLabel(_)).map(MnistSupervisedDataSample))
+    def set(start: Int, count: Int): MnistSupervisedDataSet = MnistSupervisedDataSet((start until math.min(start + count, this.count)).map(imageLabel(_)).map(new MnistSupervisedDataSample(_)))
   }
 
   class MnistDataWriter()

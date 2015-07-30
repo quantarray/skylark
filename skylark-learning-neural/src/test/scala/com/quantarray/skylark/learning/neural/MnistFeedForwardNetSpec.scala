@@ -19,8 +19,8 @@
 
 package com.quantarray.skylark.learning.neural
 
-import com.quantarray.skylark.learning.MnistDataProvider
-import org.scalatest.{Matchers, FlatSpec}
+import com.quantarray.skylark.learning.{MnistDataProvider, MnistSupervisedDataSample}
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
  * MNIST feed-forward net spec.
@@ -33,13 +33,13 @@ class MnistFeedForwardNetSpec extends FlatSpec with Matchers
     {
       val net = FeedForwardNet(SigmoidActivation, 784, 30, 10)
 
-      val trainer = BackPropagationTrainer(0.005, 0.5)
+      val trainer = BackPropagationTrainer(0.015, 0.5)
 
       val trainingDataProvider = new MnistDataProvider("data/mnist/train-images-idx3-ubyte", "data/mnist/train-labels-idx1-ubyte")
 
       val testDataProvider = new MnistDataProvider("data/mnist/t10k-images-idx3-ubyte", "data/mnist/t10k-labels-idx1-ubyte")
 
-      trainer.trainAndTest(net, 10, trainingDataProvider.read.set, testDataProvider.read.set)
+      trainer.trainAndTest(net, 30, trainingDataProvider.read.set, (testDataProvider.read.set, MnistSupervisedDataSample.fit _))
 
       trainingDataProvider.close()
       testDataProvider.close()

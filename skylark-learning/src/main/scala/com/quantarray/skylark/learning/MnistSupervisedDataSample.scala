@@ -34,3 +34,13 @@ case class MnistSupervisedDataSample(imageLabel: (Array[Array[Int]], Int)) exten
 
   override def toString: String = s"MNIST label ${imageLabel._2}"
 }
+
+object MnistSupervisedDataSample
+{
+  def fit(output: Seq[Double], sample: SupervisedDataSample): Boolean =
+  {
+    val guess = output.zipWithIndex.maxBy(_._1)._2
+    val target = sample.target.zipWithIndex.maxBy(_._1)._2
+    guess == target
+  }
+}

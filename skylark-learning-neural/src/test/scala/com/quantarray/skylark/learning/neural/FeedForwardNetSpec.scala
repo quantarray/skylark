@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.learning.neural
 
-import com.quantarray.skylark.learning.{SupervisedDataSet, SupervisedDataSample}
+import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
@@ -73,7 +73,7 @@ class FeedForwardNetSpec extends FlatSpec with Matchers
 
       val trainer = BackPropagationTrainer(0.3, 0.5)
 
-      val trainedNet = trainer.trainAndTest(net, 5, trainingSet, testSet)
+      val trainedNet = trainer.trainAndTest(net, 5, trainingSet)
 
       trainedNet.connections.size should equal(net.connections.size)
     }

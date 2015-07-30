@@ -34,4 +34,7 @@ package object neural
 
   type Weights = NetPropMap[Double]
 
+  // Fitness function: determines if output Seq[Double] is fit with respect to expected sample
+  type Fitness = (Seq[Double], SupervisedDataSample) => Boolean
+
 }
