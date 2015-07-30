@@ -42,7 +42,7 @@ class MnistDataProviderSpec extends FlatSpec with Matchers
 
         val isDeleted = new File(ppmFileName).delete()
 
-        isDeleted should be(true)
+        isDeleted shouldBe true
       })
 
       dataProvider.close()

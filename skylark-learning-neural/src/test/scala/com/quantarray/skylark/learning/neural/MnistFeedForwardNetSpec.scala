@@ -29,7 +29,7 @@ import org.scalatest.{FlatSpec, Matchers}
  */
 class MnistFeedForwardNetSpec extends FlatSpec with Matchers
 {
-  "FeedForwardNet" should "train and evaluate MNIST data" in
+  "BackPropagationTrainer" should "train and test feed-forward net on MNIST data" in
     {
       val net = FeedForwardNet(SigmoidActivation, 784, 30, 10)
 

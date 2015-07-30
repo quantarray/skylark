@@ -33,7 +33,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
   {
     val initialBsWs = matrices(net.biases, net.weights)
 
-    val bsws = (0 until numberOfEpochs).foldLeft(initialBsWs)((bsws, epochIndex) =>
+    val finalBsWs = (0 until numberOfEpochs).foldLeft(initialBsWs)((bsws, epochIndex) =>
     {
       val newBsWs = trainingSet.samples.foldLeft(bsws)((bsws, sample) =>
       {
@@ -49,7 +49,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
       newBsWs
     })
 
-    net // FIXME: Build new net from (newBs, newWs)
+    net // FIXME: Build new net from finalBsWs
   }
 
   private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSetFit: (SupervisedDataSet, (Seq[Double], SupervisedDataSample) => Boolean)): Unit =

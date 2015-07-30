@@ -78,18 +78,18 @@ object FeedForwardNet
         val sourceLayer = layerIndex._1
         val targetLayer = layers(layerIndex._2 + 1)
 
-        val neuronSynapses = for
-        {
-          sourceNeuron <- sourceLayer.cells
-          targetNeuron <- targetLayer.cells
-        } yield connection(sourceNeuron, targetNeuron, random.nextGaussian())
-
         val biasSynapses = for
         {
           targetNeuron <- targetLayer.cells
         } yield connection(Neuron(0, targetLayer), targetNeuron, random.nextGaussian())
 
-        synapsesSoFar ++ neuronSynapses ++ biasSynapses
+        val weightSynapses = for
+        {
+          sourceNeuron <- sourceLayer.cells
+          targetNeuron <- targetLayer.cells
+        } yield connection(sourceNeuron, targetNeuron, random.nextGaussian() / math.sqrt(sourceLayer.numberOfNeurons))
+
+        synapsesSoFar ++ biasSynapses ++ weightSynapses
       }
     })
 
