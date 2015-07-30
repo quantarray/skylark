@@ -82,12 +82,12 @@ object FeedForwardNet
         {
           sourceNeuron <- sourceLayer.cells
           targetNeuron <- targetLayer.cells
-        } yield connection(sourceNeuron, targetNeuron, random.nextGaussian()) //0.1 * sourceNeuron.index + targetNeuron.index) //random.nextGaussian())
+        } yield connection(sourceNeuron, targetNeuron, random.nextGaussian())
 
         val biasSynapses = for
         {
           targetNeuron <- targetLayer.cells
-        } yield connection(Neuron(0, targetLayer), targetNeuron, random.nextGaussian()) //0.1 * targetNeuron.index) //random.nextGaussian())
+        } yield connection(Neuron(0, targetLayer), targetNeuron, random.nextGaussian())
 
         synapsesSoFar ++ neuronSynapses ++ biasSynapses
       }
