@@ -39,7 +39,7 @@ class MnistFeedForwardNetSpec extends FlatSpec with Matchers
 
       val testDataProvider = new MnistDataProvider("data/mnist/t10k-images-idx3-ubyte", "data/mnist/t10k-labels-idx1-ubyte")
 
-      trainer.trainAndTest(net, 30, trainingDataProvider.read.set, (testDataProvider.read.set, MnistSupervisedDataSample.fit _))
+      trainer.trainAndTest(net, 30, 20, trainingDataProvider.read.set, (testDataProvider.read.set, MnistSupervisedDataSample.fit _))
 
       trainingDataProvider.close()
       testDataProvider.close()

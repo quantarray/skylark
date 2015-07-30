@@ -24,20 +24,25 @@ import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
 /**
  * Back propagation trainer.
  *
+ * Ideas for the trainer were borrowed from Michel Nielsen's Neural Networks and Deep Learning.
+ * http://neuralnetworksanddeeplearning.com/
+ *
  * @author Araik Grigoryan
  */
 case class BackPropagationTrainer(learningRate: Double, momentum: Double) extends Trainer with BreezeMatrixOps
 {
-  override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)] = None)
+  override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)] = None)
                                      (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
   {
     val initialBsWs = matrices(net.biases, net.weights)
 
     val finalBsWs = (0 until numberOfEpochs).foldLeft(initialBsWs)((bsws, epochIndex) =>
     {
-      val newBsWs = trainingSet.samples.foldLeft(bsws)((bsws, sample) =>
+      val miniBatches = trainingSet.samples.grouped(batchSize)
+
+      val newBsWs = miniBatches.foldLeft(bsws)((bsws, miniBatch) =>
       {
-        train(net.activation, bsws, Seq(sample))
+        train(net.activation, bsws, miniBatch)
       })
 
       testSetFit match
@@ -57,7 +62,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     val testSet = testSetFit._1
     val fit = testSetFit._2
 
-    val numberOfCorrectGuesses = testSet.samples.map(sample =>  if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum
+    val numberOfCorrectGuesses = testSet.samples.map(sample => if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum
     println(s"Percent correct: $numberOfCorrectGuesses / ${testSet.samples.size}")
   }
 
@@ -71,7 +76,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
     val biases = bsws._1
     val weights = bsws._2
-    val lr = learningRate // FIXME: Adjust for batch size
+    val lr = learningRate / samples.size
 
     val newBs = biases.zip(nablaBs).map(bnb => bnb._1 - bnb._2 * lr)
     val newWs = weights.zip(nablaWs).map(wnw => wnw._1 - wnw._2 * lr)

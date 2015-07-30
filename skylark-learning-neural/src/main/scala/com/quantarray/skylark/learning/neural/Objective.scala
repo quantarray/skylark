@@ -19,31 +19,29 @@
 
 package com.quantarray.skylark.learning.neural
 
-import breeze.linalg.DenseMatrix
-
 /**
  * Objective function, a.k.a. cost function.
  *
  * @author Araik Grigoryan
  */
-trait Objective extends ((DenseMatrix[Double], DenseMatrix[Double]) => Double)
+trait Objective extends ((Matrix, Matrix) => Double)
 {
   /**
    * Partial derivative of the objective function with respect to output activation a.
    */
-  def d(z: DenseMatrix[Double], a: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double]
+  def d(z: Matrix, a: Matrix, y: Matrix): Matrix
 }
 
 case object QuadraticObjective extends Objective
 {
-  override def apply(a: DenseMatrix[Double], y: DenseMatrix[Double]): Double =
+  override def apply(a: Matrix, y: Matrix): Double =
   {
-    //    val n = norm(a - y) // FIXME: How to compute norm of a DenseMatrix?
-    //    0.5 * n * n
-    ???
+//    val n = norm(a - y)
+//    0.5 * n * n
+    0
   }
 
-  override def d(z: DenseMatrix[Double], a: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double] = a - y
+  override def d(z: Matrix, a: Matrix, y: Matrix): Matrix = a - y
 }
 
 

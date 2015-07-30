@@ -19,12 +19,6 @@
 
 package com.quantarray.skylark.learning.neural
 
-import breeze.linalg.DenseMatrix
-import breeze.linalg.support.LiteralRow
-import breeze.storage.Zero
-
-import scala.reflect.ClassTag
-
 /**
  * Breeze matrix ops.
  *
@@ -32,18 +26,6 @@ import scala.reflect.ClassTag
  */
 trait BreezeMatrixOps
 {
-  type Matrix = DenseMatrix[Double]
-
-  object Matrix
-  {
-    def apply[@specialized R, @specialized(Double, Int, Float, Long) V](rows: Seq[R])(implicit rl: LiteralRow[R, V], man: ClassTag[V], zero: Zero[V]) =
-    {
-      DenseMatrix[R, V](rows: _*)
-    }
-
-    def zeros(rows: Int, cols: Int) = DenseMatrix.zeros[Double](rows, cols)
-  }
-
   /**
    * Constructs matrix representation of biases and weights.
    */

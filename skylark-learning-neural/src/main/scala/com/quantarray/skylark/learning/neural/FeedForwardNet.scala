@@ -19,6 +19,7 @@
 
 package com.quantarray.skylark.learning.neural
 
+import scala.language.reflectiveCalls
 import scala.util.Random
 
 /**

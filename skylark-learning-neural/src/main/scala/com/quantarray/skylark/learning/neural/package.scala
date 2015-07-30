@@ -1,6 +1,11 @@
 package com.quantarray.skylark.learning
 
+import breeze.linalg.DenseMatrix
+import breeze.linalg.support.LiteralRow
+import breeze.storage.Zero
+
 import scala.collection.immutable.SortedMap
+import scala.reflect.ClassTag
 
 /*
  * Skylark
@@ -36,5 +41,21 @@ package object neural
 
   // Fitness function: determines if output Seq[Double] is fit with respect to expected sample
   type Fitness = (Seq[Double], SupervisedDataSample) => Boolean
+
+  /**
+   * Breeze types
+   */
+
+  type Matrix = DenseMatrix[Double]
+
+  object Matrix
+  {
+    def apply[@specialized R, @specialized(Double, Int, Float, Long) V](rows: Seq[R])(implicit rl: LiteralRow[R, V], man: ClassTag[V], zero: Zero[V]) =
+    {
+      DenseMatrix[R, V](rows: _*)
+    }
+
+    def zeros(rows: Int, cols: Int) = DenseMatrix.zeros[Double](rows, cols)
+  }
 
 }
