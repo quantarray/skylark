@@ -34,6 +34,8 @@ trait Net
 
   def activation: Activation
 
+  def cost: Cost
+
   def connections: Seq[T]
 
   def biases: Biases

@@ -29,7 +29,7 @@ import scala.util.Random
  *
  * @author Araik Grigoryan
  */
-case class FeedForwardNet(activation: Activation, connections: Seq[Synapse]) extends Net
+case class FeedForwardNet(activation: Activation, connections: Seq[Synapse], cost: Cost = QuadraticCost) extends Net
 {
   type C = Neuron
 

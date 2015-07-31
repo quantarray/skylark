@@ -42,7 +42,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
       val newBsWs = miniBatches.foldLeft(bsws)((bsws, miniBatch) =>
       {
-        train(net.activation, bsws, miniBatch)
+        train(net.activation, net.cost, bsws, miniBatch)
       })
 
       testSetFit match
@@ -66,11 +66,11 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     println(s"Percent correct: $numberOfCorrectGuesses / ${testSet.samples.size}")
   }
 
-  private def train(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
+  private def train(activation: Activation, cost: Cost, bsws: (Seq[Matrix], Seq[Matrix]), samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
   {
     val (nablaBs, nablaWs) = samples.foldLeft(zeros(bsws))((nablaBsNablaWs, sample) =>
     {
-      val (deltaNablaBs, deltaNablaWs) = train(activation, bsws, sample)
+      val (deltaNablaBs, deltaNablaWs) = train(activation, cost, bsws, sample)
       (nablaBsNablaWs._1.zip(deltaNablaBs).map(m => m._1 + m._2), nablaBsNablaWs._2.zip(deltaNablaWs).map(m => m._1 + m._2.t))
     })
 
@@ -84,7 +84,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     (newBs, newWs)
   }
 
-  private def train(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), sample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
+  private def train(activation: Activation, cost: Cost, bsws: (Seq[Matrix], Seq[Matrix]), sample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
   {
     val biases = bsws._1
     val weights = bsws._2
@@ -117,7 +117,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     // Target output
     val y = Matrix(sample.target)
     val z = zs.head
-    val delta = QuadraticCost.d(z, a, y) :* z.map(activation.d)
+    val delta = cost.d(z, a, y) :* z.map(activation.d)
 
     val nablaB = delta
     val nablaW: Matrix = delta * as.tail.head.t
