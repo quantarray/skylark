@@ -20,19 +20,19 @@
 package com.quantarray.skylark.learning.neural
 
 /**
- * Objective function, a.k.a. cost function.
+ * Cost function.
  *
  * @author Araik Grigoryan
  */
-trait Objective extends ((Matrix, Matrix) => Double)
+trait Cost extends ((Matrix, Matrix) => Double)
 {
   /**
-   * Partial derivative of the objective function with respect to output activation a.
+   * Partial derivative of the cost function with respect to output activation a.
    */
   def d(z: Matrix, a: Matrix, y: Matrix): Matrix
 }
 
-case object QuadraticObjective extends Objective
+case object QuadraticCost extends Cost
 {
   override def apply(a: Matrix, y: Matrix): Double =
   {
