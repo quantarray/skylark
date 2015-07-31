@@ -29,7 +29,7 @@ import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
  *
  * @author Araik Grigoryan
  */
-case class BackPropagationTrainer(learningRate: Double, momentum: Double) extends Trainer with BreezeMatrixOps
+case class BackPropagationTrainer(learningRate: Double, regularization: Double) extends Trainer with BreezeMatrixOps
 {
   override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)] = None)
                                      (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N =
@@ -42,7 +42,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
       val newBsWs = miniBatches.foldLeft(bsws)((bsws, miniBatch) =>
       {
-        train(net.activation, net.cost, bsws, miniBatch)
+        train(net.activation, net.cost, regularization / trainingSet.samples.size, bsws, miniBatch)
       })
 
       testSetFit match
@@ -66,7 +66,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     println(s"Percent correct: $numberOfCorrectGuesses / ${testSet.samples.size}")
   }
 
-  private def train(activation: Activation, cost: Cost, bsws: (Seq[Matrix], Seq[Matrix]), samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
+  private def train(activation: Activation, cost: Cost, scaledRegularization: Double, bsws: (Seq[Matrix], Seq[Matrix]), samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
   {
     val (nablaBs, nablaWs) = samples.foldLeft(zeros(bsws))((nablaBsNablaWs, sample) =>
     {
@@ -76,10 +76,12 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
 
     val biases = bsws._1
     val weights = bsws._2
-    val lr = learningRate / samples.size
 
-    val newBs = biases.zip(nablaBs).map(bnb => bnb._1 - bnb._2 * lr)
-    val newWs = weights.zip(nablaWs).map(wnw => wnw._1 - wnw._2 * lr)
+    val scaledLearningRate = learningRate / samples.size
+    val weightDecay = 1.0 - learningRate * scaledRegularization
+
+    val newBs = biases.zip(nablaBs).map(bnb => bnb._1 - bnb._2 * scaledLearningRate)
+    val newWs = weights.zip(nablaWs).map(wnw => wnw._1 * weightDecay - wnw._2 * scaledLearningRate)
 
     (newBs, newWs)
   }

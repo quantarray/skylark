@@ -31,15 +31,15 @@ class MnistFeedForwardNetSpec extends FlatSpec with Matchers
 {
   "BackPropagationTrainer" should "train and test feed-forward net on MNIST data" in
     {
-      val net = FeedForwardNet(SigmoidActivation, QuadraticCost(SigmoidActivation), 784, 30, 10)
+      val net = FeedForwardNet(SigmoidActivation, QuadraticCost(SigmoidActivation), 784, 100, 10)
 
-      val trainer = BackPropagationTrainer(0.015, 0.5)
+      val trainer = BackPropagationTrainer(0.05, 0.5)
 
       val trainingDataProvider = new MnistDataProvider("data/mnist/train-images-idx3-ubyte", "data/mnist/train-labels-idx1-ubyte")
 
       val testDataProvider = new MnistDataProvider("data/mnist/t10k-images-idx3-ubyte", "data/mnist/t10k-labels-idx1-ubyte")
 
-      trainer.trainAndTest(net, 30, 20, trainingDataProvider.read.set, (testDataProvider.read.set, MnistSupervisedDataSample.fit _))
+      trainer.trainAndTest(net, 30, 10, trainingDataProvider.read.set, (testDataProvider.read.set, MnistSupervisedDataSample.fit _))
 
       trainingDataProvider.close()
       testDataProvider.close()
