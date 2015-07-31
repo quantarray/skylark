@@ -82,7 +82,7 @@ object FeedForwardNet
         val biasSynapses = for
         {
           targetNeuron <- targetLayer.cells
-        } yield connection(Neuron(0, targetLayer), targetNeuron, random.nextGaussian())
+        } yield connection(Neuron(0, targetLayer, isBias = true), targetNeuron, random.nextGaussian())
 
         val weightSynapses = for
         {

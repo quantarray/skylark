@@ -36,7 +36,7 @@ trait Cell
 
   def layer: L
 
-  val isBias: Boolean = index == 0 // FIXME: Better logic for determining bias
+  val isBias: Boolean
 
   val nonBias: Boolean = !isBias
 }
