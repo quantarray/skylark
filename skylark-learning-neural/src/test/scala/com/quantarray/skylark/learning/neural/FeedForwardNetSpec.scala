@@ -31,7 +31,7 @@ class FeedForwardNetSpec extends FlatSpec with Matchers
 {
   "FeedForwardNet" should "be trainable" in
     {
-      val net = FeedForwardNet(SigmoidActivation, QuadraticCost(SigmoidActivation), 4, 3, 2)
+      val net = FeedForwardNet(IndexedWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 4, 3, 2)
 
       net.connections.size should be((4 + 1) * 3 + (3 + 1) * 2) // +1s are to account for the Biases
 

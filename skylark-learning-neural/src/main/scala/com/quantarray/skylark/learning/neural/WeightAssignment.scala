@@ -19,21 +19,28 @@
 
 package com.quantarray.skylark.learning.neural
 
+import scala.util.Random
+
 /**
- * Net can build from.
+ * Weight assignment function.
  *
  * @author Araik Grigoryan
  */
-trait NetCanBuildFrom[-From <: Net, C <: Cell, T <: Connection, +To <: Net]
-{
-  /**
-   * Creates a new builder on request of a net.
-   */
-  def apply(from: From): NetBuilder[C, T, To]
+trait WeightAssignment extends ((Cell, Cell) => Double)
 
-  /**
-   * Creates a new builder from scratch.
-   */
-  def apply(weightAssignment: WeightAssignment, activation: Activation, cost: Cost,
-            neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*): NetBuilder[C, T, To]
+case object IndexedWeightAssignment extends WeightAssignment
+{
+  override def apply(source: Cell, target: Cell): Double = if (source.isBias) 0.1 * target.index else 0.1 * source.index + target.index
+}
+
+case object GaussianWeightAssignment extends WeightAssignment
+{
+  val random = new Random()
+
+  override def apply(source: Cell, target: Cell): Double =
+  {
+    val gaussian = random.nextGaussian()
+
+    if (source.isBias) gaussian else gaussian / math.sqrt(source.layer.cells.size)
+  }
 }

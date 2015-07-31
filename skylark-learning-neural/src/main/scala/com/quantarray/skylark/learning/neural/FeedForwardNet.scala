@@ -20,7 +20,6 @@
 package com.quantarray.skylark.learning.neural
 
 import scala.language.reflectiveCalls
-import scala.util.Random
 
 /**
  * Feed-forward net.
@@ -55,42 +54,39 @@ case class FeedForwardNet(activation: Activation, cost: Cost, connections: Seq[S
 object FeedForwardNet
 {
 
-  case class FromScratchBuilder(activation: Activation, cost: Cost, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*)
+  case class FromScratchBuilder(weight: WeightAssignment, activation: Activation, cost: Cost,
+                                neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*)
     extends NetBuilder[Neuron, Synapse, FeedForwardNet]
   {
-    val random = new Random()
+    val layer0 = Nucleus(0, neuronsInLayer0)
 
-    val layer0 = Nucleus(0, numberOfNeuronsInLayer0)
+    val layer1 = Nucleus(1, neuronsInLayer1)
 
-    val layer1 = Nucleus(1, numberOfNeuronsInLayer1)
-
-    val layers2AndUp = numberOfNeuronsInLayer2AndUp.zipWithIndex.map(x => Nucleus(x._2 + 2, x._1))
+    val layers2AndUp = neuronsInLayer2AndUp.zipWithIndex.map(x => Nucleus(x._2 + 2, x._1))
 
     val layers = layer0 +: layer1 +: layers2AndUp
 
-    val synapses = layers.zipWithIndex.foldLeft(List.empty[Synapse])((synapsesSoFar, layerIndex) =>
+    val synapses = layers.zipWithIndex.foldLeft(List.empty[Synapse])((synapses, layerIndex) =>
     {
       if (layerIndex._1 == layers.last)
       {
-        synapsesSoFar
+        synapses
       }
       else
       {
         val sourceLayer = layerIndex._1
         val targetLayer = layers(layerIndex._2 + 1)
 
-        val biasSynapses = for
-        {
-          targetNeuron <- targetLayer.cells
-        } yield connection(Neuron(0, targetLayer, isBias = true), targetNeuron, random.nextGaussian())
+        val biasSynapses =
+          targetLayer.cells.map(target => (Neuron(0, targetLayer, isBias = true), target)).map(st => connection(st._1, st._2, weight(st._1, st._2)))
 
         val weightSynapses = for
         {
-          sourceNeuron <- sourceLayer.cells
-          targetNeuron <- targetLayer.cells
-        } yield connection(sourceNeuron, targetNeuron, random.nextGaussian() / math.sqrt(sourceLayer.numberOfNeurons))
+          source <- sourceLayer.cells
+          target <- targetLayer.cells
+        } yield connection(source, target, weight(source, target))
 
-        synapsesSoFar ++ biasSynapses ++ weightSynapses
+        synapses ++ biasSynapses ++ weightSynapses
       }
     })
 
@@ -109,9 +105,10 @@ object FeedForwardNet
     /**
      * Creates a new builder from scratch.
      */
-    override def apply(activation: Activation, cost: Cost, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*) =
+    override def apply(weightAssignment: WeightAssignment, activation: Activation, cost: Cost,
+                       neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*) =
     {
-      FromScratchBuilder(activation, cost, numberOfNeuronsInLayer0, numberOfNeuronsInLayer1, numberOfNeuronsInLayer2AndUp: _*)
+      FromScratchBuilder(weightAssignment, activation, cost, neuronsInLayer0, neuronsInLayer1, neuronsInLayer2AndUp: _*)
     }
   }
 
@@ -121,8 +118,8 @@ object FeedForwardNet
    * In addition to the requested neurons, a bias cell will be created for each layer. By convention,
    * the zeroth layer will not receive a bias cell because it will directly absorb the inputs.
    */
-  def apply(activation: Activation, cost: Cost, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNet =
+  def apply(weightAssignment: WeightAssignment, activation: Activation, cost: Cost, neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*): FeedForwardNet =
   {
-    canBuildFrom(activation, cost, numberOfNeuronsInLayer0, numberOfNeuronsInLayer1, numberOfNeuronsInLayer2AndUp: _*).net
+    canBuildFrom(weightAssignment, activation, cost, neuronsInLayer0, neuronsInLayer1, neuronsInLayer2AndUp: _*).net
   }
 }
