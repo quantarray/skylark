@@ -117,7 +117,7 @@ case class BackPropagationTrainer(learningRate: Double, momentum: Double) extend
     // Target output
     val y = Matrix(sample.target)
     val z = zs.head
-    val delta = cost.d(z, a, y) :* z.map(activation.d)
+    val delta = cost.d(z, a, y)
 
     val nablaB = delta
     val nablaW: Matrix = delta * as.tail.head.t

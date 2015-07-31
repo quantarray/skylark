@@ -29,7 +29,7 @@ import scala.util.Random
  *
  * @author Araik Grigoryan
  */
-case class FeedForwardNet(activation: Activation, connections: Seq[Synapse], cost: Cost = QuadraticCost) extends Net
+case class FeedForwardNet(activation: Activation, cost: Cost, connections: Seq[Synapse]) extends Net
 {
   type C = Neuron
 
@@ -55,7 +55,7 @@ case class FeedForwardNet(activation: Activation, connections: Seq[Synapse], cos
 object FeedForwardNet
 {
 
-  case class FromScratchBuilder(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*)
+  case class FromScratchBuilder(activation: Activation, cost: Cost, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*)
     extends NetBuilder[Neuron, Synapse, FeedForwardNet]
   {
     val random = new Random()
@@ -96,7 +96,7 @@ object FeedForwardNet
 
     override def connection(source: Neuron, target: Neuron, weight: Double): Synapse = Synapse(source, target, weight)
 
-    override def net: FeedForwardNet = FeedForwardNet(activation, synapses)
+    override def net: FeedForwardNet = FeedForwardNet(activation, cost, synapses)
   }
 
   implicit val canBuildFrom = new NetCanBuildFrom[FeedForwardNet, Neuron, Synapse, FeedForwardNet]
@@ -109,9 +109,9 @@ object FeedForwardNet
     /**
      * Creates a new builder from scratch.
      */
-    override def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*) =
+    override def apply(activation: Activation, cost: Cost, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*) =
     {
-      FromScratchBuilder(activation, numberOfNeuronsInLayer0, numberOfNeuronsInLayer1, numberOfNeuronsInLayer2AndUp: _*)
+      FromScratchBuilder(activation, cost, numberOfNeuronsInLayer0, numberOfNeuronsInLayer1, numberOfNeuronsInLayer2AndUp: _*)
     }
   }
 
@@ -121,8 +121,8 @@ object FeedForwardNet
    * In addition to the requested neurons, a bias cell will be created for each layer. By convention,
    * the zeroth layer will not receive a bias cell because it will directly absorb the inputs.
    */
-  def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNet =
+  def apply(activation: Activation, cost: Cost, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): FeedForwardNet =
   {
-    canBuildFrom(activation, numberOfNeuronsInLayer0, numberOfNeuronsInLayer1, numberOfNeuronsInLayer2AndUp: _*).net
+    canBuildFrom(activation, cost, numberOfNeuronsInLayer0, numberOfNeuronsInLayer1, numberOfNeuronsInLayer2AndUp: _*).net
   }
 }

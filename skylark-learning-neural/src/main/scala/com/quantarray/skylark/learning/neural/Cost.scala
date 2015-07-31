@@ -19,6 +19,9 @@
 
 package com.quantarray.skylark.learning.neural
 
+import breeze.linalg.norm
+import breeze.numerics.log
+
 /**
  * Cost function.
  *
@@ -32,12 +35,25 @@ trait Cost extends ((Matrix, Matrix) => Double)
   def d(z: Matrix, a: Matrix, y: Matrix): Matrix
 }
 
-case object QuadraticCost extends Cost
+case class QuadraticCost(activation: Activation) extends Cost
 {
   override def apply(a: Matrix, y: Matrix): Double =
   {
-//    val n = norm(a - y)
-//    0.5 * n * n
+    val n = norm(a.toDenseVector - y.toDenseVector) // HACK: Breeze does not compute L2 norm of a DenseMatrix
+    0.5 * n * n
+  }
+
+  override def d(z: Matrix, a: Matrix, y: Matrix): Matrix = (a - y) :* z.map(activation.d)
+}
+
+case object CrossEntropyCost extends Cost
+{
+  override def apply(a: Matrix, y: Matrix): Double =
+  {
+    //np.sum(np.nan_to_num(-y*np.log(a)-(1-y)*np.log(1-a)))
+
+    val foo = log(a)
+    println(foo)
     0
   }
 

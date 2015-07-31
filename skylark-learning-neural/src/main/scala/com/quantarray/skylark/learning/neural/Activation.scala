@@ -44,6 +44,18 @@ object IdentityActivation extends Activation
   override def toString(): String = "identity"
 }
 
+object UnitActivation extends Activation
+{
+  override def apply(x: Double): Double = 1
+
+  /**
+   * Derivative of this function.
+   */
+  override def d(x: Double): Double = 0
+
+  override def toString(): String = "unit"
+}
+
 object SigmoidActivation extends Activation
 {
   override def apply(x: Double): Double = 1.0 / (1.0 + math.exp(-x))

@@ -34,5 +34,5 @@ trait NetCanBuildFrom[-From <: Net, C <: Cell, T <: Connection, +To <: Net]
   /**
    * Creates a new builder from scratch.
    */
-  def apply(activation: Activation, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): NetBuilder[C, T, To]
+  def apply(activation: Activation, cost: Cost, numberOfNeuronsInLayer0: Int, numberOfNeuronsInLayer1: Int, numberOfNeuronsInLayer2AndUp: Int*): NetBuilder[C, T, To]
 }
