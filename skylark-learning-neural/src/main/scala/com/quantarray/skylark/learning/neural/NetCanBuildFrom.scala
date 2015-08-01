@@ -29,7 +29,7 @@ trait NetCanBuildFrom[-From <: Net, C <: Cell, T <: Connection, +To <: Net]
   /**
    * Creates a new builder on request of a net.
    */
-  def apply(from: From): NetBuilder[C, T, To]
+  def apply(from: From, biases: Biases, weights: Weights): NetBuilder[C, T, To]
 
   /**
    * Creates a new builder from scratch.

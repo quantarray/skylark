@@ -54,7 +54,8 @@ case class BackPropagationTrainer(learningRate: Double, regularization: Double) 
       newBsWs
     })
 
-    net // FIXME: Build new net from finalBsWs
+    // FIXME: Construct biases and weights based on matrix values
+    cbf(net, Biases.empty, Weights.empty).net
   }
 
   private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSetFit: (SupervisedDataSet, (Seq[Double], SupervisedDataSample) => Boolean)): Unit =
@@ -66,7 +67,8 @@ case class BackPropagationTrainer(learningRate: Double, regularization: Double) 
     println(s"Percent correct: $numberOfCorrectGuesses / ${testSet.samples.size}")
   }
 
-  private def train(activation: Activation, cost: Cost, scaledRegularization: Double, bsws: (Seq[Matrix], Seq[Matrix]), samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
+  private def train(activation: Activation, cost: Cost, scaledRegularization: Double, bsws: (Seq[Matrix], Seq[Matrix]),
+                    samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
   {
     val (nablaBs, nablaWs) = samples.foldLeft(zeros(bsws))((nablaBsNablaWs, sample) =>
     {

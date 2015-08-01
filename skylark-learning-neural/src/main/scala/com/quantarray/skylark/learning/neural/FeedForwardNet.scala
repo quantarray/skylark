@@ -55,8 +55,7 @@ object FeedForwardNet
 {
 
   case class FromScratchBuilder(weight: WeightAssignment, activation: Activation, cost: Cost,
-                                neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*)
-    extends NetBuilder[Neuron, Synapse, FeedForwardNet]
+                                neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*) extends NetBuilder[Neuron, Synapse, FeedForwardNet]
   {
     val layer0 = Nucleus(0, neuronsInLayer0)
 
@@ -78,20 +77,23 @@ object FeedForwardNet
         val targetLayer = layers(layerIndex._2 + 1)
 
         val biasSynapses =
-          targetLayer.cells.map(target => (Neuron(0, targetLayer, isBias = true), target)).map(st => connection(st._1, st._2, weight(st._1, st._2)))
+          targetLayer.cells.map(target => (Neuron(0, targetLayer, isBias = true), target)).map(st => Synapse(st._1, st._2, weight(st._1, st._2)))
 
         val weightSynapses = for
         {
           source <- sourceLayer.cells
           target <- targetLayer.cells
-        } yield connection(source, target, weight(source, target))
+        } yield Synapse(source, target, weight(source, target))
 
         synapses ++ biasSynapses ++ weightSynapses
       }
     })
 
-    override def connection(source: Neuron, target: Neuron, weight: Double): Synapse = Synapse(source, target, weight)
+    override def net: FeedForwardNet = FeedForwardNet(activation, cost, synapses)
+  }
 
+  case class FromBiasesAndWeightsBuilder(activation: Activation, cost: Cost, synapses: Seq[Synapse]) extends NetBuilder[Neuron, Synapse, FeedForwardNet]
+  {
     override def net: FeedForwardNet = FeedForwardNet(activation, cost, synapses)
   }
 
@@ -100,7 +102,11 @@ object FeedForwardNet
     /**
      * Creates a new builder on request of a net.
      */
-    override def apply(from: FeedForwardNet) = ???
+    override def apply(from: FeedForwardNet, biases: Biases, weights: Weights) =
+    {
+      // FIXME: Use biases and weights to construct synapses
+      FromBiasesAndWeightsBuilder(from.activation, from.cost, Seq.empty[Synapse])
+    }
 
     /**
      * Creates a new builder from scratch.

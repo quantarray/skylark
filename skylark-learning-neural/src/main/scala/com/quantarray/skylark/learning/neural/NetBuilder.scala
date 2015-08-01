@@ -26,7 +26,5 @@ package com.quantarray.skylark.learning.neural
  */
 trait NetBuilder[C, T, +To]
 {
-  def connection(source: C, target: C, weight: Double): T
-
   def net: To
 }

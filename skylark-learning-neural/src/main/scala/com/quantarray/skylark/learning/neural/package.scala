@@ -36,8 +36,10 @@ package object neural
   }
 
   type Biases = NetPropMap[Double]
+  val Biases = NetPropMap
 
   type Weights = NetPropMap[Double]
+  val Weights = NetPropMap
 
   // Fitness function: determines if output Seq[Double] is fit with respect to expected sample
   type Fitness = (Seq[Double], SupervisedDataSample) => Boolean
