@@ -57,4 +57,23 @@ trait BreezeMatrixOps
   {
     (bsws._1.map(m => Matrix.zeros(m.rows, m.cols)), bsws._2.map(m => Matrix.zeros(m.rows, m.cols)))
   }
+
+  def props(bsws: (Seq[Matrix], Seq[Matrix])): (Biases, Weights) =
+  {
+    val biases = bsws._1.zipWithIndex.foldLeft(Biases.empty[Double])((biases, biasIndex) =>
+    {
+      val levelBias = (0 until biasIndex._1.rows).map(row => row + 1 -> (0 until biasIndex._1.cols).map(biasIndex._1(row, _))).toMap
+
+      biases + (biasIndex._2 + 1 -> levelBias)
+    })
+
+    val weights = bsws._2.zipWithIndex.foldLeft(Weights.empty[Double])((weights, weightIndex) =>
+    {
+      val levelWeight = (0 until weightIndex._1.rows).map(row => row + 1 -> (0 until weightIndex._1.cols).map(weightIndex._1(row, _))).toMap
+
+      weights + (weightIndex._2 -> levelWeight)
+    })
+
+    (biases, weights)
+  }
 }

@@ -54,8 +54,9 @@ case class BackPropagationTrainer(learningRate: Double, regularization: Double) 
       newBsWs
     })
 
-    // FIXME: Construct biases and weights based on matrix values
-    cbf(net, Biases.empty, Weights.empty).net
+    val (finalBs, finalWs) = props(finalBsWs._1, finalBsWs._2)
+
+    cbf(net, finalBs, finalWs).net
   }
 
   private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSetFit: (SupervisedDataSet, (Seq[Double], SupervisedDataSample) => Boolean)): Unit =
