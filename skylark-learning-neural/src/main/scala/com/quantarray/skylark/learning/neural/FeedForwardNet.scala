@@ -129,9 +129,9 @@ object FeedForwardNet
     /**
      * Creates a new builder on request of a net.
      */
-    override def apply(from: FeedForwardNet, biases: Biases, weights: Weights) =
+    override def apply(from: FeedForwardNet, biasesWeights: (Biases, Weights)) =
     {
-      FromBiasesAndWeightsBuilder(from.activation, from.cost, biases, weights)
+      FromBiasesAndWeightsBuilder(from.activation, from.cost, biasesWeights._1, biasesWeights._2)
     }
 
     /**

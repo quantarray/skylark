@@ -31,23 +31,25 @@ trait Trainer
   /**
    * Trains and optionally tests the supplied network.
    *
-   * @return A new network with adjusted biases and weights and a collection of representing the number of correct guesses at end of each epoch.
+   * @return A collection of a new network with adjusted biases and weights and accuracy at end of each epoch.
+   *         First element of the collection contains the untrained network and its accuracy.
    */
   def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)])
-                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): (N, Seq[Double])
+                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): Seq[(N, Option[Double])]
 
   /**
    * Trains and tests the supplied network.
    *
-   * @return A new network with adjusted biases and weights and a collection of representing the number of correct guesses at end of each epoch.
+   * @return A collection of a new network with adjusted biases and weights and accuracy at end of each epoch.
+   *         First element of the collection contains the untrained network and its accuracy.
    */
   def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: (SupervisedDataSet, Fitness))
-                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): (N, Seq[Double]) =
+                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): Seq[(N, Option[Double])] =
     trainAndTest(net, numberOfEpochs, batchSize, trainingSet, Some(testSetFit))
 
   /**
    * Tests the supplied network.
-   * @return Number of correct guesses.
+   * @return Accuracy.
    */
   def test[N <: Net](net: N, testSetFit: (SupervisedDataSet, Fitness)): Double
 }

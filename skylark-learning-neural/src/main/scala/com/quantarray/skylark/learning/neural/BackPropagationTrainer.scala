@@ -32,14 +32,20 @@ import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
 case class BackPropagationTrainer(learningRate: Double, regularization: Double) extends Trainer with BreezeMatrixOps
 {
   override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)] = None)
-                                     (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): (N, Seq[Double]) =
+                                     (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): Seq[(N, Option[Double])] =
   {
     val initialBsWs = matrices(net.biases, net.weights)
 
-    val finalBsWsCorrectGuesses = (0 until numberOfEpochs).foldLeft((initialBsWs, List.empty[Double]))((bswsCorrectGuesses, epochIndex) =>
+    val initialAccuracy: Option[Double] = testSetFit match
     {
-      val bsws = bswsCorrectGuesses._1
-      val correctGuesses = bswsCorrectGuesses._2
+      case Some(tsf) => Some(evaluate(net.activation, initialBsWs, tsf))
+      case _ => None
+    }
+
+    val finalBsWsAccuracies = (0 until numberOfEpochs).foldLeft(List((initialBsWs, initialAccuracy)))((x, epochIndex) =>
+    {
+      val bsws = x.head._1
+      val accuracies = x.head._2
 
       val miniBatches = trainingSet.samples.grouped(batchSize)
 
@@ -50,28 +56,18 @@ case class BackPropagationTrainer(learningRate: Double, regularization: Double) 
 
       testSetFit match
       {
-        case Some(tsf) => (newBsWs, evaluate(net.activation, newBsWs, tsf) :: correctGuesses)
-        case _ => (newBsWs, correctGuesses)
+        case Some(tsf) => (newBsWs, Some(evaluate(net.activation, newBsWs, tsf))) :: x
+        case _ => (newBsWs, None) :: x
       }
     })
 
-    val (finalBs, finalWs) = props(finalBsWsCorrectGuesses._1._1, finalBsWsCorrectGuesses._1._2)
-
-    (cbf(net, finalBs, finalWs).net, finalBsWsCorrectGuesses._2.reverse)
+    finalBsWsAccuracies.map(x => (cbf(net, props(x._1._1, x._1._2)).net, x._2)).reverse
   }
 
 
   override def test[N <: Net](net: N, testSetFit: (SupervisedDataSet, Fitness)): Double =
   {
     evaluate(net.activation, matrices(net.biases, net.weights), testSetFit)
-  }
-
-  private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSetFit: (SupervisedDataSet, (Seq[Double], SupervisedDataSample) => Boolean)): Double =
-  {
-    val testSet = testSetFit._1
-    val fit = testSetFit._2
-
-    testSet.samples.map(sample => if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum
   }
 
   private def train(activation: Activation, cost: Cost, scaledRegularization: Double, bsws: (Seq[Matrix], Seq[Matrix]),
@@ -158,6 +154,14 @@ case class BackPropagationTrainer(learningRate: Double, regularization: Double) 
     })
 
     (nablaBs, nablaWs)
+  }
+
+  private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSetFit: (SupervisedDataSet, (Seq[Double], SupervisedDataSample) => Boolean)): Double =
+  {
+    val testSet = testSetFit._1
+    val fit = testSetFit._2
+
+    testSet.samples.map(sample => if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum / testSet.samples.size
   }
 
   private def feedForward(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), input: Seq[Double]): Seq[Double] =

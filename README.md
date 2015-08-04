@@ -16,16 +16,19 @@ val testDataProvider = new MnistDataProvider("data/mnist/t10k-images-idx3-ubyte"
 
 val testSetFit = (testDataProvider.read.set, MnistSupervisedDataSample.fit _)
 
-// Number of nodes in the hidden layer ≈ √ 784 * 10
+// Number of nodes in the hidden layer ≈ √ (784 * 10)
 val net = FeedForwardNet(GaussianWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 784, 88, 10)
 
 // Train the network
-val trainer = BackPropagationTrainer(0.05, 0.5)
+val trainer = BackPropagationTrainer(learningRate = 0.05, regularization = 0.5)
 
-// First number of correct guesses should be ≈ 8500 out of 10000 training samples; subsequent guess will improve
-val (trainedNet, correctGuesses) = trainer.trainAndTest(net, 30, 10, trainingDataProvider.read.set, testSetFit)
+val numberOfEpochs = 30
+val miniBatchSize = 10
 
-val testCorrectGuesses = trainer.test(trainedNet, testSetFit)
+// First accuracy is the one of the untrained (random weights) network, second should be ≈ 85%; subsequent accuracies will improve
+val trainedNets = trainer.trainAndTest(net, numberOfEpochs, miniBatchSize, trainingDataProvider.read.set, testSetFit)
+
+val accuracy = trainer.test(trainedNets.last._1, testSetFit)
 
 trainingDataProvider.close()
 testDataProvider.close()
