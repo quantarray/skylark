@@ -6,7 +6,7 @@ Skylark is a set of libraries for quantitative and financial computation.
 
 **skylark-learning-neural** is a library for training, testing, and using neural networks.
 
-The example below shows how to train and test a feed-forward network using a backpropagation trainer on MNIST database of handwritten digits.
+The example below shows how to train and test a feed-forward network using a backpropagation trainer on [MNIST database of handwritten digits](http://yann.lecun.com/exdb/mnist).
 
 ```scala
 // Load training and test data
