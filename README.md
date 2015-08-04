@@ -22,9 +22,9 @@ val net = FeedForwardNet(GaussianWeightAssignment, SigmoidActivation, QuadraticC
 // Train the network
 val trainer = BackPropagationTrainer(0.05, 0.5)
 
+// First number of correct guesses should be ≈ 8500 out of 10000 training samples; subsequent guess will improve
 val (trainedNet, correctGuesses) = trainer.trainAndTest(net, 30, 10, trainingDataProvider.read.set, testSetFit)
 
-// Number of correct guesses should be ≈ 8500 out of 10000 training samples
 val testCorrectGuesses = trainer.test(trainedNet, testSetFit)
 
 trainingDataProvider.close()
