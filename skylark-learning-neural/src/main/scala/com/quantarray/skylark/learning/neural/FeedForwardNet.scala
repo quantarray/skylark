@@ -43,12 +43,12 @@ case class FeedForwardNet(activation: Activation, cost: Cost, connections: Seq[S
   /**
    * Creates a map of weights, in order of layer and target neuron index.
    */
-  def biases: Biases = props(targetLayerGroups, _.source.isBias, _.weight)
+  lazy val biases: Biases = props(targetLayerGroups, _.source.isBias, _.weight)
 
   /**
    * Creates a map of weights, in order of layer and source neuron index.
    */
-  def weights: Weights = props(sourceLayerGroups, _.source.nonBias, _.weight)
+  lazy val weights: Weights = props(sourceLayerGroups, _.source.nonBias, _.weight)
 }
 
 object FeedForwardNet
@@ -92,8 +92,35 @@ object FeedForwardNet
     override def net: FeedForwardNet = FeedForwardNet(activation, cost, synapses)
   }
 
-  case class FromBiasesAndWeightsBuilder(activation: Activation, cost: Cost, synapses: Seq[Synapse]) extends NetBuilder[Neuron, Synapse, FeedForwardNet]
+  case class FromBiasesAndWeightsBuilder(activation: Activation, cost: Cost, biases: Biases, weights: Weights) extends NetBuilder[Neuron, Synapse, FeedForwardNet]
   {
+    val layers = weights.map(kv => Nucleus(kv._1, kv._2.size)).toSeq :+ Nucleus(weights.size, biases.last._2.size)
+
+    val synapses = layers.zipWithIndex.foldLeft(List.empty[Synapse])((synapses, layerIndex) =>
+    {
+      if (layerIndex._1 == layers.last)
+      {
+        synapses
+      }
+      else
+      {
+        val sourceLayer = layerIndex._1
+        val targetLayer = layers(layerIndex._2 + 1)
+
+        val biasSynapses =
+          targetLayer.cells.map(target => (Neuron(0, targetLayer, isBias = true), target)).map(st =>
+            Synapse(st._1, st._2, biases(targetLayer.index)(st._2.index).head))
+
+        val weightSynapses = for
+        {
+          source <- sourceLayer.cells
+          target <- targetLayer.cells
+        } yield Synapse(source, target, weights(sourceLayer.index)(source.index)(target.index - 1))
+
+        synapses ++ biasSynapses ++ weightSynapses
+      }
+    })
+
     override def net: FeedForwardNet = FeedForwardNet(activation, cost, synapses)
   }
 
@@ -104,8 +131,7 @@ object FeedForwardNet
      */
     override def apply(from: FeedForwardNet, biases: Biases, weights: Weights) =
     {
-      // FIXME: Use biases and weights to construct synapses
-      FromBiasesAndWeightsBuilder(from.activation, from.cost, Seq.empty[Synapse])
+      FromBiasesAndWeightsBuilder(from.activation, from.cost, biases, weights)
     }
 
     /**
