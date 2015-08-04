@@ -2,6 +2,35 @@
 
 Skylark is a set of libraries for quantitative and financial computation.
 
+## slylark-learning-neural
+
+**skylark-learning-neural** is a library for training, testing, and using neural networks.
+
+The example below shows how to train and test a feed-forward network using a backpropagation trainer on MNIST database of handwritten digits.
+
+```scala
+// Load training and test data
+val trainingDataProvider = new MnistDataProvider("data/mnist/train-images-idx3-ubyte", "data/mnist/train-labels-idx1-ubyte")
+
+val testDataProvider = new MnistDataProvider("data/mnist/t10k-images-idx3-ubyte", "data/mnist/t10k-labels-idx1-ubyte")
+
+val testSetFit = (testDataProvider.read.set, MnistSupervisedDataSample.fit _)
+
+// Number of nodes in the hidden layer ≈ √ 784 * 10
+val net = FeedForwardNet(GaussianWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 784, 88, 10)
+
+// Train the network
+val trainer = BackPropagationTrainer(0.05, 0.5)
+
+val (trainedNet, correctGuesses) = trainer.trainAndTest(net, 30, 10, trainingDataProvider.read.set, testSetFit)
+
+// Number of correct guesses should be ≈ 8500 out of 10000 training samples
+val testCorrectGuesses = trainer.test(trainedNet, testSetFit)
+
+trainingDataProvider.close()
+testDataProvider.close()
+```
+
 ## skylark-measure
 
 **skylark-measure** is a library dealing with unit-of-measure conversions in a type-safe manner. Many libraries provide similar functionality on 
