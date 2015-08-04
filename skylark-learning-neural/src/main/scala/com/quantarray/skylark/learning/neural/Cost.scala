@@ -50,10 +50,6 @@ case object CrossEntropyCost extends Cost
 {
   override def apply(a: Matrix, y: Matrix): Double =
   {
-    //np.sum(np.nan_to_num(-y*np.log(a)-(1-y)*np.log(1-a)))
-
-    val foo = log(a)
-    println(foo)
     0
   }
 
