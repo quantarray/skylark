@@ -28,9 +28,26 @@ import com.quantarray.skylark.learning.SupervisedDataSet
  */
 trait Trainer
 {
+  /**
+   * Trains and optionally tests the supplied network.
+   *
+   * @return A new network with adjusted biases and weights and a collection of representing the number of correct guesses at end of each epoch.
+   */
   def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)])
-                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N
+                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): (N, Seq[Double])
 
+  /**
+   * Trains and tests the supplied network.
+   *
+   * @return A new network with adjusted biases and weights and a collection of representing the number of correct guesses at end of each epoch.
+   */
   def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: (SupervisedDataSet, Fitness))
-                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): N = trainAndTest(net, numberOfEpochs, batchSize, trainingSet, Some(testSetFit))
+                            (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): (N, Seq[Double]) =
+    trainAndTest(net, numberOfEpochs, batchSize, trainingSet, Some(testSetFit))
+
+  /**
+   * Tests the supplied network.
+   * @return Number of correct guesses.
+   */
+  def test[N <: Net](net: N, testSetFit: (SupervisedDataSet, Fitness)): Double
 }
