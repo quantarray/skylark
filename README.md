@@ -20,7 +20,7 @@ val testSetFit = (testDataProvider.read.set, MnistSupervisedDataSample.fit _)
 val net = FeedForwardNet(GaussianWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 784, 88, 10)
 
 // Train the network
-val trainer = BackPropagationTrainer(learningRate = 0.05, regularization = 0.5)
+val trainer = BackPropagationTrainer(learningRate = 0.05, weightDecay = 0.5)
 
 val numberOfEpochs = 30
 val miniBatchSize = 10
