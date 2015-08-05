@@ -62,6 +62,8 @@ package object neural
     def apply[@specialized R, @specialized(Double, Int, Float, Long) V](rows: Seq[R])(implicit rl: LiteralRow[R, V], man: ClassTag[V], zero: Zero[V]) = DenseMatrix[R, V](rows: _*)
 
     def zeros(rows: Int, cols: Int) = DenseMatrix.zeros[Double](rows, cols)
+
+    def eye(n: Int) = DenseMatrix.eye[Double](n)
   }
 
 }

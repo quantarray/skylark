@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.learning.neural
 
-import breeze.linalg.norm
+import breeze.linalg.{sum, norm}
 import breeze.numerics.log
 
 /**
@@ -50,7 +50,7 @@ case object CrossEntropyCost extends Cost
 {
   override def apply(a: Matrix, y: Matrix): Double =
   {
-    0
+    sum(y * log(a) - (Matrix.eye(y.rows) - y) * log(Matrix.eye(a.rows) - a))
   }
 
   override def d(z: Matrix, a: Matrix, y: Matrix): Matrix = a - y
