@@ -129,8 +129,7 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
     val nablaB = delta
     val nablaW: Matrix = delta * as.tail.head.t
 
-    // FIXME: Is (2 until as.size) correct range? Should it be backwards?
-    val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, 2 until as.size).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
+    val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, (as.size - 1).to(2, -1)).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
     {
       val nablaBs = nablaBsNablaWsDelta._1
       val nablaWs = nablaBsNablaWsDelta._2
@@ -161,7 +160,9 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
     val testSet = testSetFit._1
     val fit = testSetFit._2
 
-    testSet.samples.map(sample => if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum / testSet.samples.size
+    val accuracy = testSet.samples.map(sample => if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum / testSet.samples.size
+
+    accuracy
   }
 
   private def feedForward(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), input: Seq[Double]): Seq[Double] =
