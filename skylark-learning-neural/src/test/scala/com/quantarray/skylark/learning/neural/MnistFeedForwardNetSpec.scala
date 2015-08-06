@@ -39,10 +39,10 @@ class MnistFeedForwardNetSpec extends FlatSpec with Matchers
       val testSetFit = (testDataProvider.read.set, MnistSupervisedDataSample.fit _)
 
       // Number of nodes in the hidden layer ≈ √ (784 * 10)
-      val net = FeedForwardNet(GaussianWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 784, 88, 10)
+      val net = FeedForwardNet(GaussianWeightAssignment, SigmoidActivation, CrossEntropyCost, 784, 88, 10)
 
       // Train the network
-      val trainer = BackPropagationTrainer(learningRate = 0.05, weightDecay = 0.5)
+      val trainer = BackPropagationTrainer(learningRate = 0.005, weightDecay = 0.5)
 
       val numberOfEpochs = 30
       val miniBatchSize = 10

@@ -162,6 +162,8 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
 
     val accuracy = testSet.samples.map(sample => if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum / testSet.samples.size
 
+    println(s"Accuracy: $accuracy")
+
     accuracy
   }
 
