@@ -91,3 +91,15 @@ object HyperbolicTangentActivation extends Activation
 
   override def toString(): String = s"tanh"
 }
+
+object RectifiedLinearActivation extends Activation
+{
+  override def apply(x: Double): Double = math.max(0, x)
+
+  /**
+   * Derivative of this function.
+   */
+  override def d(x: Double): Double = 0
+
+  override def toString(): String = s"rectified linear"
+}

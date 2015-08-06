@@ -24,7 +24,7 @@ import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
 /**
  * Back propagation trainer.
  *
- * Ideas for the trainer were borrowed from Michel Nielsen's Neural Networks and Deep Learning.
+ * Ideas for the trainer were influenced by Michel Nielsen's Neural Networks and Deep Learning.
  * http://neuralnetworksanddeeplearning.com/
  *
  * @author Araik Grigoryan
