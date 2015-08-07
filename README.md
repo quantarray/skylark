@@ -14,7 +14,7 @@ val trainingDataProvider = new MnistDataProvider("data/mnist/train-images-idx3-u
 
 val testDataProvider = new MnistDataProvider("data/mnist/t10k-images-idx3-ubyte", "data/mnist/t10k-labels-idx1-ubyte")
 
-val testSetIsFit = (testDataProvider.read.set, MnistSupervisedDataSample.fit _)
+val testSetIsFit = (testDataProvider.read.set, MnistSupervisedDataSample.isFit _)
 
 // Number of nodes in the hidden layer ≈ √ (784 * 10)
 val net = FeedForwardNet(GaussianWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 784, 88, 10)
