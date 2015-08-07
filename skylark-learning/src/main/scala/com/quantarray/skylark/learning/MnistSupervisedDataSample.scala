@@ -37,7 +37,7 @@ case class MnistSupervisedDataSample(imageLabel: (Array[Array[Int]], Int)) exten
 
 object MnistSupervisedDataSample
 {
-  def fit(output: Seq[Double], sample: SupervisedDataSample): Boolean =
+  def isFit(output: Seq[Double], sample: SupervisedDataSample): Boolean =
   {
     val guess = output.zipWithIndex.maxBy(_._1)._2
     val target = sample.target.zipWithIndex.maxBy(_._1)._2

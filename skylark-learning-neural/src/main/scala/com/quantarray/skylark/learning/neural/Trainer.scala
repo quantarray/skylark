@@ -34,7 +34,7 @@ trait Trainer
    * @return A collection of a new network with adjusted biases and weights and accuracy at end of each epoch.
    *         First element of the collection contains the untrained network and its accuracy.
    */
-  def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)])
+  def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetIsFit: Option[(SupervisedDataSet, Fitness)])
                             (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): Seq[(N, Option[Double])]
 
   /**
@@ -43,13 +43,13 @@ trait Trainer
    * @return A collection of a new network with adjusted biases and weights and accuracy at end of each epoch.
    *         First element of the collection contains the untrained network and its accuracy.
    */
-  def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: (SupervisedDataSet, Fitness))
+  def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetIsFit: (SupervisedDataSet, Fitness))
                             (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): Seq[(N, Option[Double])] =
-    trainAndTest(net, numberOfEpochs, batchSize, trainingSet, Some(testSetFit))
+    trainAndTest(net, numberOfEpochs, batchSize, trainingSet, Some(testSetIsFit))
 
   /**
    * Tests the supplied network.
    * @return Accuracy.
    */
-  def test[N <: Net](net: N, testSetFit: (SupervisedDataSet, Fitness)): Double
+  def test[N <: Net](net: N, testSetIsFit: (SupervisedDataSet, Fitness)): Double
 }

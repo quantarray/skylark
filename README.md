@@ -14,7 +14,7 @@ val trainingDataProvider = new MnistDataProvider("data/mnist/train-images-idx3-u
 
 val testDataProvider = new MnistDataProvider("data/mnist/t10k-images-idx3-ubyte", "data/mnist/t10k-labels-idx1-ubyte")
 
-val testSetFit = (testDataProvider.read.set, MnistSupervisedDataSample.fit _)
+val testSetIsFit = (testDataProvider.read.set, MnistSupervisedDataSample.fit _)
 
 // Number of nodes in the hidden layer ≈ √ (784 * 10)
 val net = FeedForwardNet(GaussianWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 784, 88, 10)
@@ -26,9 +26,9 @@ val numberOfEpochs = 30
 val miniBatchSize = 10
 
 // First accuracy is the one of the untrained (random weights) network, second should be ≈ 90%; subsequent accuracies will improve
-val trainedNets = trainer.trainAndTest(net, numberOfEpochs, miniBatchSize, trainingDataProvider.read.set, testSetFit)
+val trainedNets = trainer.trainAndTest(net, numberOfEpochs, miniBatchSize, trainingDataProvider.read.set, testSetIsFit)
 
-val accuracy = trainer.test(trainedNets.last._1, testSetFit)
+val accuracy = trainer.test(trainedNets.last._1, testSetIsFit)
 
 trainingDataProvider.close()
 testDataProvider.close()

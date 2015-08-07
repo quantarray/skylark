@@ -31,12 +31,12 @@ import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
  */
 case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) extends Trainer with BreezeMatrixOps
 {
-  override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetFit: Option[(SupervisedDataSet, Fitness)] = None)
+  override def trainAndTest[N <: Net](net: N, numberOfEpochs: Int, batchSize: Int, trainingSet: SupervisedDataSet, testSetIsFit: Option[(SupervisedDataSet, Fitness)] = None)
                                      (implicit cbf: NetCanBuildFrom[N, net.C, net.T, N]): Seq[(N, Option[Double])] =
   {
     val initialBsWs = matrices(net.biases, net.weights)
 
-    val initialAccuracy: Option[Double] = testSetFit match
+    val initialAccuracy: Option[Double] = testSetIsFit match
     {
       case Some(tsf) => Some(evaluate(net.activation, initialBsWs, tsf))
       case _ => None
@@ -54,9 +54,9 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
         train(net.activation, net.cost, weightDecay / trainingSet.samples.size, bsws, miniBatch)
       })
 
-      testSetFit match
+      testSetIsFit match
       {
-        case Some(tsf) => (newBsWs, Some(evaluate(net.activation, newBsWs, tsf))) :: x
+        case Some(tsif) => (newBsWs, Some(evaluate(net.activation, newBsWs, tsif))) :: x
         case _ => (newBsWs, None) :: x
       }
     })
@@ -65,9 +65,9 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
   }
 
 
-  override def test[N <: Net](net: N, testSetFit: (SupervisedDataSet, Fitness)): Double =
+  override def test[N <: Net](net: N, testSetIsFit: (SupervisedDataSet, Fitness)): Double =
   {
-    evaluate(net.activation, matrices(net.biases, net.weights), testSetFit)
+    evaluate(net.activation, matrices(net.biases, net.weights), testSetIsFit)
   }
 
   /**
@@ -135,7 +135,7 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
     val nablaB = delta
     val nablaW: Matrix = delta * as.tail.head.t
 
-    val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, (as.size - 1).to(2, -1)).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
+    val (nablaBs, nablaWs, _) = (as.tail.tail, zs.tail, as.size - 1 to 2 by -1).zipped.foldLeft((List(nablaB), List(nablaW), delta))((nablaBsNablaWsDelta, azLayerIndexes) =>
     {
       val nablaBs = nablaBsNablaWsDelta._1
       val nablaWs = nablaBsNablaWsDelta._2
@@ -161,12 +161,12 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
     (nablaBs, nablaWs)
   }
 
-  private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSetFit: (SupervisedDataSet, (Seq[Double], SupervisedDataSample) => Boolean)): Double =
+  private def evaluate(activation: Activation, bsws: (Seq[Matrix], Seq[Matrix]), testSetIsFit: (SupervisedDataSet, (Seq[Double], SupervisedDataSample) => Boolean)): Double =
   {
-    val testSet = testSetFit._1
-    val fit = testSetFit._2
+    val testSet = testSetIsFit._1
+    val isFit = testSetIsFit._2
 
-    val accuracy = testSet.samples.map(sample => if (fit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum / testSet.samples.size
+    val accuracy = testSet.samples.map(sample => if (isFit(feedForward(activation, bsws, sample.input), sample)) 1.0 else 0.0).sum / testSet.samples.size
 
     println(s"Accuracy: $accuracy")
 
