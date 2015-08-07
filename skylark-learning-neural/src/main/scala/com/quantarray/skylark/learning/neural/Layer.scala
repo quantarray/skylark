@@ -30,5 +30,7 @@ trait Layer
 
   def index: LayerIndex
 
+  def activation: Activation
+
   def cells: Seq[C]
 }

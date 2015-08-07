@@ -24,7 +24,7 @@ package com.quantarray.skylark.learning.neural
  *
  * @author Araik Grigoryan
  */
-case class Nucleus(index: CellIndex, numberOfNeurons: Int) extends Layer
+case class Nucleus(index: LayerIndex, activation: Activation, numberOfNeurons: Int) extends Layer
 {
   type C = Neuron
 

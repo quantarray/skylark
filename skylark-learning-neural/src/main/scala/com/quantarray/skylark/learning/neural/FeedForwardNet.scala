@@ -57,11 +57,11 @@ object FeedForwardNet
   case class FromScratchBuilder(weight: WeightAssignment, activation: Activation, cost: Cost,
                                 neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*) extends NetBuilder[Neuron, Synapse, FeedForwardNet]
   {
-    val layer0 = Nucleus(0, neuronsInLayer0)
+    val layer0 = Nucleus(0, activation, neuronsInLayer0)
 
-    val layer1 = Nucleus(1, neuronsInLayer1)
+    val layer1 = Nucleus(1, activation, neuronsInLayer1)
 
-    val layers2AndUp = neuronsInLayer2AndUp.zipWithIndex.map(x => Nucleus(x._2 + 2, x._1))
+    val layers2AndUp = neuronsInLayer2AndUp.zipWithIndex.map(x => Nucleus(x._2 + 2, activation, x._1))
 
     val layers = layer0 +: layer1 +: layers2AndUp
 
@@ -94,7 +94,7 @@ object FeedForwardNet
 
   case class FromBiasesAndWeightsBuilder(activation: Activation, cost: Cost, biases: Biases, weights: Weights) extends NetBuilder[Neuron, Synapse, FeedForwardNet]
   {
-    val layers = weights.map(kv => Nucleus(kv._1, kv._2.size)).toSeq :+ Nucleus(weights.size, biases.last._2.size)
+    val layers = weights.map(kv => Nucleus(kv._1, activation, kv._2.size)).toSeq :+ Nucleus(weights.size, activation, biases.last._2.size)
 
     val synapses = layers.zipWithIndex.foldLeft(List.empty[Synapse])((synapses, layerIndex) =>
     {
