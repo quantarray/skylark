@@ -22,7 +22,7 @@ package com.quantarray.skylark.learning.neural
 import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
 
 /**
- * Back propagation trainer.
+ * Back propagation trainer with stochastic gradient descent.
  *
  * Ideas for the trainer were influenced by Michel Nielsen's Neural Networks and Deep Learning.
  * http://neuralnetworksanddeeplearning.com/
@@ -70,6 +70,9 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
     evaluate(net.activation, matrices(net.biases, net.weights), testSetFit)
   }
 
+  /**
+   * Train on one mini-batch of samples and update networks' biases and weights at the end of training.
+   */
   private def train(activation: Activation, cost: Cost, scaledWeightDecay: Double, bsws: (Seq[Matrix], Seq[Matrix]),
                     samples: Seq[SupervisedDataSample]): (Seq[Matrix], Seq[Matrix]) =
   {
@@ -91,6 +94,9 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
     (newBs, newWs)
   }
 
+  /**
+   * Trains on one sample and calculates gradients for biases and weights.
+   */
   private def train(activation: Activation, cost: Cost, bsws: (Seq[Matrix], Seq[Matrix]), sample: SupervisedDataSample): (Seq[Matrix], Seq[Matrix]) =
   {
     val biases = bsws._1

@@ -25,7 +25,7 @@ val trainer = BackPropagationTrainer(learningRate = 0.05, weightDecay = 0.5)
 val numberOfEpochs = 30
 val miniBatchSize = 10
 
-// First accuracy is the one of the untrained (random weights) network, second should be ≈ 85%; subsequent accuracies will improve
+// First accuracy is the one of the untrained (random weights) network, second should be ≈ 90%; subsequent accuracies will improve
 val trainedNets = trainer.trainAndTest(net, numberOfEpochs, miniBatchSize, trainingDataProvider.read.set, testSetFit)
 
 val accuracy = trainer.test(trainedNets.last._1, testSetFit)
