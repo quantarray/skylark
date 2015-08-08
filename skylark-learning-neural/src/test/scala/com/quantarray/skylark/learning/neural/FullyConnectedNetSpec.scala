@@ -23,15 +23,15 @@ import com.quantarray.skylark.learning.{SupervisedDataSample, SupervisedDataSet}
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
- * Feed-forward net spec.
+ * Fully-connected net spec.
  *
  * @author Araik Grigoryan
  */
-class FeedForwardNetSpec extends FlatSpec with Matchers
+class FullyConnectedNetSpec extends FlatSpec with Matchers
 {
-  "FeedForwardNet" should "be trainable with 3 layers" in
+  "Fully-connected net" should "be trainable with 3 layers" in
     {
-      val net = FeedForwardNet(IndexedWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 4, 3, 2)
+      val net = FullyConnectedNet(IndexedWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 4, 3, 2)
 
       net.connections.size should be((4 + 1) * 3 + (3 + 1) * 2) // +1s are to account for the Biases
 
@@ -68,7 +68,7 @@ class FeedForwardNetSpec extends FlatSpec with Matchers
 
   it should "be trainable with 4 layers" in
     {
-      val net = FeedForwardNet(IndexedWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 5, 4, 3, 2)
+      val net = FullyConnectedNet(IndexedWeightAssignment, SigmoidActivation, QuadraticCost(SigmoidActivation), 5, 4, 3, 2)
 
       net.connections.size should be((5 + 1) * 4 + (4 + 1) * 3 + (3 + 1) * 2) // +1s are to account for the Biases
 

@@ -22,13 +22,11 @@ package com.quantarray.skylark.learning.neural
 import scala.language.reflectiveCalls
 
 /**
- * Feed-forward net.
- *
- * The head of the layers is considered the input layer.
+ * Fully-connected net.
  *
  * @author Araik Grigoryan
  */
-case class FeedForwardNet(activation: Activation, cost: Cost, connections: Seq[Synapse]) extends Net
+case class FullyConnectedNet(activation: Activation, cost: Cost, connections: Seq[Synapse]) extends Net
 {
   type C = Neuron
 
@@ -51,11 +49,11 @@ case class FeedForwardNet(activation: Activation, cost: Cost, connections: Seq[S
   lazy val weights: Weights = props(sourceLayerGroups, _.source.nonBias, _.weight)
 }
 
-object FeedForwardNet
+object FullyConnectedNet
 {
 
   case class FromScratchBuilder(weight: WeightAssignment, activation: Activation, cost: Cost,
-                                neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*) extends NetBuilder[Neuron, Synapse, FeedForwardNet]
+                                neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*) extends NetBuilder[Neuron, Synapse, FullyConnectedNet]
   {
     val layer0 = Nucleus(0, activation, neuronsInLayer0)
 
@@ -89,10 +87,10 @@ object FeedForwardNet
       }
     })
 
-    override def net: FeedForwardNet = FeedForwardNet(activation, cost, synapses)
+    override def net: FullyConnectedNet = FullyConnectedNet(activation, cost, synapses)
   }
 
-  case class FromBiasesAndWeightsBuilder(activation: Activation, cost: Cost, biases: Biases, weights: Weights) extends NetBuilder[Neuron, Synapse, FeedForwardNet]
+  case class FromBiasesAndWeightsBuilder(activation: Activation, cost: Cost, biases: Biases, weights: Weights) extends NetBuilder[Neuron, Synapse, FullyConnectedNet]
   {
     val layers = weights.map(kv => Nucleus(kv._1, activation, kv._2.size)).toSeq :+ Nucleus(weights.size, activation, biases.last._2.size)
 
@@ -121,15 +119,15 @@ object FeedForwardNet
       }
     })
 
-    override def net: FeedForwardNet = FeedForwardNet(activation, cost, synapses)
+    override def net: FullyConnectedNet = FullyConnectedNet(activation, cost, synapses)
   }
 
-  implicit val canBuildFrom = new NetCanBuildFrom[FeedForwardNet, Neuron, Synapse, FeedForwardNet]
+  implicit val canBuildFrom = new NetCanBuildFrom[FullyConnectedNet, Neuron, Synapse, FullyConnectedNet]
   {
     /**
      * Creates a new builder on request of a net.
      */
-    override def apply(from: FeedForwardNet, biasesWeights: (Biases, Weights)) =
+    override def apply(from: FullyConnectedNet, biasesWeights: (Biases, Weights)) =
     {
       FromBiasesAndWeightsBuilder(from.activation, from.cost, biasesWeights._1, biasesWeights._2)
     }
@@ -150,7 +148,7 @@ object FeedForwardNet
    * In addition to the requested neurons, a bias cell will be created for each layer. By convention,
    * the zeroth layer will not receive a bias cell because it will directly absorb the inputs.
    */
-  def apply(weightAssignment: WeightAssignment, activation: Activation, cost: Cost, neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*): FeedForwardNet =
+  def apply(weightAssignment: WeightAssignment, activation: Activation, cost: Cost, neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*): FullyConnectedNet =
   {
     canBuildFrom(weightAssignment, activation, cost, neuronsInLayer0, neuronsInLayer1, neuronsInLayer2AndUp: _*).net
   }
