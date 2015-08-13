@@ -152,4 +152,9 @@ object FullyConnectedNet
   {
     canBuildFrom(weightAssignment, activation, cost, neuronsInLayer0, neuronsInLayer1, neuronsInLayer2AndUp: _*).net
   }
+
+  def apply(weightAssignment: WeightAssignment, regime: Regime, neuronsInLayer0: Int, neuronsInLayer1: Int, neuronsInLayer2AndUp: Int*): FullyConnectedNet =
+  {
+    apply(weightAssignment, regime.activation, regime.cost, neuronsInLayer0, neuronsInLayer1, neuronsInLayer2AndUp: _*)
+  }
 }

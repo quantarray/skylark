@@ -31,9 +31,23 @@ trait Regime
   def cost: Cost
 }
 
-object CrossEntropyRegime extends Regime
+/**
+ * Cross-entropy regime with Softmax activation is a natural pairing.
+ *
+ * On The Pairing Of The Softmax Activation And Cross-Entropy Penalty Functions And The Derivation Of The Softmax Activation Function
+ * by Dunne Campbell , R. A. Dunne , N. A. Campbell
+ * http://citeseerx.ist.psu.edu/viewdoc/versions?doi=10.1.1.49.6403
+ */
+object SoftmaxCrossEntropyRegime extends Regime
 {
-  val activation = ??? //SoftmaxActivation
+  val activation = SoftmaxActivation
+
+  val cost = CrossEntropyCost
+}
+
+object SigmoidCrossEntropyRegime extends Regime
+{
+  val activation = SigmoidActivation
 
   val cost = CrossEntropyCost
 }

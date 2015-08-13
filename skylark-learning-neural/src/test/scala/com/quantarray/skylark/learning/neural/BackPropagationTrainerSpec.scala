@@ -24,7 +24,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class BackPropagationTrainerSpec extends FlatSpec with Matchers
 {
-  "BackPropagationTrainer" should "train and test feed-forward net on MNIST data" in
+  "BackPropagationTrainer" should "train and test fully-connected net on MNIST data" in
     {
       // Load training and test data
       val trainingDataProvider = new MnistDataProvider("data/mnist/train-images-idx3-ubyte", "data/mnist/train-labels-idx1-ubyte")
@@ -34,7 +34,7 @@ class BackPropagationTrainerSpec extends FlatSpec with Matchers
       val testSetIsFit = (testDataProvider.read.set, MnistSupervisedDataSample.isFit _)
 
       // Number of nodes in the hidden layer ≈ √ (784 * 10)
-      val net = FullyConnectedNet(GaussianWeightAssignment, SigmoidActivation, CrossEntropyCost, 784, 88, 10)
+      val net = FullyConnectedNet(GaussianWeightAssignment, SigmoidCrossEntropyRegime, 784, 88, 10)
 
       // Train the network
       val trainer = BackPropagationTrainer(learningRate = 0.005, weightDecay = 0.5)
