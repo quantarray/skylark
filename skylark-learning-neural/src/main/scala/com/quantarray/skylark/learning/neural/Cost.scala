@@ -43,7 +43,7 @@ case class QuadraticCost(activation: Activation) extends Cost
     0.5 * n * n
   }
 
-  override def d(z: Matrix, a: Matrix, y: Matrix): Matrix = (a - y) :* z.map(activation.d)
+  override def d(z: Matrix, a: Matrix, y: Matrix): Matrix = (a - y) :* activation.d(z)
 }
 
 case object CrossEntropyCost extends Cost

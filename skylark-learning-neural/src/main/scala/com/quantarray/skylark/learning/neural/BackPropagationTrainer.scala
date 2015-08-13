@@ -116,7 +116,7 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
 
       val z = (w.t * a: Matrix) + b
 
-      val newA = z.map(activation)
+      val newA = activation(z)
 
       (newA :: as, z :: zs)
     })
@@ -149,7 +149,7 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
 
       val wd: Matrix = w * delta
 
-      val newDelta = wd :* z.map(activation.d)
+      val newDelta = wd :* activation.d(z)
 
       val nablaB = newDelta
       val dx: Matrix = newDelta * a.t
@@ -186,7 +186,7 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
 
       val z = (w.t * a: Matrix) + b
 
-      z.map(activation)
+      activation(z)
     })
 
     a.toArray
