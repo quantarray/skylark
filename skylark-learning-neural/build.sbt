@@ -12,6 +12,7 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % Build.jodaTimeVersion,
   "org.joda" % "joda-convert" % Build.jodaConvertVersion,
   "org.scalanlp" %% "breeze" % Build.breezeVersion,
+  "org.scalanlp" %% "breeze-natives" % Build.breezeVersion,
   "org.scalatest" % "scalatest_2.11" % Build.scalatestVersion % "test"
 )
 
