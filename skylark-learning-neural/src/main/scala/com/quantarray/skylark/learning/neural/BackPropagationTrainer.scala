@@ -130,6 +130,7 @@ case class BackPropagationTrainer(learningRate: Double, weightDecay: Double) ext
     // Target output
     val y = Matrix(sample.target)
     val z = zs.head
+    // Delta of the last layer
     val delta = cost.d(z, a, y)
 
     val nablaB = delta
