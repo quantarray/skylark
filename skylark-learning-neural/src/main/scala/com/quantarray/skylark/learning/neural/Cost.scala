@@ -56,4 +56,13 @@ case object CrossEntropyCost extends Cost
   override def d(z: Matrix, a: Matrix, y: Matrix): Matrix = a - y
 }
 
+case object LogLikelihoodCost extends Cost
+{
+  override def apply(a: Matrix, y: Matrix): Double =
+  {
+    sum(-log(a))
+  }
+
+  override def d(z: Matrix, a: Matrix, y: Matrix): Matrix = a - y
+}
 

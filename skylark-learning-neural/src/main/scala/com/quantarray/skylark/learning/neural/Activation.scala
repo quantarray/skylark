@@ -102,14 +102,23 @@ object RectifiedLinearActivation extends ElementaryActivation
  */
 object SoftmaxActivation extends Activation
 {
-  override def apply(x: Matrix): Matrix =
+  override def apply(z: Matrix): Matrix =
   {
-    val colSums = (0 until x.cols).map(col => (0 until x.rows).map(row => math.exp(x(row, col))).sum)
-    x.mapPairs((rowCol, value) => math.exp(value) / colSums(rowCol._2))
+    val colSums = (0 until z.cols).map(col => (0 until z.rows).map(row => math.exp(z(row, col))).sum)
+    z.mapPairs((rowCol, value) => math.exp(value) / colSums(rowCol._2))
   }
 
   /**
    * Derivative of this function.
+   *
+   * ∂f_i / ∂z_j = f_i * (1 - f_j) ; if i = j
+   * ∂f_i / ∂z_j = -f_i * f_j      ; if i ≠ j
    */
-  override def d(x: Matrix): Matrix = Matrix.eye(x.rows)
+  override def d(z: Matrix): Matrix =
+  {
+    val f = SoftmaxActivation(z)
+    val fis = (0 until f.rows).map(row => f(row, 0))
+    val dis = fis.zipWithIndex.zip(fis.zipWithIndex).map(fi => if (fi._1._2 == fi._2._2) fi._1._1 * (1.0 - fi._2._1) else -fi._1._1 * fi._2._1)
+    Matrix(dis)
+  }
 }
