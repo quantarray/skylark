@@ -117,6 +117,7 @@ object SoftmaxActivation extends Activation
   override def d(z: Matrix): Matrix =
   {
     val f = SoftmaxActivation(z)
+    // FIXME: Extend the logic to all columns
     val fis = (0 until f.rows).map(row => f(row, 0))
     val dis = fis.zipWithIndex.zip(fis.zipWithIndex).map(fi => if (fi._1._2 == fi._2._2) fi._1._1 * (1.0 - fi._2._1) else -fi._1._1 * fi._2._1)
     Matrix(dis)
