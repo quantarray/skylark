@@ -27,7 +27,7 @@ package com.quantarray.skylark.timeseries
 trait TimeSeries[V]
 {
   /**
-   * Entity key. An arbitrary representation of the structure of time-series data by which a value could be looked up.
+   * Entity key. An arbitrary representation of the structure of time series data by which a value could be looked up.
    *
    * Examples:
    *

@@ -50,10 +50,10 @@ object CSVTimeSerial
 
   val versionTimeFormat: String = "yyyy-MM-dd'T'hh:mm:ssZ"
 
-  object CSVStringReaderTimeSerial extends TimeSerial[String, Reader, Nothing]
+  trait CSVStringReaderTimeSerial extends TimeSerial[String, Reader, Nothing] with TimeSeriesSetResolution
   {
 
-    object StringIsCSVTimeSerialReader extends TimeSerialReader //with CSVTimeSeriesSetResolution
+    object StringIsCSVTimeSerialReader extends TimeSerialReader
     {
 
       import scala.concurrent.ExecutionContext.Implicits.global
@@ -76,10 +76,9 @@ object CSVTimeSerial
             {
               val points = lines.foldLeft(List.empty[TimeSeriesPoint[String]])((points, line) =>
               {
-                // FIXME: if (line.contains(Set)) fromSetName(line(Set)) else set
-                val resolvedSet = OfficialSet
                 val observedTime = line(ObservedTimeColumnName).d(observedTimeFormat)
                 val observedValue = line(ObservedValueColumnName)
+                val resolvedSet = if (line.contains(SetColumnName)) fromSetName(line(SetColumnName)) else set
                 val versionTime = if (line.contains(VersionTimeColumnName)) line(VersionTimeColumnName).d(versionTimeFormat) else asOfVersionTime
 
                 if (resolvedSet == set && observedInterval.containsInclusive(observedTime) && versionTime.isBeforeOrEquals(asOfVersionTime))

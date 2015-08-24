@@ -38,11 +38,11 @@ class CSVTimeSeriesReadProvider(filePath: Path) extends TimeSeriesProvider
 
   type WS = Nothing
 
-  lazy val file = new File(filePath.toString)
+  private lazy val file = new File(filePath.toString)
 
-  lazy val inputStream = new FileInputStream(file)
+  private lazy val inputStream = new FileInputStream(file)
 
-  implicit lazy val reader = new InputStreamReader(inputStream, CSVReader.DEFAULT_ENCODING)
+  private implicit lazy val reader = new InputStreamReader(inputStream, CSVReader.DEFAULT_ENCODING)
 
   case class CSVTimeSeriesReader() extends TimeSeriesReader
   {

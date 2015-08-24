@@ -19,39 +19,12 @@
 
 package com.quantarray.skylark.timeseries
 
-import org.joda.time.{DateTime, Interval}
-
-import scala.concurrent.Future
-
 /**
- * Time-serial type class.
+ * Time series set resolution.
  *
  * @author Araik Grigoryan
  */
-trait TimeSerial[V, RS, WS]
+trait TimeSeriesSetResolution
 {
-
-  trait TimeSerialReader
-  {
-    def series(entityKey: String, observedInterval: Interval, set: TimeSeriesSet, asOfVersionTime: DateTime)
-              (implicit session: RS): Future[TimeSeries[V]]
-  }
-
-  trait TimeSerialWriter
-  {
-
-    trait WriteResult
-    {
-      def versionTime: DateTime
-    }
-
-    type WR <: WriteResult
-
-    def series(series: TimeSeries[V])(implicit session: WS): Future[WR]
-  }
-
-  def read: TimeSerialReader
-
-  def write: TimeSerialWriter
+  def fromSetName(setName: String): TimeSeriesSet
 }
-
