@@ -26,13 +26,19 @@ package com.quantarray.skylark.timeseries
  */
 trait TimeSeries[V]
 {
-  type P <: TimeSeriesPoint[V]
-
+  /**
+   * Entity key. An arbitrary representation of the structure of time-series data by which a value could be looked up.
+   *
+   * Examples:
+   *
+   * "Earth:North America:USA:Los Angeles:Temperature"
+   * "CL_2021Z.price" ... Price of December 2021 WTI futures contract
+   */
   def entityKey: String
 
   def set: TimeSeriesSet
 
-  def points: Seq[P]
+  def points: Seq[TimeSeriesPoint[V]]
 
   def isEmpty: Boolean = points.isEmpty
 
@@ -47,20 +53,23 @@ trait TimeSeries[V]
 
 object TimeSeries
 {
-  def empty[V](entityKey: String, set: TimeSeriesSet) =
+
+
+  def apply[V](entityKey: String, set: TimeSeriesSet, points: Seq[TimeSeriesPoint[V]]): TimeSeries[V] =
   {
-    val eks = (entityKey, set)
+    val eksps = (entityKey, set, points)
 
     new TimeSeries[V]
     {
-      type P = TimeSeriesPoint[V]
+      val entityKey: String = eksps._1
 
-      val entityKey: String = eks._1
+      val set: TimeSeriesSet = eksps._2
 
-      val set: TimeSeriesSet = eks._2
-
-      val points: Seq[P] = Seq.empty
+      val points: Seq[TimeSeriesPoint[V]] = eksps._3
     }
   }
+
+  def empty[V](entityKey: String, set: TimeSeriesSet): TimeSeries[V] = apply(entityKey, set, Seq.empty)
+
 }
 

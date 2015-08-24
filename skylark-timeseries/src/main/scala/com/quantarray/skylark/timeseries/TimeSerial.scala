@@ -31,13 +31,13 @@ import scala.concurrent.Future
 trait TimeSerial[V, RS, WS]
 {
 
-  trait TimeSerialReader[S]
+  trait TimeSerialReader
   {
-    def series(entityKey: String, set: TimeSeriesSet, observedInterval: Interval, asOfVersionTime: DateTime)
-              (implicit session: S): Future[Seq[TimeSeries[V]]]
+    def series(entityKey: String, observedInterval: Interval, set: TimeSeriesSet, asOfVersionTime: DateTime)
+              (implicit session: RS): Future[TimeSeries[V]]
   }
 
-  trait TimeSerialWriter[S]
+  trait TimeSerialWriter
   {
 
     trait WriteResult
@@ -45,11 +45,11 @@ trait TimeSerial[V, RS, WS]
       def versionTime: DateTime
     }
 
-    def series(series: TimeSeries[V])(implicit session: S): Future[WriteResult]
+    def series(series: TimeSeries[V])(implicit session: WS): Future[WriteResult]
   }
 
-  def read(session: RS): TimeSerialReader[RS]
+  def read: TimeSerialReader
 
-  def write(session: WS): TimeSerialWriter[WS]
+  def write: TimeSerialWriter
 }
 

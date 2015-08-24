@@ -10,7 +10,7 @@ lazy val `skylark-time` = project
 
 lazy val `skylark-natural-language` = project
 
-lazy val `skylark-timeseries` = project
+lazy val `skylark-timeseries` = project.dependsOn(`skylark-time`)
 
 lazy val `skylark-measure` = project.dependsOn(`skylark-natural-language`)
 

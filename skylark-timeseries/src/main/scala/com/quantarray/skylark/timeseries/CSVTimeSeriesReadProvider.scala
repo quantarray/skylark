@@ -19,9 +19,10 @@
 
 package com.quantarray.skylark.timeseries
 
-import java.io.Reader
+import java.io.{InputStreamReader, FileInputStream, File, Reader}
 import java.nio.file.Path
 
+import com.github.tototoshi.csv.CSVReader
 import org.joda.time.{DateTime, Interval}
 
 import scala.concurrent.Future
@@ -37,6 +38,12 @@ class CSVTimeSeriesReadProvider(filePath: Path) extends TimeSeriesProvider
 
   type WS = Nothing
 
+  lazy val file = new File(filePath.toString)
+
+  lazy val inputStream = new FileInputStream(file)
+
+  implicit lazy val reader = new InputStreamReader(inputStream, CSVReader.DEFAULT_ENCODING)
+
   case class CSVTimeSeriesReader() extends TimeSeriesReader
   {
     /**
@@ -45,12 +52,14 @@ class CSVTimeSeriesReadProvider(filePath: Path) extends TimeSeriesProvider
     override def history[V](entityKey: String, observedInterval: Interval, set: TimeSeriesSet, asOfVersionTime: DateTime)
                            (implicit timeSerial: TimeSerial[V, Reader, _]): Future[TimeSeries[V]] =
     {
-      import scala.concurrent.ExecutionContext.Implicits.global
-
-      Future(TimeSeries.empty(entityKey, set))
+      timeSerial.read.series(entityKey, observedInterval, set, asOfVersionTime)
     }
 
-    override def close(): Unit = ???
+    override def close(): Unit =
+    {
+      reader.close()
+      inputStream.close()
+    }
   }
 
   lazy val read: TimeSeriesReader = CSVTimeSeriesReader()

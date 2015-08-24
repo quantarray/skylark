@@ -41,6 +41,16 @@ object DateTimeSupport
     {
       def isBeforeOrEquals(instant: ReadableInstant): Boolean = dateTime.isBefore(instant) || dateTime.isEqual(instant)
 
+      def isAfterOrEquals(instant: ReadableInstant): Boolean = dateTime.isAfter(instant) || dateTime.isEqual(instant)
+
+      def <(instant: ReadableInstant): Boolean = dateTime.isBefore(instant)
+
+      def <=(instant: ReadableInstant): Boolean = dateTime.isBeforeOrEquals(instant)
+
+      def >(instant: ReadableInstant): Boolean = dateTime.isAfter(instant)
+
+      def >=(instant: ReadableInstant): Boolean = dateTime.isAfterOrEquals(instant)
+
       def until(end: DateTime): Interval = new Interval(dateTime, end)
 
       def by(step: ReadablePeriod): Seq[DateTime] = Iterator.iterate(dateTime)(_.plus(step)).toStream
