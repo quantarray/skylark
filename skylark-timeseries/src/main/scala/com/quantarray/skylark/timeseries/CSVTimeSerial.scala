@@ -36,15 +36,15 @@ import scala.concurrent.Future
  */
 object CSVTimeSerial
 {
-  val EntityKeyColumnName = "Entity Key"
+  val entityKeyColumnName = "Entity Key"
 
-  val SetColumnName = "Set"
+  val setColumnName = "Set"
 
-  val ObservedTimeColumnName = "Observed Time"
+  val observedTimeColumnName = "Observed Time"
 
-  val ObservedValueColumnName = "Observed Value"
+  val observedValueColumnName = "Observed Value"
 
-  val VersionTimeColumnName = "Version Time"
+  val versionTimeColumnName = "Version Time"
 
   val observedTimeFormat: String = "yyyy-MM-dd"
 
@@ -76,10 +76,10 @@ object CSVTimeSerial
             {
               val points = lines.foldLeft(List.empty[TimeSeriesPoint[String]])((points, line) =>
               {
-                val observedTime = line(ObservedTimeColumnName).d(observedTimeFormat)
-                val observedValue = line(ObservedValueColumnName)
-                val resolvedSet = if (line.contains(SetColumnName)) fromSetName(line(SetColumnName)) else set
-                val versionTime = if (line.contains(VersionTimeColumnName)) line(VersionTimeColumnName).d(versionTimeFormat) else asOfVersionTime
+                val observedTime = line(observedTimeColumnName).d(observedTimeFormat)
+                val observedValue = line(observedValueColumnName)
+                val resolvedSet = if (line.contains(setColumnName)) fromSetName(line(setColumnName)) else set
+                val versionTime = if (line.contains(versionTimeColumnName)) line(versionTimeColumnName).d(versionTimeFormat) else asOfVersionTime
 
                 if (resolvedSet == set && observedInterval.containsInclusive(observedTime) && versionTime.isBeforeOrEquals(asOfVersionTime))
                   TimeSeriesPoint(observedTime, observedValue.toString, versionTime) :: points
