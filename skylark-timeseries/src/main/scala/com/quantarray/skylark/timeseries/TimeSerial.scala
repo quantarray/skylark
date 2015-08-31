@@ -34,7 +34,7 @@ trait TimeSerial[V, RS, WS]
   trait TimeSerialReader
   {
     def series(entityKey: String, observedInterval: Interval, set: TimeSeriesSet, asOfVersionTime: DateTime)
-              (implicit session: RS): Future[TimeSeries[V]]
+              (implicit session: RS): Future[AnyTimeSeries[V]]
   }
 
   trait TimeSerialWriter
@@ -47,7 +47,7 @@ trait TimeSerial[V, RS, WS]
 
     type WR <: WriteResult
 
-    def series(series: TimeSeries[V])(implicit session: WS): Future[WR]
+    def series(series: AnyTimeSeries[V])(implicit session: WS): Future[WR]
   }
 
   def read: TimeSerialReader

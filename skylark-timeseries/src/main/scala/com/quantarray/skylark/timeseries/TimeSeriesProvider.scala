@@ -42,13 +42,13 @@ trait TimeSeriesProvider
      * Reads history of time series.
      */
     def history[V](entityKey: String, observedInterval: Interval, set: TimeSeriesSet, asOfVersionTime: DateTime)
-                  (implicit timeSerial: TimeSerial[V, RS, _]): Future[TimeSeries[V]]
+                  (implicit timeSerial: TimeSerial[V, RS, _]): Future[AnyTimeSeries[V]]
 
     /**
      * Reads history of time series.
      */
     def history[V](entityKeys: Seq[String], observedInterval: Interval, set: TimeSeriesSet, asOfVersionTime: DateTime)
-                  (implicit timeSerial: TimeSerial[V, RS, _]): Future[Seq[TimeSeries[V]]] =
+                  (implicit timeSerial: TimeSerial[V, RS, _]): Future[Seq[AnyTimeSeries[V]]] =
     {
       import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -71,7 +71,7 @@ trait TimeSeriesProvider
     /**
      * Writes an immutable, non-destructible versioned copy of the series.
      */
-    def latest[V](series: TimeSeries[V])(implicit timeSerial: TimeSerial[V, _, WS]): Future[WR]
+    def latest[V](series: AnyTimeSeries[V])(implicit timeSerial: TimeSerial[V, _, WS]): Future[WR]
 
     def close(): Unit
   }

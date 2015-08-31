@@ -59,11 +59,11 @@ object CSVTimeSerial
       import scala.concurrent.ExecutionContext.Implicits.global
 
       override def series(entityKey: String, observedInterval: Interval, set: TimeSeriesSet, asOfVersionTime: DateTime)
-                         (implicit session: Reader): Future[TimeSeries[String]] =
+                         (implicit session: Reader): Future[AnyTimeSeries[String]] =
       {
         val csvReader = CSVReader.open(session)
 
-        val future: Future[TimeSeries[String]] =
+        val future: Future[AnyTimeSeries[String]] =
           try
           {
             val lines = csvReader.allWithHeaders()

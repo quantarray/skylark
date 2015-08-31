@@ -50,7 +50,7 @@ class CSVTimeSeriesReadProvider(filePath: Path) extends TimeSeriesProvider
      * Reads history of time series.
      */
     override def history[V](entityKey: String, observedInterval: Interval, set: TimeSeriesSet, asOfVersionTime: DateTime)
-                           (implicit timeSerial: TimeSerial[V, Reader, _]): Future[TimeSeries[V]] =
+                           (implicit timeSerial: TimeSerial[V, Reader, _]): Future[AnyTimeSeries[V]] =
     {
       timeSerial.read.series(entityKey, observedInterval, set, asOfVersionTime)
     }

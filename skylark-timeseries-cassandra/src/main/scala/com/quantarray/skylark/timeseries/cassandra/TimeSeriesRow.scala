@@ -17,19 +17,21 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.timeseries
+package com.quantarray.skylark.timeseries.cassandra
+
+import com.quantarray.skylark.timeseries.{TimeSeriesSet, TimeSeriesPoint}
+import org.joda.time.DateTime
 
 /**
- * Time series set.
+ * Date series row.
  *
  * @author Araik Grigoryan
  */
-trait TimeSeriesSet
+protected[cassandra] case class TimeSeriesRow[V](entityKey: String,
+                                                 set: TimeSeriesSet,
+                                                 observedTime: DateTime,
+                                                 observedValue: V,
+                                                 versionTime: DateTime = DateTime.now) extends TimeSeriesPoint[V]
 {
-  def id: Int
-}
-
-case object OfficialSet extends TimeSeriesSet
-{
-  val id: Int = 0
+  override def toString: String = s"($entityKey, $set) -> ${super.toString}"
 }

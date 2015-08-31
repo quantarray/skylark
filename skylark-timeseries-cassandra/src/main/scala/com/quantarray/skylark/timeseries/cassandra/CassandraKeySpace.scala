@@ -17,19 +17,15 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.timeseries
+package com.quantarray.skylark.timeseries.cassandra
 
 /**
- * Time series set.
+ *  Cassandra key space.
  *
- * @author Araik Grigoryan
+ *  @author Araik Grigoryan
  */
-trait TimeSeriesSet
+trait CassandraKeySpace
 {
-  def id: Int
+  def keySpaceName: String
 }
 
-case object OfficialSet extends TimeSeriesSet
-{
-  val id: Int = 0
-}

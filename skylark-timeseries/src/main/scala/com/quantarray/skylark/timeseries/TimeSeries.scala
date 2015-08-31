@@ -24,7 +24,7 @@ package com.quantarray.skylark.timeseries
  *
  * @author Araik Grigoryan
  */
-trait TimeSeries[V]
+trait TimeSeries[V, P <: TimeSeriesPoint[V]]
 {
   /**
    * Entity key. An arbitrary representation of the structure of time series data by which a value could be looked up.
@@ -38,7 +38,7 @@ trait TimeSeries[V]
 
   def set: TimeSeriesSet
 
-  def points: Seq[TimeSeriesPoint[V]]
+  def points: Seq[P]
 
   def isEmpty: Boolean = points.isEmpty
 
@@ -55,21 +55,21 @@ object TimeSeries
 {
 
 
-  def apply[V](entityKey: String, set: TimeSeriesSet, points: Seq[TimeSeriesPoint[V]]): TimeSeries[V] =
+  def apply[V, P <: TimeSeriesPoint[V]](entityKey: String, set: TimeSeriesSet, points: Seq[P]): TimeSeries[V, P] =
   {
-    val eksps = (entityKey, set, points)
+    val params = (entityKey, set, points)
 
-    new TimeSeries[V]
+    new TimeSeries[V, P]
     {
-      val entityKey: String = eksps._1
+      val entityKey: String = params._1
 
-      val set: TimeSeriesSet = eksps._2
+      val set: TimeSeriesSet = params._2
 
-      val points: Seq[TimeSeriesPoint[V]] = eksps._3
+      val points: Seq[P] = params._3
     }
   }
 
-  def empty[V](entityKey: String, set: TimeSeriesSet): TimeSeries[V] = apply(entityKey, set, Seq.empty)
+  def empty[V, P <: TimeSeriesPoint[V]](entityKey: String, set: TimeSeriesSet): TimeSeries[V, P] = apply(entityKey, set, Seq.empty)
 
 }
 
