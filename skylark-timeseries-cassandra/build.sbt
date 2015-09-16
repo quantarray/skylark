@@ -8,6 +8,8 @@ scalaVersion := Build.scalaVersion
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature" /*, "-Ymacro-debug-lite"*/)
 
+resolvers += Build.websudosReleasesRepo
+
 libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % Build.jodaTimeVersion,
   "org.joda" % "joda-convert" % Build.jodaConvertVersion,

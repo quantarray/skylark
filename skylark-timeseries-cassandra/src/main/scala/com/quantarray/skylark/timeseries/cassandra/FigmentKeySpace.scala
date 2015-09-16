@@ -20,7 +20,7 @@
 package com.quantarray.skylark.timeseries.cassandra
 
 /**
- * Time-series Cassandra key space.
+ * Figment Cassandra key space.
  *
  * @author Araik Grigoryan
  */

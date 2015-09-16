@@ -80,5 +80,10 @@ trait TimeSeriesProvider
 
   def write: TimeSeriesWriter
 
-  def close(): Unit
+  def close(): Unit =
+  {
+    read.close()
+    write.close()
+  }
+
 }

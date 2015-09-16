@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.timeseries.cassandra
 
-import com.datastax.driver.core.Row
+import com.datastax.driver.core.{ResultSet, Row, Session}
 import com.quantarray.skylark.timeseries.{OfficialSet, TimeSeriesPoint, TimeSeriesSet}
 import com.websudos.phantom.Implicits._
 

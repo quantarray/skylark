@@ -23,7 +23,7 @@ import com.quantarray.skylark.timeseries.TimeSeriesPoint
 import com.websudos.phantom.CassandraTable
 import com.websudos.phantom.Implicits._
 import com.websudos.phantom.column.DateTimeColumn
-import com.websudos.phantom.keys.PartitionKey
+import com.websudos.phantom.keys.{ClusteringOrder, Descending, PartitionKey, PrimaryKey}
 import org.joda.time.DateTime
 
 /**

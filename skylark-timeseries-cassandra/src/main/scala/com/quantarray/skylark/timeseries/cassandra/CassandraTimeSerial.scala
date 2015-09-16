@@ -19,11 +19,12 @@
 
 package com.quantarray.skylark.timeseries.cassandra
 
+import com.datastax.driver.core.Session
 import com.quantarray.skylark.time.IntervalSupport.Implicits.RichInterval
 import com.quantarray.skylark.timeseries._
-import com.websudos.phantom.Implicits._
 import org.joda.time.{DateTime, Interval}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
