@@ -41,15 +41,15 @@ object TimeSeriesPoint
 {
   def apply[V](observedTime: DateTime, observedValue: V, versionTime: DateTime = DateTime.now()): TimeSeriesPoint[V] =
   {
-    val otovvt = (observedTime, observedValue, versionTime)
+    val params = (observedTime, observedValue, versionTime)
 
     new TimeSeriesPoint[V]
     {
-      val observedTime: DateTime = otovvt._1
+      val observedTime: DateTime = params._1
 
-      val observedValue: V = otovvt._2
+      val observedValue: V = params._2
 
-      val versionTime: DateTime = otovvt._3
+      val versionTime: DateTime = params._3
     }
   }
 }
