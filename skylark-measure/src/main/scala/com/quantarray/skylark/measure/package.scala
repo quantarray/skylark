@@ -168,7 +168,7 @@ package object measure
     override def divide(n: MassMeasure, d: LengthMeasure): RatioMeasure[MassMeasure, LengthMeasure] = RatioMeasure(n, d)
   }
 
-  implicit object MassUnitlessCanMultiply extends CanMultiply[MassMeasure, DimensionlessMeasure, MassMeasure]
+  implicit object MassDimensionlessCanMultiply extends CanMultiply[MassMeasure, DimensionlessMeasure, MassMeasure]
   {
     override def times(multiplicand: MassMeasure, multiplier: DimensionlessMeasure): MassMeasure = multiplicand
 
@@ -185,7 +185,7 @@ package object measure
     override def divide(n: Currency, d: EnergyMeasure): RatioMeasure[Currency, EnergyMeasure] = RatioMeasure(n, d)
   }
 
-  implicit object CurrencyUnitlessCanDivide extends CanDivide[Currency, DimensionlessMeasure, Currency]
+  implicit object CurrencyDimensionlessCanDivide extends CanDivide[Currency, DimensionlessMeasure, Currency]
   {
     override def divide(n: Currency, d: DimensionlessMeasure): Currency = n
 
@@ -193,7 +193,7 @@ package object measure
   }
 
   /**
-   * Unitless.
+   * Dimensionless.
    */
   val percent = UnitMeasure.composes("%", 0.01)
 
@@ -747,14 +747,14 @@ package object measure
     override def convert: Converter[MassMeasure, MassMeasure] = MassConverter
   }
 
-  object UnitlessConverter extends Converter[DimensionlessMeasure, DimensionlessMeasure]
+  object DimensionlessConverter extends Converter[DimensionlessMeasure, DimensionlessMeasure]
   {
     override def apply(from: DimensionlessMeasure, to: DimensionlessMeasure): Option[Double] = Some(from.base / to.base)
   }
 
-  implicit object UnitlessCanConvert extends CanConvert[DimensionlessMeasure, DimensionlessMeasure]
+  implicit object DimensionlessCanConvert extends CanConvert[DimensionlessMeasure, DimensionlessMeasure]
   {
-    override def convert: Converter[DimensionlessMeasure, DimensionlessMeasure] = UnitlessConverter
+    override def convert: Converter[DimensionlessMeasure, DimensionlessMeasure] = DimensionlessConverter
   }
 
   type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]

@@ -9,7 +9,7 @@ package object quantity
     def toDouble: Double
 
     /**
-     * Unitless.
+     * Dimensionless.
      */
     def percent = Quantity(toDouble, measure.percent)
 

@@ -20,7 +20,7 @@
 package com.quantarray.skylark.measure
 
 /**
- * Unitless measure.
+ * Dimensionless measure.
  *
  * @author Araik Grigoryan
  */
