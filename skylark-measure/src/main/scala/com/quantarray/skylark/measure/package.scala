@@ -140,9 +140,9 @@ package object measure
 
   val Yi = new BinaryMultiple("Yi", 17)
 
-  implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, UnitMeasure.type]
+  implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, UnitMeasure]
   {
-    override def divide(n: MassMeasure, d: MassMeasure): UnitMeasure.type = UnitMeasure
+    override def divide(n: MassMeasure, d: MassMeasure): UnitMeasure = UnitMeasure()
   }
 
   implicit object MassCanExponentiate extends CanExponentiate[MassMeasure, ExponentialMeasure[MassMeasure]]
