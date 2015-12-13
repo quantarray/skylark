@@ -24,24 +24,11 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class PressureMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure with MeasureCanBecomeAsset
+case class PressureMeasure(name: String, system: SystemOfUnits) extends Measure[ PressureMeasure]
 {
-  type D = Pressure.type
+  type D = PressureType
 
-  type Repr = PressureMeasure
-
-  def dimension = Pressure
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = PressureMeasure(name, system, Some(mb))
+  val dimension = Pressure
 
   override def toString = name
-}
-
-object PressureMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new PressureMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): PressureMeasure = new PressureMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): PressureMeasure = apply(name, dmb._2.system, dmb)
 }

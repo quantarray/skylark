@@ -38,7 +38,7 @@ trait Asset
    * that this does make sense (e.g. for converting a barrel of oil to gallons, as there are different nature
    * of barrels), the substance that represents the oil product should implement its own conversion factor.
    */
-  def factor(numerator: Measure, denominator: Measure): Option[Double] = None
+  def factor[M1 <: Measure[M1], M2 <: Measure[M2]](numerator: M1, denominator: M2): Option[Double] = None
 
   /**
    * Gets factor in the form numerator/denominator, such that if you multiply the factor by units of denominator,
@@ -48,5 +48,5 @@ trait Asset
    * that this does make sense (e.g. for converting a barrel of <b>oil</b> to gallons, as there are different kind
    * of barrels), the asset that represents the oil product should implement its own conversion factor.
    */
-  def toFactor(numerator: Measure, denominator: Measure)(d: Double): Option[Double] = None
+  def toFactor[M1 <: Measure[M1], M2 <: Measure[M2]](numerator: M1, denominator: M2)(d: Double): Option[Double] = None
 }

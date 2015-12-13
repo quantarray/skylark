@@ -24,24 +24,11 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class InformationMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure with MeasureCanBecomeAsset
+case class InformationMeasure(name: String, system: SystemOfUnits) extends Measure[InformationMeasure]
 {
-  type D = Information.type
+  type D = Information
 
-  type Repr = InformationMeasure
-
-  def dimension = Information
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = InformationMeasure(name, system, Some(mb))
+  val dimension = Information()
 
   override def toString = name
-}
-
-object InformationMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new InformationMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): InformationMeasure = new InformationMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): InformationMeasure = apply(name, dmb._2.system, dmb)
 }

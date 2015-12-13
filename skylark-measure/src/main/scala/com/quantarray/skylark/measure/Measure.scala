@@ -19,9 +19,6 @@
 
 package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.conversion.ConstantConversionProvider
-
-import scala.annotation.tailrec
 import scala.language.{existentials, implicitConversions}
 
 /**
@@ -34,167 +31,86 @@ import scala.language.{existentials, implicitConversions}
  *
  * @author Araik Grigoryan
  */
-trait Measure
+trait Measure[Self <: Measure[Self]]
 {
-  self =>
+  self: Self =>
 
-  type D <: Dimension
+  type D <: Dimension[D]
 
-  type Repr <: Measure
-
-  def repr: Repr = this.asInstanceOf[Repr]
-
-  def name: String
+  val name: String
 
   /**
    * Gets dimension of this measure.
-   *
-   * Due to type erasure, we need this method to pattern-match on various measures.
    */
-  def dimension: D
+  val dimension: D
 
   /**
    * Gets system of units.
    */
-  def system: SystemOfUnits
-
-  /**
-   * Gets the declared multiplicative relationship with some base measure, which may not be the ultimate multiplicative relationship.
-   */
-  def declMultBase: Option[(Double, Measure)]
-
-  /**
-   * Gets ultimate multiplicative relationship with base measure, e.g. 0.001(Kilogram) for Gram.
-   */
-  lazy val multBase = Measure.multiplicativeBase(declMultBase)
-
-  lazy val multBaseValue = multBase match
-  {
-    case None => 1.0
-    case Some((multiple, _)) => multiple
-  }
+  val system: SystemOfUnits
 
   /**
    * Determines if this measure can be decomposed into constituent measures.
    */
-  def isStructuralAtom = true
+  val isStructuralAtom = true
 
   /**
-   * Gets exponential base of this measure.
+   * Gets structural name of this measure.
    */
-  def expBase: Measure = this
+  val structuralName = if (isStructuralAtom) name else s"($name)"
 
   /**
    * Gets exponent of this measure.
    */
-  def exp: Double = 1.0
+  def exponent: Double = 1.0
+
+  def composes(name: String, system: SystemOfUnits, multiple: Double): Self = this
+
+  def composes(name: String, multiple: Double): Self = composes(name, system, multiple)
+
+  /**
+   * Turns this measure into a general RatioMeasure.
+   */
+  def /[M2 <: Measure[M2], R](denominator: M2)(implicit cd: CanDivide[Self, M2, R]): R = cd.divide(this, denominator)
+
+  /**
+   * Turns this measure into a general ProductMeasure.
+   */
+  def *[M2 <: Measure[M2], R](multiplier: M2)(implicit cm: CanMultiply[Self, M2, R]): R = cm.times(this, multiplier)
+
+  /**
+   * Turns this measure into a general ExponentialMeasure.
+   */
+  def ^[R](exponent: Double)(implicit ce: CanExponentiate[Self, R]): R = ce.pow(this, exponent)
 
   /**
    * Gets an inverse of this measure.
    */
-  def inverse: Measure = ExponentialMeasure(this, -exp)
+  def inverse[R](implicit ce: CanExponentiate[Self, R]) = this ^ -exponent
 
   /**
-   * Turn this measure into a general RatioMeasure.
+   * Converts to target measure.
    */
-  def /(denominator: Measure) = RatioMeasure(this, denominator)
-
-  /**
-   * Turn this measure into a general ProductMeasure.
-   */
-  def *(multiplier: Measure) = ProductMeasure(this, multiplier)
-
-  /**
-   * Creates a new measure that is multiplier times larger (or smaller) than this measure.
-   */
-  def *(multiplier: Double): Repr = *((s"$multiplier $name", multiplier))
-
-  /**
-   * Creates a new measure that is multiple times larger (or smaller) than this measure.
-   */
-  def *(nameMultiple: (String, Double)): Repr =
-  {
-    nameMultiple match
-    {
-      case (_, 1.0) => repr
-      case _ => multBase match
-      {
-        case Some(x) => build(nameMultiple._1, (x._1 * nameMultiple._2, x._2))
-        case _ => build(nameMultiple._1, (nameMultiple._2, this))
-      }
-    }
-  }
-
-  /**
-   * Gets exponential measure with no multiplicative factor, e.g. 1 sq meter = m^^2.
-   */
-  def ^(exponent: Double): ExponentialMeasure = ExponentialMeasure(this, exponent)
-
-  /**
-   * Gets exponential measure with multiplicative factor, e.g. 1 hectare = 10000 m^^2.
-   */
-  def ^(exponent: Double, dmb: Option[(Double, Measure)]) = ExponentialMeasure(this, exponent, dmb)
-
-  def to(toMeasure: Measure)(implicit conversion: ConstantConversionProvider): Option[Double] = conversion.factor(toMeasure, this)
-
-  /**
-   * Compacts this measure.
-   */
-  lazy val compact: Measure =
-  {
-    def compact(measure: Measure): Measure =
-    {
-      measure match
-      {
-        case (ProductMeasure(multiplicand, multiplier)) if multiplier == UnitMeasure => compact(multiplicand)
-        case (ProductMeasure(multiplicand, multiplier)) if multiplicand == UnitMeasure => compact(multiplier)
-        case (ProductMeasure(multiplicand, multiplier)) => compact(multiplicand) * compact(multiplier)
-        case (RatioMeasure(numerator, denominator)) if denominator == UnitMeasure => compact(numerator)
-        case (RatioMeasure(numerator, denominator)) if numerator == denominator => UnitMeasure
-        case (RatioMeasure(numerator, denominator)) => compact(numerator) / compact(denominator)
-        case (ExponentialMeasure(base, exponent, _)) if base == UnitMeasure => UnitMeasure
-        case _ => measure
-      }
-    }
-
-    compact(this)
-  }
-
-  /**
-   * Gets a multiple of this measure.
-   */
-  protected[measure] def build(name: String, mb: (Double, Measure)): Repr
+  def to[M2 <: Measure[M2]](to: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, to)
 }
 
-case object UnitMeasure extends Measure
+case class UnitMeasure() extends Measure[UnitMeasure]
 {
-  type D = NoDimension.type
+  type D = NoDimension
 
-  type Repr = UnitMeasure.type
-
-  def name = "1"
+  val name = "1"
 
   /**
    * Gets dimension of this measure.
    *
    * Due to type erasure, we need this method to pattern-match on various measures.
    */
-  def dimension = NoDimension
+  val dimension = NoDimension()
 
   /**
    * Gets system of units.
    */
-  def system: SystemOfUnits = Universal()
-
-  /**
-   * Gets multiplicative relationship with base measure, e.g. (0.001, Kilogram) for Gram.
-   */
-  def declMultBase: Option[(Double, Measure)] = None
-
-  /**
-   * Gets a multiple of this measure.
-   */
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = repr
+  val system: SystemOfUnits = Universal()
 
   override def toString = name
 }
@@ -202,123 +118,142 @@ case object UnitMeasure extends Measure
 /**
  * Product measure.
  */
-case class ProductMeasure(multiplicand: Measure, multiplier: Measure) extends Measure
+trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]]
 {
-  type D = ProductDimension
+  val multiplicand: M1
 
-  type Repr = ProductMeasure
+  val multiplier: M2
 
-  val name = s"${Measure.name(multiplicand)} * ${Measure.name(multiplier)}"
+  type D = ProductDimension[multiplicand.D, multiplier.D]
 
-  val dimension = multiplicand.dimension * multiplier.dimension
+  val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
+
+  val dimension = ProductDimension(multiplicand.dimension, multiplier.dimension)
 
   val system = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
 
-  val declMultBase = None
-
-  override def isStructuralAtom = false
-
-  /**
-   * Gets a multiple of this measure.
-   */
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = repr
+  override val isStructuralAtom = false
 
   override def toString = name
+}
+
+object ProductMeasure
+{
+  def apply[M1 <: Measure[M1], M2 <: Measure[M2]](multiplicand: M1, multiplier: M2): ProductMeasure[M1, M2] =
+  {
+    val params = (multiplicand, multiplier)
+
+    new ProductMeasure[M1, M2]
+    {
+      lazy val multiplicand: M1 = params._1
+
+      lazy val multiplier: M2 = params._2
+
+      override def equals(obj: scala.Any): Boolean = obj match
+      {
+        case that: ProductMeasure[_, _] => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
+        case _ => false
+      }
+
+      override def hashCode(): Int = 41 * multiplicand.hashCode() + multiplier.hashCode()
+    }
+  }
+
+  def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](pm: ProductMeasure[M1, M2]): Option[(M1, M2)] = Some((pm.multiplicand, pm.multiplier))
 }
 
 /**
  * Ratio measure.
  */
-case class RatioMeasure(numerator: Measure, denominator: Measure) extends Measure
+trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]]
 {
-  type D = RatioDimension
+  val numerator: M1
 
-  type Repr = RatioMeasure
+  val denominator: M2
 
-  val name = s"${Measure.name(numerator)} / ${Measure.name(denominator)}"
+  type D = RatioDimension[numerator.D, denominator.D]
 
-  val dimension = numerator.dimension / denominator.dimension
+  val name = s"${numerator.structuralName} / ${denominator.structuralName}"
+
+  val dimension = RatioDimension(numerator.dimension, denominator.dimension)
 
   val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 
-  val declMultBase = None
-
-  override def isStructuralAtom = false
-
-  /**
-   * Gets a multiple of this measure.
-   */
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = repr
+  override val isStructuralAtom = false
 
   override def toString = name
 }
 
+object RatioMeasure
+{
+  def apply[M1 <: Measure[M1], M2 <: Measure[M2]](numerator: M1, denominator: M2): RatioMeasure[M1, M2] =
+  {
+    val params = (numerator, denominator)
+
+    new RatioMeasure[M1, M2]
+    {
+      lazy val numerator: M1 = params._1
+
+      lazy val denominator: M2 = params._2
+
+      override def equals(obj: scala.Any): Boolean = obj match
+      {
+        case that: RatioMeasure[_, _] => this.numerator == that.numerator && this.denominator == that.denominator
+        case _ => false
+      }
+
+      override def hashCode(): Int = 41 * numerator.hashCode() + denominator.hashCode()
+    }
+  }
+
+  def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](rm: RatioMeasure[M1, M2]): Option[(M1, M2)] = Some((rm.numerator, rm.denominator))
+}
 
 /**
  * Exponential measure.
  */
-case class ExponentialMeasure(base: Measure, override val exp: Double, dmb: Option[(Double, Measure)] = None)
-  extends Measure
+trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]]
 {
+  val base: B
+
   type D = ExponentialDimension[base.D]
 
-  type Repr = ExponentialMeasure
-
-  val name = exp match
+  val name = exponent match
   {
     case 1.0 => s"$base"
-    case _ => s"${Measure.name(base)} ^ $exp"
+    case _ => s"${base.structuralName} ^ $exponent"
   }
 
-  val dimension = ExponentialDimension(base.dimension, exp)
+  val dimension = ExponentialDimension(base.dimension, exponent)
 
   val system = base.system
 
-  val declMultBase =
-  {
-    dmb match
-    {
-      case Some(d) => Some(d)
-      case _ =>
-        // TODO: Recurse down to the ultimate base
-        base.multBase match
-        {
-          case Some(x) => Some((scala.math.pow(x._1, exp), x._2 ^ exp))
-          case _ => None
-        }
-    }
-  }
-
-  override def expBase = base
-
-  override def isStructuralAtom = false
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = repr
-
-  override def toString = name
+  override val isStructuralAtom = false
 }
 
-object Measure
+object ExponentialMeasure
 {
-
-  def name(measure: Measure) = if (measure.isStructuralAtom) measure else s"($measure)"
-
-  def multiplicativeBase(mb: Option[(Double, Measure)]): Option[(Double, Measure)] =
+  def apply[B <: Measure[B]](base: B, exponent: Double): ExponentialMeasure[B] =
   {
-    @tailrec
-    def multBase(m: Double, b: Measure): (Double, Measure) =
-    {
-      b.multBase match
-      {
-        case None => (m, b)
-        case Some(x) => multBase(m * x._1, x._2)
-      }
-    }
+    val params = (base, exponent)
 
-    mb match
+    new ExponentialMeasure[B]
     {
-      case Some(x) => Some(multBase(x._1, x._2))
-      case None => None
+      lazy val base: B = params._1
+
+      override def exponent: Double = params._2
+
+      override def equals(obj: scala.Any): Boolean = obj match
+      {
+        case that: ExponentialMeasure[_] => this.base == that.base && this.exponent == that.exponent
+        case _ => false
+      }
+
+      override def hashCode(): Int = 41 * base.hashCode() + exponent.hashCode()
+
+      override def toString = name
     }
   }
+
+  def unapply[B <: Measure[B]](em: ExponentialMeasure[B]): Option[(B, Double)] = Some((em.base, em.exponent))
 }

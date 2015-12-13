@@ -24,24 +24,11 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class ForceMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure with MeasureCanBecomeAsset
+case class ForceMeasure(name: String, system: SystemOfUnits) extends Measure[ForceMeasure]
 {
-  type D = Force.type
+  type D = ForceType
 
-  type Repr = ForceMeasure
-
-  def dimension = Force
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = ForceMeasure(name, system, Some(mb))
+  val dimension = Force
 
   override def toString = name
-}
-
-object ForceMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new ForceMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): ForceMeasure = new ForceMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): ForceMeasure = apply(name, dmb._2.system, dmb)
 }

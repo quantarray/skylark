@@ -24,24 +24,13 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class UnitlessMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure
+case class UnitlessMeasure(name: String, system: SystemOfUnits = UnitMeasure().system, base: Double = 1) extends Measure[UnitlessMeasure]
 {
-  type D = NoDimension.type
+  type D = NoDimension
 
-  type Repr = UnitlessMeasure
+  val dimension = NoDimension()
 
-  def dimension = NoDimension
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = UnitlessMeasure(name, system, Some(mb))
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): UnitlessMeasure = UnitlessMeasure(name, system, base * multiple)
 
   override def toString = name
-}
-
-object UnitlessMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new UnitlessMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): UnitlessMeasure = new UnitlessMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): UnitlessMeasure = apply(name, dmb._2.system, dmb)
 }

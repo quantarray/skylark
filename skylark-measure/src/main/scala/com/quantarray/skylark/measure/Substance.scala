@@ -26,5 +26,5 @@ package com.quantarray.skylark.measure
  */
 trait Substance extends Asset
 {
-  def density: Quantity[Measure]
+//  def density: Quantity[Measure]
 }

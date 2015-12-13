@@ -26,26 +26,28 @@ import scala.language.existentials
  *
  * @author Araik Grigoryan
  */
-trait Dimension
+trait Dimension[Self <: Dimension[Self]]
 {
-  def *(dimension: Dimension) = ProductDimension(this, dimension)
+  self: Self =>
 
-  def /(dimension: Dimension) = RatioDimension(this, dimension)
+  def *[D <: Dimension[D]](dimension: D): ProductDimension[Self, D] = ProductDimension(this, dimension)
 
-  def ^(exponent: Double) = ExponentialDimension(this, exponent)
+  def /[D <: Dimension[D]](dimension: D): RatioDimension[Self, D] = RatioDimension(this, dimension)
+
+  def ^(exponent: Double): ExponentialDimension[Self] = ExponentialDimension(this, exponent)
 }
 
-sealed case class ProductDimension(multiplicand: Dimension, multiplier: Dimension) extends Dimension
+sealed case class ProductDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]](multiplicand: D1, multiplier: D2) extends Dimension[ProductDimension[D1, D2]]
 {
   override def toString = s"$multiplicand * $multiplier"
 }
 
-sealed case class RatioDimension(numerator: Dimension, denominator: Dimension) extends Dimension
+sealed case class RatioDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]](numerator: D1, denominator: D2) extends Dimension[RatioDimension[D1, D2]]
 {
   override def toString = s"$numerator / $denominator"
 }
 
-sealed case class ExponentialDimension[B <: Dimension](base: B, exponent: Double) extends Dimension
+sealed case class ExponentialDimension[B <: Dimension[B]](base: B, exponent: Double) extends Dimension[ExponentialDimension[B]]
 {
   override def toString = s"$base ^ $exponent"
 }
