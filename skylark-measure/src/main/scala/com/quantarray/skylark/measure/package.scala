@@ -140,9 +140,11 @@ package object measure
 
   val Yi = new BinaryMultiple("Yi", 17)
 
-  implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, UnitMeasure]
+  val UnitMeasure = DimensionlessMeasure("1", Universal())
+
+  implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
   {
-    override def divide(n: MassMeasure, d: MassMeasure): UnitMeasure = UnitMeasure()
+    override def divide(n: MassMeasure, d: MassMeasure): DimensionlessMeasure = UnitMeasure
   }
 
   implicit object MassCanExponentiate extends CanExponentiate[MassMeasure, ExponentialMeasure[MassMeasure]]
@@ -166,11 +168,11 @@ package object measure
     override def divide(n: MassMeasure, d: LengthMeasure): RatioMeasure[MassMeasure, LengthMeasure] = RatioMeasure(n, d)
   }
 
-  implicit object MassUnitlessCanMultiply extends CanMultiply[MassMeasure, UnitlessMeasure, MassMeasure]
+  implicit object MassUnitlessCanMultiply extends CanMultiply[MassMeasure, DimensionlessMeasure, MassMeasure]
   {
-    override def times(multiplicand: MassMeasure, multiplier: UnitlessMeasure): MassMeasure = multiplicand
+    override def times(multiplicand: MassMeasure, multiplier: DimensionlessMeasure): MassMeasure = multiplicand
 
-    override def unit(multiplicand: MassMeasure, multiplier: UnitlessMeasure): Double = multiplier.base
+    override def unit(multiplicand: MassMeasure, multiplier: DimensionlessMeasure): Double = multiplier.base
   }
 
   implicit object LengthCanExponentiate extends CanExponentiate[LengthMeasure, ExponentialMeasure[LengthMeasure]]
@@ -183,26 +185,26 @@ package object measure
     override def divide(n: Currency, d: EnergyMeasure): RatioMeasure[Currency, EnergyMeasure] = RatioMeasure(n, d)
   }
 
-  implicit object CurrencyUnitlessCanDivide extends CanDivide[Currency, UnitlessMeasure, Currency]
+  implicit object CurrencyUnitlessCanDivide extends CanDivide[Currency, DimensionlessMeasure, Currency]
   {
-    override def divide(n: Currency, d: UnitlessMeasure): Currency = n
+    override def divide(n: Currency, d: DimensionlessMeasure): Currency = n
 
-    override def unit(n: Currency, d: UnitlessMeasure): Double = 1 / d.base
+    override def unit(n: Currency, d: DimensionlessMeasure): Double = 1 / d.base
   }
 
   /**
    * Unitless.
    */
-  val percent = UnitlessMeasure("%", base = 0.01)
+  val percent = UnitMeasure.composes("%", 0.01)
 
   // http://en.wikipedia.org/wiki/Basis_point
-  val bp = UnitlessMeasure("bp", base = 0.0001)
+  val bp = UnitMeasure.composes("bp", 0.0001)
 
   // http://en.wikipedia.org/wiki/Radian
-  val rad = UnitlessMeasure("rad", Derived(SI), 1 / (2 * scala.math.Pi))
+  val rad = DimensionlessMeasure("rad", Derived(SI), 1 / (2 * scala.math.Pi))
 
   // http://en.wikipedia.org/wiki/Steradian
-  val sr = UnitlessMeasure("sr", Derived(SI), 1 / (4 * scala.math.Pi))
+  val sr = DimensionlessMeasure("sr", Derived(SI), 1 / (4 * scala.math.Pi))
 
   /**
    * Time.
@@ -745,14 +747,14 @@ package object measure
     override def convert: Converter[MassMeasure, MassMeasure] = MassConverter
   }
 
-  object UnitlessConverter extends Converter[UnitlessMeasure, UnitlessMeasure]
+  object UnitlessConverter extends Converter[DimensionlessMeasure, DimensionlessMeasure]
   {
-    override def apply(from: UnitlessMeasure, to: UnitlessMeasure): Option[Double] = Some(from.base / to.base)
+    override def apply(from: DimensionlessMeasure, to: DimensionlessMeasure): Option[Double] = Some(from.base / to.base)
   }
 
-  implicit object UnitlessCanConvert extends CanConvert[UnitlessMeasure, UnitlessMeasure]
+  implicit object UnitlessCanConvert extends CanConvert[DimensionlessMeasure, DimensionlessMeasure]
   {
-    override def convert: Converter[UnitlessMeasure, UnitlessMeasure] = UnitlessConverter
+    override def convert: Converter[DimensionlessMeasure, DimensionlessMeasure] = UnitlessConverter
   }
 
   type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]

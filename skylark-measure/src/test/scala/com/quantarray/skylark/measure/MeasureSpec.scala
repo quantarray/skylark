@@ -36,7 +36,7 @@ class MeasureSpec extends FlatSpec with Matchers
       kg.system should be(SI)
       kg.isStructuralAtom should be(right = true)
       kg.exponent should be(1.0)
-      kg / lb should be(UnitMeasure())
+      kg / lb should be(UnitMeasure)
       kg * s should be(ProductMeasure(kg, s))
       kg.inverse should be(ExponentialMeasure(kg, -1.0))
       kg to kg should be(Some(1))

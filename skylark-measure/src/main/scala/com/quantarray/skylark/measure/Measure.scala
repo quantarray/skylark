@@ -94,27 +94,6 @@ trait Measure[Self <: Measure[Self]]
   def to[M2 <: Measure[M2]](to: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, to)
 }
 
-case class UnitMeasure() extends Measure[UnitMeasure]
-{
-  type D = NoDimension
-
-  val name = "1"
-
-  /**
-   * Gets dimension of this measure.
-   *
-   * Due to type erasure, we need this method to pattern-match on various measures.
-   */
-  val dimension = NoDimension()
-
-  /**
-   * Gets system of units.
-   */
-  val system: SystemOfUnits = Universal()
-
-  override def toString = name
-}
-
 /**
  * Product measure.
  */
