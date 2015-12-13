@@ -24,24 +24,11 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class EnergyMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure with MeasureCanBecomeAsset
+case class EnergyMeasure(name: String, system: SystemOfUnits) extends Measure[EnergyMeasure]
 {
-  type D = Energy.type
+  type D = EnergyType
 
-  type Repr = EnergyMeasure
-
-  def dimension = Energy
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = EnergyMeasure(name, system, Some(mb))
+  val dimension = Energy
 
   override def toString = name
-}
-
-object EnergyMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new EnergyMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): EnergyMeasure = new EnergyMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): EnergyMeasure = apply(name, dmb._2.system, dmb)
 }

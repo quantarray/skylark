@@ -20,28 +20,17 @@
 package com.quantarray.skylark.measure
 
 /**
- * Currency
+ * Currency.
  *
  * @author Araik Grigoryan
  */
-case class Currency(name: String) extends Measure with MeasureCanBecomeSpacetemporal
+case class Currency(name: String) extends Measure[Currency]
 {
-  type D = Money.type
+  type D = Money
 
-  type Repr = Currency
+  val dimension = Money()
 
-  def dimension = Money
-
-  def system = Monetary
-
-  def declMultBase = None
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = this
+  val system = Monetary
 
   override def toString = name
-}
-
-object Currency
-{
-  def apply(currency: java.util.Currency) = new Currency(currency.getCurrencyCode)
 }

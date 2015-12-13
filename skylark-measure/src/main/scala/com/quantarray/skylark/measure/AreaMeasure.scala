@@ -24,24 +24,11 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class AreaMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure with MeasureCanBecomeAsset
+case class AreaMeasure(name: String, system: SystemOfUnits) extends Measure[AreaMeasure]
 {
-  type D = ExponentialDimension[Length.type]
+  type D = ExponentialDimension[Length]
 
-  type Repr = AreaMeasure
-
-  def dimension = ExponentialDimension(Length, 2)
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = AreaMeasure(name, system, Some(mb))
+  val dimension = ExponentialDimension(Length(), 2)
 
   override def toString = name
-}
-
-object AreaMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new AreaMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): AreaMeasure = new AreaMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): AreaMeasure = apply(name, dmb._2.system, dmb)
 }

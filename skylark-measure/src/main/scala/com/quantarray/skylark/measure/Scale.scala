@@ -24,10 +24,10 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-abstract class Scale(val dimension: Dimension)
+abstract class Scale[D <: Dimension[D]](val dimension: D)
 
-case object Kelvin extends Scale(Temperature)
+case object Kelvin extends Scale(Temperature())
 
-case object Centigrade extends Scale(Temperature)
+case object Centigrade extends Scale(Temperature())
 
-case object Fahrenheit extends Scale(Temperature)
+case object Fahrenheit extends Scale(Temperature())

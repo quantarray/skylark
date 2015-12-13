@@ -28,13 +28,13 @@ package com.quantarray.skylark.measure
  */
 sealed trait SystemOfUnits
 
-case class Universal(scales: Scale*) extends SystemOfUnits
+case class Universal[D <: Dimension[D]](scales: Scale[D]*) extends SystemOfUnits
 
 case object SI extends SystemOfUnits
 
 case object US extends SystemOfUnits
 
-case class Imperial(scales: Scale*) extends SystemOfUnits
+case class Imperial[D <: Dimension[D]](scales: Scale[D]*) extends SystemOfUnits
 
 case object Monetary extends SystemOfUnits
 

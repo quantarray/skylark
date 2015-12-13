@@ -24,24 +24,11 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class TimeMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure with MeasureCanBecomeAsset
+case class TimeMeasure(name: String, system: SystemOfUnits) extends Measure[TimeMeasure]
 {
-  type D = Time.type
+  type D = Time
 
-  type Repr = TimeMeasure
-
-  def dimension = Time
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = TimeMeasure(name, system, Some(mb))
+  val dimension = Time()
 
   override def toString = name
-}
-
-object TimeMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new TimeMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): TimeMeasure = new TimeMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): TimeMeasure = apply(name, dmb._2.system, dmb)
 }

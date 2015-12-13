@@ -24,24 +24,11 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class VolumeMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure with MeasureCanBecomeAsset
+case class VolumeMeasure(name: String, system: SystemOfUnits) extends Measure[VolumeMeasure]
 {
-  type D = ExponentialDimension[Length.type]
+  type D = ExponentialDimension[Length]
 
-  type Repr = VolumeMeasure
-
-  def dimension = ExponentialDimension(Length, 3)
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = VolumeMeasure(name, system, Some(mb))
+  val dimension = ExponentialDimension(Length(), 3)
 
   override def toString = name
-}
-
-object VolumeMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new VolumeMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): VolumeMeasure = new VolumeMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): VolumeMeasure = apply(name, dmb._2.system, dmb)
 }

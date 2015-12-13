@@ -24,24 +24,13 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class LengthMeasure(name: String, system: SystemOfUnits, declMultBase: Option[(Double, Measure)]) extends Measure with MeasureCanBecomeAsset
+case class LengthMeasure(name: String, system: SystemOfUnits) extends Measure[LengthMeasure]
 {
-  type D = Length.type
+  type D = Length
 
-  type Repr = LengthMeasure
+  val dimension = Length()
 
-  def dimension = Length
-
-  override protected[measure] def build(name: String, mb: (Double, Measure)): Repr = LengthMeasure(name, system, Some(mb))
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): LengthMeasure = LengthMeasure(name, system)
 
   override def toString = name
-}
-
-object LengthMeasure
-{
-  def apply(name: String, system: SystemOfUnits) = new LengthMeasure(name, system, None)
-
-  def apply(name: String, system: SystemOfUnits, dmb: (Double, Measure)): LengthMeasure = new LengthMeasure(name, system, Some(dmb))
-
-  def apply(name: String, dmb: (Double, Measure)): LengthMeasure = apply(name, dmb._2.system, dmb)
 }

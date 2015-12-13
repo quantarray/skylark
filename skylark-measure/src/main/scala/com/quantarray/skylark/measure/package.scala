@@ -21,48 +21,62 @@ package com.quantarray.skylark
 
 package object measure
 {
+  // TODO: Transfer conversion constants to CanCoverts
+  // TODO: Fix QuantitySpec
 
-  case object NoDimension extends Dimension
+  case class NoDimension() extends Dimension[NoDimension]
 
-  case object Time extends Dimension
+  case class Time() extends Dimension[Time]
 
-  case object Length extends Dimension
+  case class Length() extends Dimension[Length]
 
-  case object Mass extends Dimension
+  case class Mass() extends Dimension[Mass]
 
-  case object Temperature extends Dimension
+  case class Temperature() extends Dimension[Temperature]
 
-  case object Amount extends Dimension
+  case class Amount() extends Dimension[Amount]
 
-  case object ElectricCurrent extends Dimension
+  case class ElectricCurrent() extends Dimension[ElectricCurrent]
 
-  case object LuminousIntensity extends Dimension
+  case class LuminousIntensity() extends Dimension[LuminousIntensity]
 
   // E.g. digital information, such as bit
-  case object Information extends Dimension
+  case class Information() extends Dimension[Information]
 
   // E.g. Currency, such as USD
-  case object Money extends Dimension
+  case class Money() extends Dimension[Money]
 
-  val Force = (Mass * Length) / (Time ^ 2)
+  type ForceType = RatioDimension[ProductDimension[Mass, Length], ExponentialDimension[Time]]
 
-  val Energy = (Mass * (Length ^ 2)) / (Time ^ 2)
+  val Force: ForceType = (Mass() * Length()) / (Time() ^ 2)
 
-  val Power = (Mass * (Length ^ 2)) / (Time ^ 3)
+  type EnergyType = RatioDimension[ProductDimension[Mass, ExponentialDimension[Length]], ExponentialDimension[Time]]
 
-  val Pressure = Mass / (Length * (Time ^ 2))
+  val Energy = (Mass() * (Length() ^ 2)) / (Time() ^ 2)
 
-  val LuminousFlux = LuminousIntensity * NoDimension
+  type PowerType = RatioDimension[ProductDimension[Mass, ExponentialDimension[Length]], ExponentialDimension[Time]]
 
-  val Voltage = (Mass * (Length ^ 2)) / ((Time ^ 3) * ElectricCurrent)
+  val Power = (Mass() * (Length() ^ 2)) / (Time() ^ 3)
 
-  val TemporalFrequency = NoDimension / Time
+  type PressureType = RatioDimension[Mass, ProductDimension[Length, ExponentialDimension[Time]]]
 
-  val SpatialFrequency = NoDimension / Length
+  val Pressure = Mass() / (Length() * (Time() ^ 2))
+
+  type LuminousFluxType = ProductDimension[LuminousIntensity, NoDimension]
+
+  val LuminousFlux = LuminousIntensity() * NoDimension()
+
+  val Voltage = (Mass() * (Length() ^ 2)) / ((Time() ^ 3) * ElectricCurrent())
+
+  type TemporalFrequencyType = RatioDimension[measure.NoDimension, measure.Time]
+
+  val TemporalFrequency = NoDimension() / Time()
+
+  val SpatialFrequency = NoDimension() / Length()
 
   val AngularFrequency = TemporalFrequency
 
-  val ElectricCharge = ElectricCurrent * Time
+  val ElectricCharge = ElectricCurrent() * Time()
 
   /**
    * SI prefixes.
@@ -126,34 +140,84 @@ package object measure
 
   val Yi = new BinaryMultiple("Yi", 17)
 
+  implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, UnitMeasure.type]
+  {
+    override def divide(n: MassMeasure, d: MassMeasure): UnitMeasure.type = UnitMeasure
+  }
+
+  implicit object MassCanExponentiate extends CanExponentiate[MassMeasure, ExponentialMeasure[MassMeasure]]
+  {
+    override def pow(base: MassMeasure, exponent: Double): ExponentialMeasure[MassMeasure] = ExponentialMeasure(base, exponent)
+  }
+
+  implicit object MassTimeCanMultiply extends CanMultiply[MassMeasure, TimeMeasure, ProductMeasure[MassMeasure, TimeMeasure]]
+  {
+    override def times(multiplicand: MassMeasure, multiplier: TimeMeasure): ProductMeasure[MassMeasure, TimeMeasure] = ProductMeasure(multiplicand, multiplier)
+  }
+
+  implicit object MassLengthCanMultiply extends CanMultiply[MassMeasure, LengthMeasure, ProductMeasure[MassMeasure, LengthMeasure]]
+  {
+    override def times(multiplicand: MassMeasure, multiplier: LengthMeasure): ProductMeasure[MassMeasure, LengthMeasure] =
+      ProductMeasure(multiplicand, multiplier)
+  }
+
+  implicit object MassLengthCanDivide extends CanDivide[MassMeasure, LengthMeasure, RatioMeasure[MassMeasure, LengthMeasure]]
+  {
+    override def divide(n: MassMeasure, d: LengthMeasure): RatioMeasure[MassMeasure, LengthMeasure] = RatioMeasure(n, d)
+  }
+
+  implicit object MassUnitlessCanMultiply extends CanMultiply[MassMeasure, UnitlessMeasure, MassMeasure]
+  {
+    override def times(multiplicand: MassMeasure, multiplier: UnitlessMeasure): MassMeasure = multiplicand
+
+    override def unit(multiplicand: MassMeasure, multiplier: UnitlessMeasure): Double = multiplier.base
+  }
+
+  implicit object LengthCanExponentiate extends CanExponentiate[LengthMeasure, ExponentialMeasure[LengthMeasure]]
+  {
+    override def pow(base: LengthMeasure, exponent: Double): ExponentialMeasure[LengthMeasure] = ExponentialMeasure(base, exponent)
+  }
+
+  implicit object CurrencyEnergyCanDivide extends CanDivide[Currency, EnergyMeasure, RatioMeasure[Currency, EnergyMeasure]]
+  {
+    override def divide(n: Currency, d: EnergyMeasure): RatioMeasure[Currency, EnergyMeasure] = RatioMeasure(n, d)
+  }
+
+  implicit object CurrencyUnitlessCanDivide extends CanDivide[Currency, UnitlessMeasure, Currency]
+  {
+    override def divide(n: Currency, d: UnitlessMeasure): Currency = n
+
+    override def unit(n: Currency, d: UnitlessMeasure): Double = 1 / d.base
+  }
+
   /**
    * Unitless.
    */
-  val percent = UnitlessMeasure("%", (0.01, UnitMeasure))
+  val percent = UnitlessMeasure("%", base = 0.01)
 
   // http://en.wikipedia.org/wiki/Basis_point
-  val bp = UnitlessMeasure("bp", (0.0001, UnitMeasure))
+  val bp = UnitlessMeasure("bp", base = 0.0001)
 
   // http://en.wikipedia.org/wiki/Radian
-  val rad = UnitlessMeasure("rad", Derived(SI), (1 / (2 * scala.math.Pi), UnitMeasure))
+  val rad = UnitlessMeasure("rad", Derived(SI), 1 / (2 * scala.math.Pi))
 
   // http://en.wikipedia.org/wiki/Steradian
-  val sr = UnitlessMeasure("sr", Derived(SI), (1 / (4 * scala.math.Pi), UnitMeasure))
+  val sr = UnitlessMeasure("sr", Derived(SI), 1 / (4 * scala.math.Pi))
 
   /**
    * Time.
    */
   val s = TimeMeasure("s", SI)
-  val min = TimeMeasure("min", (60.0, s))
-  val h = TimeMeasure("h", (60.0, min))
-  val day = TimeMeasure("day", (24.0, h))
-  val year365 = TimeMeasure("Year[365]", (365.0, day))
-  val year360 = TimeMeasure("Year[360]", (360.0, day))
+  val min = s.composes("min", 60)
+  val h = min.composes("h", 60.0)
+  val day = h.composes("day", 24.0)
+  val year365 = day.composes("Year[365]", 365.0)
+  val year360 = day.composes("Year[360]", 360.0)
 
   val ms = Milli * s
   val ns = Nano * s
 
-  val fortnight = TimeMeasure("Fortnight", Imperial(), (14.0, day))
+  val fortnight = day.composes("Fortnight", Imperial(), 14.0)
 
   /**
    * Mass.
@@ -162,20 +226,20 @@ package object measure
   val kg = Kilo * g
   val cg = Centi * g
   val mg = Milli * g
-  val t = MassMeasure("Tonnne", (1000.0, kg))
-  val oz_metric = MassMeasure("Metric Ounce", (25.0, g)) // http://en.wikipedia.org/wiki/Ounce#Metric_ounces
+  val t = MassMeasure("Tonnne", SI)
+  val oz_metric = MassMeasure("Metric Ounce", SI) // http://en.wikipedia.org/wiki/Ounce#Metric_ounces
 
   val oz = MassMeasure("Ounce", US)
-  val lb = MassMeasure("Pound", (16.0, oz))
+  val lb = MassMeasure("Pound", US)
   // http://en.wikipedia.org/wiki/Short_ton
-  val ton = MassMeasure("Ton", (2000.0, lb))
+  val ton = MassMeasure("Ton", US)
 
   // http://en.wikipedia.org/wiki/Grain_(unit)
-  val gr = MassMeasure("Grain", Imperial(), (64.79891, mg))
+  val gr = MassMeasure("Grain", Imperial())
   // http://en.wikipedia.org/wiki/Pennyweight
-  val dwt = MassMeasure("Pennyweight", (24.0, gr))
-  val oz_troy = MassMeasure("Troy Ounce", (20.0, dwt))
-  val lb_troy = MassMeasure("Troy Pound", (12.0, oz_troy))
+  val dwt = MassMeasure("Pennyweight", Imperial())
+  val oz_troy = MassMeasure("Troy Ounce", Imperial())
+  val lb_troy = MassMeasure("Troy Pound", Imperial())
 
   /**
    * Length.
@@ -190,34 +254,34 @@ package object measure
   val nm = Nano * m
 
   val in = LengthMeasure("Inch", Imperial())
-  val ft = LengthMeasure("Foot", (12.0, in))
-  val yd = LengthMeasure("Yard", (3.0, ft))
-  val rd = LengthMeasure("Rod", (16.5, ft))
-  val fur = LengthMeasure("Furlong", (40.0, rd))
-  val mi = LengthMeasure("Mile", (132.0, fur))
+  val ft = in.composes("Foot", 12.0)
+  val yd = ft.composes("Yard", 3.0)
+  val rd = ft.composes("Rod", 16.5)
+  val fur = rd.composes("Furlong", 40.0)
+  val mi = fur.composes("Mile", 132.0)
 
-  val nmi = LengthMeasure("Nautical mile", (1852.0, m))
+  val nmi = m.composes("Nautical mile", 1852.0)
 
   // http://en.wikipedia.org/wiki/Thou_(length)
-  val thou = LengthMeasure("Thou", (0.001, in))
+  val thou = in.composes("Thou", 0.001)
 
   //http://en.wikipedia.org/wiki/Astronomical_unit
-  val astronomicalUnit = LengthMeasure("au", (149597870700.0, m))
+  val astronomicalUnit = m.composes("au", 149597870700.0)
   val au = astronomicalUnit
 
   // http://en.wikipedia.org/wiki/Light-year
-  val lightYear = LengthMeasure("ly", (9460730472580800.0, m))
+  val lightYear = m.composes("ly", 9460730472580800.0)
   val ly = lightYear
 
   // http://en.wikipedia.org/wiki/Parsec
-  val parsec = LengthMeasure("pc", (648000.0 / scala.math.Pi, au))
+  val parsec = au.composes("pc", 648000.0 / scala.math.Pi)
   val pc = parsec
 
   // http://en.wikipedia.org/wiki/List_of_unusual_units_of_measurement#Siriometer
-  val siriometer = LengthMeasure("Siriometer", (1E6, au))
+  val siriometer = au.composes("Siriometer", 1E6)
 
   // http://en.wikipedia.org/wiki/List_of_humorous_units_of_measurement#Beard-second
-  val beardSecond = LengthMeasure("Beard-second", (5.0, nm))
+  val beardSecond = nm.composes("Beard-second", 5.0)
 
   /**
    * Area.
@@ -226,32 +290,32 @@ package object measure
   val km2 = km ^ 2
   // Hectometer
   val hm2 = m ^ 2
-  val ha = AreaMeasure("Hectare", (10000.0, m2))
+  val ha = m2.composes("Hectare", 10000.0)
 
   val ft2 = ft ^ 2
-  val acre = AreaMeasure("Acre", (43560.0, ft2))
+  val acre = ft2.composes("Acre", 43560.0)
 
   /**
    * Volume.
    */
   val m3 = m ^ 3
   val cm3 = cm ^ 3
-  val liter = VolumeMeasure("Liter", (0.001, m3))
+  val liter = m3.composes("Liter", 0.001)
 
   val in3 = in ^ 3
 
   // Liquid
-  val pi_liquid = VolumeMeasure("Pint", (28.875, in3))
-  val qt_liquid = VolumeMeasure("Quart", (2.0, pi_liquid))
-  val gal = VolumeMeasure("gal", US, (4.0, qt_liquid))
+  val pi_liquid = in3.composes("Pint", 28.875)
+  val qt_liquid = pi_liquid.composes("Quart", 2.0)
+  val gal = qt_liquid.composes("gal", US, 4.0)
 
   val bbl = VolumeMeasure("bbl", Imperial())
 
   // Dry
-  val pi_dry = VolumeMeasure("Pint", US, (33.6003125, in3))
-  val qt_dry = VolumeMeasure("Quart", (2.0, pi_dry))
-  val peck = VolumeMeasure("Peck", (8.0, qt_dry))
-  val bushel = VolumeMeasure("Bushel", (4.0, peck))
+  val pi_dry = in3.composes("Pint", US, 33.6003125)
+  val qt_dry = pi_dry.composes("Quart", 2.0)
+  val peck = qt_dry.composes("Peck", 8.0)
+  val bushel = peck.composes("Bushel", 4.0)
 
   /**
    * Force.
@@ -264,15 +328,15 @@ package object measure
    * Power.
    */
   val W = PowerMeasure("Watt", SI)
-  val MW = Mega * W
-  val GW = Giga * W
+  val MW: PowerMeasure = Mega * W
+  val GW: PowerMeasure = Giga * W
 
   /**
    * Energy.
    */
   val J = EnergyMeasure("Joule", Derived(SI))
+  val GJ = Giga * J
 
-  val MWh = MW * h
   val MMBtu = EnergyMeasure("MMBtu", Imperial())
 
   /**
@@ -295,17 +359,19 @@ package object measure
    * Information.
    */
   val b = InformationMeasure("Bit", SI)
-  val B = InformationMeasure("Byte", (8.0, b))
+  val B = b.composes("Byte", 8.0)
 
   /**
    * Luminous flux.
    */
-  val lm = LuminousFluxMeasure("Lumen", Derived(SI), None)
+  val lm = LuminousFluxMeasure("Lumen", Derived(SI))
 
   /**
    * Frequency.
    */
   val Hz = TemporalFrequencyMeasure("Hz", Derived(SI))
+
+  type Price[M <: Measure[M]] = RatioMeasure[Currency, M]
 
   /**
    * Currency.
@@ -657,464 +723,52 @@ package object measure
   // Zambian kwacha
   val ZMW = Currency("ZMW")
 
-  trait Units extends Any
+  object EnergyConverter extends Converter[EnergyMeasure, EnergyMeasure]
+
+  implicit object EnergyCanConvert extends CanConvert[EnergyMeasure, EnergyMeasure]
   {
-    def toDouble: Double
-
-    def *[M <: Measure](measure: M) = Quantity(toDouble, measure)
-
-    /**
-     * Unitless.
-     */
-    def percent = Quantity(toDouble, measure.percent)
-
-    def bp = Quantity(toDouble, measure.bp)
-
-    def rad = Quantity(toDouble, measure.rad)
-
-    def sr = Quantity(toDouble, measure.sr)
-
-    /**
-     * Mass.
-     */
-    def g = Quantity(toDouble, measure.g)
-
-    def kg = Quantity(toDouble, measure.kg)
-
-    def cg = Quantity(toDouble, measure.cg)
-
-    def mg = Quantity(toDouble, measure.mg)
-
-    def t = Quantity(toDouble, measure.t)
-
-    def oz_metric = Quantity(toDouble, measure.oz_metric)
-
-    def oz = Quantity(toDouble, measure.oz)
-
-    def lb = Quantity(toDouble, measure.lb)
-
-    def ton = Quantity(toDouble, measure.ton)
-
-    def gr = Quantity(toDouble, measure.gr)
-
-    def dwt = Quantity(toDouble, measure.dwt)
-
-    def lb_troy = Quantity(toDouble, measure.lb_troy)
-
-    def oz_troy = Quantity(toDouble, measure.oz_troy)
-
-    /**
-     * Length.
-     */
-    def m = Quantity(toDouble, measure.m)
-
-    /**
-     * Area.
-     */
-    def m2 = Quantity(toDouble, measure.m2)
-
-    def km2 = Quantity(toDouble, measure.km2)
-
-    def hm2 = Quantity(toDouble, measure.hm2)
-
-    def ha = Quantity(toDouble, measure.ha)
-
-    def ft2 = Quantity(toDouble, measure.ft2)
-
-    def acre = Quantity(toDouble, measure.acre)
-
-    /**
-     * Volume.
-     */
-    def m3 = Quantity(toDouble, measure.m3)
-
-    def cm3 = Quantity(toDouble, measure.cm3)
-
-    def liter = Quantity(toDouble, measure.liter)
-
-    def in3 = Quantity(toDouble, measure.in3)
-
-    // Liquid
-    def pi_liquid = Quantity(toDouble, measure.pi_liquid)
-
-    def qt_liquid = Quantity(toDouble, measure.qt_liquid)
-
-    def gal = Quantity(toDouble, measure.gal)
-
-    def bbl = Quantity(toDouble, measure.bbl)
-
-    // Dry
-    def pi_dry = Quantity(toDouble, measure.pi_dry)
-
-    def qt_dry = Quantity(toDouble, measure.qt_dry)
-
-    def peck = Quantity(toDouble, measure.peck)
-
-    def bushel = Quantity(toDouble, measure.bushel)
-
-    /**
-     * Currency.
-     */
-    def AED = Quantity(toDouble, measure.AED)
-
-    def AFN = Quantity(toDouble, measure.AFN)
-
-    def ALL = Quantity(toDouble, measure.ALL)
-
-    def AMD = Quantity(toDouble, measure.AMD)
-
-    def ANG = Quantity(toDouble, measure.ANG)
-
-    def AOA = Quantity(toDouble, measure.AOA)
-
-    def ARS = Quantity(toDouble, measure.ARS)
-
-    def AUD = Quantity(toDouble, measure.AUD)
-
-    def AWG = Quantity(toDouble, measure.AWG)
-
-    def AZN = Quantity(toDouble, measure.AZN)
-
-    def BAM = Quantity(toDouble, measure.BAM)
-
-    def BBD = Quantity(toDouble, measure.BBD)
-
-    def BDT = Quantity(toDouble, measure.BDT)
-
-    def BGN = Quantity(toDouble, measure.BGN)
-
-    def BHD = Quantity(toDouble, measure.BHD)
-
-    def BIF = Quantity(toDouble, measure.BIF)
-
-    def BMD = Quantity(toDouble, measure.BMD)
-
-    def BND = Quantity(toDouble, measure.BND)
-
-    def BOB = Quantity(toDouble, measure.BOB)
-
-    def BOV = Quantity(toDouble, measure.BOV)
-
-    def BRL = Quantity(toDouble, measure.BRL)
-
-    def BSD = Quantity(toDouble, measure.BSD)
-
-    def BTN = Quantity(toDouble, measure.BTN)
-
-    def BWP = Quantity(toDouble, measure.BWP)
-
-    def BYR = Quantity(toDouble, measure.BYR)
-
-    def BZD = Quantity(toDouble, measure.BZD)
-
-    def CAD = Quantity(toDouble, measure.CAD)
-
-    def CDF = Quantity(toDouble, measure.CDF)
-
-    def CHF = Quantity(toDouble, measure.CHF)
-
-    def CLF = Quantity(toDouble, measure.CLF)
-
-    def CLP = Quantity(toDouble, measure.CLP)
-
-    def CNY = Quantity(toDouble, measure.CNY)
-
-    def COP = Quantity(toDouble, measure.COP)
-
-    def CRC = Quantity(toDouble, measure.CRC)
-
-    def CUC = Quantity(toDouble, measure.CUC)
-
-    def CUP = Quantity(toDouble, measure.CUP)
-
-    def CVE = Quantity(toDouble, measure.CVE)
-
-    def CZK = Quantity(toDouble, measure.CZK)
-
-    def DJF = Quantity(toDouble, measure.DJF)
-
-    def DKK = Quantity(toDouble, measure.DKK)
-
-    def DOP = Quantity(toDouble, measure.DOP)
-
-    def DZD = Quantity(toDouble, measure.DZD)
-
-    def EGP = Quantity(toDouble, measure.EGP)
-
-    def ERN = Quantity(toDouble, measure.ERN)
-
-    def ETB = Quantity(toDouble, measure.ETB)
-
-    def EUR = Quantity(toDouble, measure.EUR)
-
-    def FJD = Quantity(toDouble, measure.FJD)
-
-    def FKP = Quantity(toDouble, measure.FKP)
-
-    def GBP = Quantity(toDouble, measure.GBP)
-
-    def GEL = Quantity(toDouble, measure.GEL)
-
-    def GHS = Quantity(toDouble, measure.GHS)
-
-    def GIP = Quantity(toDouble, measure.GIP)
-
-    def GMD = Quantity(toDouble, measure.GMD)
-
-    def GNF = Quantity(toDouble, measure.GNF)
-
-    def GTQ = Quantity(toDouble, measure.GTQ)
-
-    def GYD = Quantity(toDouble, measure.GYD)
-
-    def HKD = Quantity(toDouble, measure.HKD)
-
-    def HNL = Quantity(toDouble, measure.HNL)
-
-    def HRK = Quantity(toDouble, measure.HRK)
-
-    def HTG = Quantity(toDouble, measure.HTG)
-
-    def HUF = Quantity(toDouble, measure.HUF)
-
-    def IDR = Quantity(toDouble, measure.IDR)
-
-    def ILS = Quantity(toDouble, measure.ILS)
-
-    def INR = Quantity(toDouble, measure.INR)
-
-    def IQD = Quantity(toDouble, measure.IQD)
-
-    def IRR = Quantity(toDouble, measure.IRR)
-
-    def ISK = Quantity(toDouble, measure.ISK)
-
-    def JMD = Quantity(toDouble, measure.JMD)
-
-    def JOD = Quantity(toDouble, measure.JOD)
-
-    def JPY = Quantity(toDouble, measure.JPY)
-
-    def KES = Quantity(toDouble, measure.KES)
-
-    def KGS = Quantity(toDouble, measure.KGS)
-
-    def KHR = Quantity(toDouble, measure.KHR)
-
-    def KMF = Quantity(toDouble, measure.KMF)
-
-    def KPW = Quantity(toDouble, measure.KPW)
-
-    def KRW = Quantity(toDouble, measure.KRW)
-
-    def KWD = Quantity(toDouble, measure.KWD)
-
-    def KYD = Quantity(toDouble, measure.KYD)
-
-    def KZT = Quantity(toDouble, measure.KZT)
-
-    def LAK = Quantity(toDouble, measure.LAK)
-
-    def LBP = Quantity(toDouble, measure.LBP)
-
-    def LKR = Quantity(toDouble, measure.LKR)
-
-    def LRD = Quantity(toDouble, measure.LRD)
-
-    def LSL = Quantity(toDouble, measure.LSL)
-
-    def LTL = Quantity(toDouble, measure.LTL)
-
-    def LVL = Quantity(toDouble, measure.LVL)
-
-    def LYD = Quantity(toDouble, measure.LYD)
-
-    def MAD = Quantity(toDouble, measure.MAD)
-
-    def MDL = Quantity(toDouble, measure.MDL)
-
-    def MGA = Quantity(toDouble, measure.MGA)
-
-    def MKD = Quantity(toDouble, measure.MKD)
-
-    def MMK = Quantity(toDouble, measure.MMK)
-
-    def MNT = Quantity(toDouble, measure.MNT)
-
-    def MOP = Quantity(toDouble, measure.MOP)
-
-    def MRO = Quantity(toDouble, measure.MRO)
-
-    def MUR = Quantity(toDouble, measure.MUR)
-
-    def MVR = Quantity(toDouble, measure.MVR)
-
-    def MWK = Quantity(toDouble, measure.MWK)
-
-    def MXN = Quantity(toDouble, measure.MXN)
-
-    def MXV = Quantity(toDouble, measure.MXV)
-
-    def MYR = Quantity(toDouble, measure.MYR)
-
-    def MZN = Quantity(toDouble, measure.MZN)
-
-    def NAD = Quantity(toDouble, measure.NAD)
-
-    def NGN = Quantity(toDouble, measure.NGN)
-
-    def NIO = Quantity(toDouble, measure.NIO)
-
-    def NOK = Quantity(toDouble, measure.NOK)
-
-    def NPR = Quantity(toDouble, measure.NPR)
-
-    def NZD = Quantity(toDouble, measure.NZD)
-
-    def OMR = Quantity(toDouble, measure.OMR)
-
-    def PAB = Quantity(toDouble, measure.PAB)
-
-    def PEN = Quantity(toDouble, measure.PEN)
-
-    def PGK = Quantity(toDouble, measure.PGK)
-
-    def PHP = Quantity(toDouble, measure.PHP)
-
-    def PKR = Quantity(toDouble, measure.PKR)
-
-    def PLN = Quantity(toDouble, measure.PLN)
-
-    def PYG = Quantity(toDouble, measure.PYG)
-
-    def QAR = Quantity(toDouble, measure.QAR)
-
-    def RON = Quantity(toDouble, measure.RON)
-
-    def RSD = Quantity(toDouble, measure.RSD)
-
-    def RUB = Quantity(toDouble, measure.RUB)
-
-    def RWF = Quantity(toDouble, measure.RWF)
-
-    def SAR = Quantity(toDouble, measure.SAR)
-
-    def SBD = Quantity(toDouble, measure.SBD)
-
-    def SCR = Quantity(toDouble, measure.SCR)
-
-    def SDG = Quantity(toDouble, measure.SDG)
-
-    def SEK = Quantity(toDouble, measure.SEK)
-
-    def SGD = Quantity(toDouble, measure.SGD)
-
-    def SHP = Quantity(toDouble, measure.SHP)
-
-    def SLL = Quantity(toDouble, measure.SLL)
-
-    def SOS = Quantity(toDouble, measure.SOS)
-
-    def SRD = Quantity(toDouble, measure.SRD)
-
-    def STD = Quantity(toDouble, measure.STD)
-
-    def SYP = Quantity(toDouble, measure.SYP)
-
-    def SZL = Quantity(toDouble, measure.SZL)
-
-    def THB = Quantity(toDouble, measure.THB)
-
-    def TJS = Quantity(toDouble, measure.TJS)
-
-    def TMT = Quantity(toDouble, measure.TMT)
-
-    def TND = Quantity(toDouble, measure.TND)
-
-    def TOP = Quantity(toDouble, measure.TOP)
-
-    def TRY = Quantity(toDouble, measure.TRY)
-
-    def TTD = Quantity(toDouble, measure.TTD)
-
-    def TWD = Quantity(toDouble, measure.TWD)
-
-    def TZS = Quantity(toDouble, measure.TZS)
-
-    def UAH = Quantity(toDouble, measure.UAH)
-
-    def UGX = Quantity(toDouble, measure.UGX)
-
-    def USD = Quantity(toDouble, measure.USD)
-
-    def USN = Quantity(toDouble, measure.USN)
-
-    def USS = Quantity(toDouble, measure.USS)
-
-    def UYU = Quantity(toDouble, measure.UYU)
-
-    def UZS = Quantity(toDouble, measure.UZS)
-
-    def VEF = Quantity(toDouble, measure.VEF)
-
-    def VND = Quantity(toDouble, measure.VND)
-
-    def VUV = Quantity(toDouble, measure.VUV)
-
-    def WST = Quantity(toDouble, measure.WST)
-
-    def XAF = Quantity(toDouble, measure.XAF)
-
-    def XAG = Quantity(toDouble, measure.XAG)
-
-    def XAU = Quantity(toDouble, measure.XAU)
-
-    def XBA = Quantity(toDouble, measure.XBA)
-
-    def XBB = Quantity(toDouble, measure.XBB)
-
-    def XBC = Quantity(toDouble, measure.XBC)
-
-    def XBD = Quantity(toDouble, measure.XBD)
-
-    def XCD = Quantity(toDouble, measure.XCD)
-
-    def XDR = Quantity(toDouble, measure.XDR)
-
-    def XFU = Quantity(toDouble, measure.XFU)
-
-    def XOF = Quantity(toDouble, measure.XOF)
-
-    def XPD = Quantity(toDouble, measure.XPD)
-
-    def XPF = Quantity(toDouble, measure.XPF)
-
-    def XPT = Quantity(toDouble, measure.XPT)
-
-    def XTS = Quantity(toDouble, measure.XTS)
-
-    def XXX = Quantity(toDouble, measure.XXX)
-
-    def YER = Quantity(toDouble, measure.YER)
-
-    def ZAR = Quantity(toDouble, measure.ZAR)
-
-    def ZMW = Quantity(toDouble, measure.ZMW)
+    override def convert: Converter[EnergyMeasure, EnergyMeasure] = EnergyConverter
   }
 
-  implicit final class IntQuantity(private val value: Int) extends AnyVal with Units
+  object MassConverter extends Converter[MassMeasure, MassMeasure]
   {
-    override def toDouble: Double = value
+    override def apply(from: MassMeasure, to: MassMeasure): Option[Double] = (from, to) match
+    {
+      case (`kg`, `lb`) => Some(2.204625)
+      case (`kg`, `g`) => Some(1000)
+      case _ => super.apply(from, to)
+    }
   }
 
-  implicit final class LongQuantity(private val value: Long) extends AnyVal with Units
+  implicit object MassCanConvert extends CanConvert[MassMeasure, MassMeasure]
   {
-    override def toDouble: Double = value
+    override def convert: Converter[MassMeasure, MassMeasure] = MassConverter
   }
 
-  implicit final class DoubleQuantity(private val value: Double) extends AnyVal with Units
+  object UnitlessConverter extends Converter[UnitlessMeasure, UnitlessMeasure]
   {
-    override def toDouble: Double = value
+    override def apply(from: UnitlessMeasure, to: UnitlessMeasure): Option[Double] = Some(from.base / to.base)
   }
 
+  implicit object UnitlessCanConvert extends CanConvert[UnitlessMeasure, UnitlessMeasure]
+  {
+    override def convert: Converter[UnitlessMeasure, UnitlessMeasure] = UnitlessConverter
+  }
+
+  type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]
+
+  object ExponentialLengthConverter extends Converter[ExponentialLengthMeasure, ExponentialLengthMeasure]
+  {
+    override def apply(from: ExponentialLengthMeasure, to: ExponentialLengthMeasure): Option[Double] = (from, to) match
+    {
+      case (`gal`, `in3`) => Some(231)
+      case (`ha`, `km2`) => Some(0.01)
+      case _ => super.apply(from, to)
+    }
+  }
+
+  implicit object ExponentialLengthCanConvert extends CanConvert[ExponentialLengthMeasure, ExponentialLengthMeasure]
+  {
+    override def convert: Converter[ExponentialLengthMeasure, ExponentialLengthMeasure] = ExponentialLengthConverter
+  }
 }

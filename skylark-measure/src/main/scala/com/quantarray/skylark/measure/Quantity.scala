@@ -26,7 +26,7 @@ import scala.language.implicitConversions
  *
  * @author Araik Grigoryan
  */
-case class Quantity[M <: Measure](value: Double, measure: M)
+case class Quantity[M <: Measure[M]](value: Double, measure: M)
 {
   def unary_-() = Quantity(-value, measure)
 
@@ -38,33 +38,16 @@ case class Quantity[M <: Measure](value: Double, measure: M)
 
   def -(constant: Double) = Quantity(value - constant, measure)
 
-  def *[N <: Measure](quantity: Quantity[N]): Quantity[ProductMeasure] =
-  {
-    quantity.measure.dimension match
-    {
-      case _: NoDimension.type => Quantity(value * quantity.value * quantity.measure.multBaseValue, measure * UnitMeasure)
-      case _ => Quantity(value * quantity.value, measure * quantity.measure)
-    }
-  }
+  def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[M2])(implicit cd: CanDivide[M, M2, R]): Quantity[R] =
+    Quantity(value / quantity.value * cd.unit(measure, quantity.measure), measure / quantity.measure)
 
-  def /[N <: Measure](quantity: Quantity[N]): Quantity[RatioMeasure] =
-  {
-    quantity.measure.dimension match
-    {
-      case _: NoDimension.type => Quantity(value / (quantity.value * quantity.measure.multBaseValue), measure / UnitMeasure)
-      case _ => Quantity(value / quantity.value, measure / quantity.measure)
-    }
-  }
+  def *[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[M2])(implicit cm: CanMultiply[M, M2, R]): Quantity[R] =
+    Quantity(value * quantity.value * cm.unit(measure, quantity.measure), measure * quantity.measure)
+
+  def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[M, R]): Quantity[R] = Quantity(math.pow(value, exponent), measure ^ exponent)
+
+  def to[M2 <: Measure[M2]](to: M2)(implicit cc: CanConvert[M, M2]): Quantity[M2] = Quantity(value * cc.convert(measure, to).getOrElse(1.0), to)
 
   override def toString = s"$value $measure"
 }
 
-object Quantity
-{
-
-  object Implicits
-  {
-    implicit def quantityToTuple2[M <: Measure](quantity: Quantity[M]): (Double, M) = (quantity.value, quantity.measure)
-  }
-
-}
