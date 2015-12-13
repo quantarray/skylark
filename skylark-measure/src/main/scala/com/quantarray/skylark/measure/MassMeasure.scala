@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class MassMeasure(name: String, system: SystemOfUnits) extends Measure[MassMeasure]
 {
-  type D = Mass
+  type D = MassDimension
 
-  val dimension = Mass()
+  val dimension = Mass
 
   override def composes(name: String, system: SystemOfUnits, multiple: Double): MassMeasure = MassMeasure(name, system)
 

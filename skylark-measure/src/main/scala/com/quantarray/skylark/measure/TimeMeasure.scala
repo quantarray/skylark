@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class TimeMeasure(name: String, system: SystemOfUnits) extends Measure[TimeMeasure]
 {
-  type D = Time
+  type D = TimeDimension
 
-  val dimension = Time()
+  val dimension = Time
 
   override def toString = name
 }

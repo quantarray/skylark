@@ -26,7 +26,7 @@ package com.quantarray.skylark.measure
  */
 case class PressureMeasure(name: String, system: SystemOfUnits) extends Measure[ PressureMeasure]
 {
-  type D = PressureType
+  type D = PressureDimension
 
   val dimension = Pressure
 

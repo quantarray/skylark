@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class InformationMeasure(name: String, system: SystemOfUnits) extends Measure[InformationMeasure]
 {
-  type D = Information
+  type D = InformationDimension
 
-  val dimension = Information()
+  val dimension = Information
 
   override def toString = name
 }

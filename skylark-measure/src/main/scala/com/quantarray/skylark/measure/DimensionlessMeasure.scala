@@ -28,7 +28,7 @@ case class DimensionlessMeasure(name: String, system: SystemOfUnits, base: Doubl
 {
   type D = NoDimension
 
-  val dimension = NoDimension()
+  val dimension = Dimensionless
 
   override def composes(name: String, system: SystemOfUnits, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, base * multiple)
 

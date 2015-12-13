@@ -32,7 +32,7 @@ class MeasureSpec extends FlatSpec with Matchers
   "kg" should "have expected properties" in
     {
       kg.name should be("kg")
-      kg.dimension should be(Mass())
+      kg.dimension should be(Mass)
       kg.system should be(SI)
       kg.isStructuralAtom should be(right = true)
       kg.exponent should be(1.0)

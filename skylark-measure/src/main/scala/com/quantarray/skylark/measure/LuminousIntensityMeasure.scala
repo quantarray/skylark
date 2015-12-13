@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class LuminousIntensityMeasure(name: String, system: SystemOfUnits) extends Measure[LuminousIntensityMeasure]
 {
-  type D = LuminousIntensity
+  type D = LuminousIntensityDimension
 
-  val dimension = LuminousIntensity()
+  val dimension = LuminousIntensity
 
   override def toString = name
 }

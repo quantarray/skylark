@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class AreaMeasure(name: String, system: SystemOfUnits) extends Measure[AreaMeasure]
 {
-  type D = ExponentialDimension[Length]
+  type D = ExponentialDimension[LengthDimension]
 
-  val dimension = ExponentialDimension(Length(), 2)
+  val dimension = ExponentialDimension(Length, 2)
 
   override def toString = name
 }

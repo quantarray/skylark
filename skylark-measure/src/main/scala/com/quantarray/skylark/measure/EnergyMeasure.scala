@@ -26,7 +26,7 @@ package com.quantarray.skylark.measure
  */
 case class EnergyMeasure(name: String, system: SystemOfUnits) extends Measure[EnergyMeasure]
 {
-  type D = EnergyType
+  type D = EnergyDimension
 
   val dimension = Energy
 

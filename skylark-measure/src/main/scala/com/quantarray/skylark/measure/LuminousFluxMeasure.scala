@@ -26,7 +26,7 @@ package com.quantarray.skylark.measure
  */
 case class LuminousFluxMeasure(name: String, system: SystemOfUnits) extends Measure[LuminousFluxMeasure]
 {
-  type D = LuminousFluxType
+  type D = LuminousFluxDimension
 
   val dimension = LuminousFlux
 

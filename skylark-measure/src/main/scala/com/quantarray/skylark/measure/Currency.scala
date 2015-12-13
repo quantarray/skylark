@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class Currency(name: String) extends Measure[Currency]
 {
-  type D = Money
+  type D = MoneyDimension
 
-  val dimension = Money()
+  val dimension = Money
 
   val system = Monetary
 

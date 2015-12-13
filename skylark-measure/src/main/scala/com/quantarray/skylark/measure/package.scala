@@ -26,57 +26,80 @@ package object measure
 
   case class NoDimension() extends Dimension[NoDimension]
 
-  case class Time() extends Dimension[Time]
+  val Dimensionless = NoDimension()
 
-  case class Length() extends Dimension[Length]
+  case class TimeDimension() extends Dimension[TimeDimension]
 
-  case class Mass() extends Dimension[Mass]
+  val Time = TimeDimension()
 
-  case class Temperature() extends Dimension[Temperature]
+  case class LengthDimension() extends Dimension[LengthDimension]
 
-  case class Amount() extends Dimension[Amount]
+  val Length = LengthDimension()
 
-  case class ElectricCurrent() extends Dimension[ElectricCurrent]
+  case class MassDimension() extends Dimension[MassDimension]
 
-  case class LuminousIntensity() extends Dimension[LuminousIntensity]
+  val Mass = MassDimension()
+
+  case class TemperatureDimension() extends Dimension[TemperatureDimension]
+
+  val Temperature = TemperatureDimension()
+
+  case class AmountDimension() extends Dimension[AmountDimension]
+
+  val Amount = AmountDimension()
+
+  case class ElectricCurrentDimension() extends Dimension[ElectricCurrentDimension]
+
+  val ElectricCurrent = ElectricCurrentDimension()
+
+  case class LuminousIntensityDimension() extends Dimension[LuminousIntensityDimension]
+
+  val LuminousIntensity = LuminousIntensityDimension()
 
   // E.g. digital information, such as bit
-  case class Information() extends Dimension[Information]
+  case class InformationDimension() extends Dimension[InformationDimension]
+
+  val Information = InformationDimension()
 
   // E.g. Currency, such as USD
-  case class Money() extends Dimension[Money]
+  case class MoneyDimension() extends Dimension[MoneyDimension]
 
-  type ForceType = RatioDimension[ProductDimension[Mass, Length], ExponentialDimension[Time]]
+  val Money = MoneyDimension()
 
-  val Force: ForceType = (Mass() * Length()) / (Time() ^ 2)
+  type ForceDimension = RatioDimension[ProductDimension[MassDimension, LengthDimension], ExponentialDimension[TimeDimension]]
 
-  type EnergyType = RatioDimension[ProductDimension[Mass, ExponentialDimension[Length]], ExponentialDimension[Time]]
+  val Force = (Mass * Length) / (Time ^ 2)
 
-  val Energy = (Mass() * (Length() ^ 2)) / (Time() ^ 2)
+  type EnergyDimension = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]], ExponentialDimension[TimeDimension]]
 
-  type PowerType = RatioDimension[ProductDimension[Mass, ExponentialDimension[Length]], ExponentialDimension[Time]]
+  val Energy = (Mass * (Length ^ 2)) / (Time ^ 2)
 
-  val Power = (Mass() * (Length() ^ 2)) / (Time() ^ 3)
+  type PowerDimension = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]], ExponentialDimension[TimeDimension]]
 
-  type PressureType = RatioDimension[Mass, ProductDimension[Length, ExponentialDimension[Time]]]
+  val Power = (Mass * (Length ^ 2)) / (Time ^ 3)
 
-  val Pressure = Mass() / (Length() * (Time() ^ 2))
+  type PressureDimension = RatioDimension[MassDimension, ProductDimension[LengthDimension, ExponentialDimension[TimeDimension]]]
 
-  type LuminousFluxType = ProductDimension[LuminousIntensity, NoDimension]
+  val Pressure = Mass / (Length * (Time ^ 2))
 
-  val LuminousFlux = LuminousIntensity() * NoDimension()
+  type LuminousFluxDimension = ProductDimension[LuminousIntensityDimension, NoDimension]
 
-  val Voltage = (Mass() * (Length() ^ 2)) / ((Time() ^ 3) * ElectricCurrent())
+  val LuminousFlux = LuminousIntensity * Dimensionless
 
-  type TemporalFrequencyType = RatioDimension[measure.NoDimension, measure.Time]
+  type VoltageType = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]],
+    ProductDimension[ExponentialDimension[TimeDimension],  ElectricCurrentDimension]]
 
-  val TemporalFrequency = NoDimension() / Time()
+  val Voltage = (Mass * (Length ^ 2)) / ((Time ^ 3) * ElectricCurrent)
 
-  val SpatialFrequency = NoDimension() / Length()
+  type TemporalFrequencyType = RatioDimension[measure.NoDimension, measure.TimeDimension]
+
+  val TemporalFrequency = Dimensionless / Time
+
+  val SpatialFrequency = Dimensionless / Length
 
   val AngularFrequency = TemporalFrequency
 
-  val ElectricCharge = ElectricCurrent() * Time()
+  val ElectricCharge = ElectricCurrent * Time
 
   /**
    * SI prefixes.

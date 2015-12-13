@@ -26,7 +26,7 @@ package com.quantarray.skylark.measure
  */
 case class ForceMeasure(name: String, system: SystemOfUnits) extends Measure[ForceMeasure]
 {
-  type D = ForceType
+  type D = ForceDimension
 
   val dimension = Force
 

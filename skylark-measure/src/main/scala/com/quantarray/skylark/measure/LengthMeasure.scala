@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class LengthMeasure(name: String, system: SystemOfUnits) extends Measure[LengthMeasure]
 {
-  type D = Length
+  type D = LengthDimension
 
-  val dimension = Length()
+  val dimension = Length
 
   override def composes(name: String, system: SystemOfUnits, multiple: Double): LengthMeasure = LengthMeasure(name, system)
 

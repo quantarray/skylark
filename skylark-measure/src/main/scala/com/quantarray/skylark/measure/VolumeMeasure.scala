@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class VolumeMeasure(name: String, system: SystemOfUnits) extends Measure[VolumeMeasure]
 {
-  type D = ExponentialDimension[Length]
+  type D = ExponentialDimension[LengthDimension]
 
-  val dimension = ExponentialDimension(Length(), 3)
+  val dimension = ExponentialDimension(Length, 3)
 
   override def toString = name
 }

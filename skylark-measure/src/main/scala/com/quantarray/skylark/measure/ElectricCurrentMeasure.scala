@@ -26,9 +26,9 @@ package com.quantarray.skylark.measure
  */
 case class ElectricCurrentMeasure(name: String, system: SystemOfUnits) extends Measure[ElectricCurrentMeasure]
 {
-  type D = ElectricCurrent
+  type D = ElectricCurrentDimension
 
-  val dimension = ElectricCurrent()
+  val dimension = ElectricCurrent
 
   override def toString = name
 }
