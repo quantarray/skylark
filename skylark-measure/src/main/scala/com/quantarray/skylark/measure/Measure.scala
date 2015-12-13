@@ -132,9 +132,7 @@ trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[Produ
 
   val system = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
 
-  override val isStructuralAtom = false
-
-  override def toString = name
+  final override val isStructuralAtom = false
 }
 
 object ProductMeasure
@@ -156,6 +154,8 @@ object ProductMeasure
       }
 
       override def hashCode(): Int = 41 * multiplicand.hashCode() + multiplier.hashCode()
+
+      override def toString = name
     }
   }
 
@@ -179,9 +179,7 @@ trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMe
 
   val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 
-  override val isStructuralAtom = false
-
-  override def toString = name
+  final override val isStructuralAtom = false
 }
 
 object RatioMeasure
@@ -203,6 +201,8 @@ object RatioMeasure
       }
 
       override def hashCode(): Int = 41 * numerator.hashCode() + denominator.hashCode()
+
+      override def toString = name
     }
   }
 
@@ -228,7 +228,7 @@ trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]]
 
   val system = base.system
 
-  override val isStructuralAtom = false
+  final override val isStructuralAtom = false
 }
 
 object ExponentialMeasure
