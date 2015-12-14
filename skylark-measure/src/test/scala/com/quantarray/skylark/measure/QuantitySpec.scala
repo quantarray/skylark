@@ -144,10 +144,27 @@ class QuantitySpec extends FlatSpec with Matchers
 
       def reducer(reduction: Either[ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure], EnergyPriceMeasure]): EnergyPriceMeasure = reduction match
       {
-        case Left(x) => x.multiplicand
+        case Left(x) => throw new Exception("No reduction possible.")
         case Right(x) => x
       }
 
       cadPrice.reduce(reducer) should equal(Quantity(6, CAD / MMBtu))
     }
+
+  "CanConvert" should "allow flexible units" in
+    {
+      case class TradeProvider()
+      {
+        def trade[M <: Measure[M], N <: Measure[N]](quantity: Quantity[M], price: Quantity[Price[N]])
+                                                   (implicit cc: CanConvert[M, N]): Unit =
+        {
+
+        }
+      }
+
+      val provider = TradeProvider()
+
+      provider.trade(10.0.MMBtu, Quantity(2.0, CAD / GJ))
+    }
+
 }

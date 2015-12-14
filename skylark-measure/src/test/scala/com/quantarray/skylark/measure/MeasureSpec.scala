@@ -19,7 +19,6 @@
 
 package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.quantity._
 import com.quantarray.skylark.measure.conversion._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -43,21 +42,5 @@ class MeasureSpec extends FlatSpec with Matchers
       kg to kg should be(Some(1))
       kg to lb should be(Some(2.204625))
       kg to g should be(Some(1000))
-    }
-
-  "CanConvert" should "allow flexible units" in
-    {
-      case class TradeProvider()
-      {
-        def trade[M <: Measure[M], N <: Measure[N]](quantity: Quantity[M], price: Quantity[Price[N]])
-                                                   (implicit cc: CanConvert[M, N]): Unit =
-        {
-
-        }
-      }
-
-      val provider = TradeProvider()
-
-      provider.trade(10.0.MMBtu, Quantity(2.0, CAD / GJ))
     }
 }
