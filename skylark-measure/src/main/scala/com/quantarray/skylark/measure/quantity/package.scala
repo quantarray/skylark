@@ -53,8 +53,14 @@ package object quantity
      */
     def m = Quantity(toDouble, measure.m)
 
+    def in = Quantity(toDouble, measure.in)
+
+    def ft = Quantity(toDouble, measure.ft)
+
+    def yd = Quantity(toDouble, measure.yd)
+
     /**
-     * Aream.
+     * Area.
      */
     def km2 = Quantity(toDouble, measure.km2)
 

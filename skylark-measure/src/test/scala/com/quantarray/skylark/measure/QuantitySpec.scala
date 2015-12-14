@@ -61,6 +61,17 @@ class QuantitySpec extends FlatSpec with Matchers
       ((10.0 kg) to lb) should be(22.04625 lb)
     }
 
+  "ft" should "convertible to in" in
+  {
+    (1.0.ft to in) should be(12.0 in)
+    (12.0.in to ft) should be(1.0 ft)
+  }
+
+  "yd" should "convertible to in" in
+    {
+      //(1.0.yd to in) should be(36.0 in)
+    }
+
   "Basis point" should "be convertible to percent" in
     {
       val rate = 50.0 bp
