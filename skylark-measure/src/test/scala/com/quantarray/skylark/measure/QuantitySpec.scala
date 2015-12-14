@@ -125,10 +125,10 @@ class QuantitySpec extends FlatSpec with Matchers
 
   "Quantity per percent" should "be convertible to another quantity of per basis point" in
     {
-      //      val rhoPercent = Quantity(2.5, (USD / MMBtu) / percent)
-      //      val rhoBasisPoint = rhoPercent to ((USD / MMBtu) / bp)
-      //
-      //      rhoBasisPoint should equal(Quantity(0.025, (USD / MMBtu) / bp))
+      val rhoPercent = Quantity(2.5, (USD / MMBtu) / percent)
+      val rhoBasisPoint = rhoPercent to ((USD / MMBtu) / bp)
+
+      rhoBasisPoint should equal(Quantity(0.025, (USD / MMBtu) / bp))
     }
 
   "Price times FX rate" should "reduce" in

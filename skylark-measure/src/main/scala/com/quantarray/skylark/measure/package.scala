@@ -177,6 +177,8 @@ package object measure
 
   type CurrencyPriceMeasure = RatioMeasure[Currency, Currency]
 
+  type EnergyPricePerDimensionlessMeasure = RatioMeasure[EnergyPriceMeasure, DimensionlessMeasure]
+
   trait AnyDimensionCanMultiply[A] extends CanMultiply[A, DimensionlessMeasure, A]
   {
     override def times(multiplicand: A, multiplier: DimensionlessMeasure): A = multiplicand
@@ -256,9 +258,10 @@ package object measure
     override def times(multiplicand: EnergyPriceMeasure, multiplier: DimensionlessMeasure): EnergyPriceMeasure = multiplicand
   }
 
-  implicit object EnergyPriceDimensionlessCanDivide extends AnyDimensionlessCanDivide[EnergyPriceMeasure]
+  implicit object EnergyPriceDimensionlessCanDivide extends CanDivide[EnergyPriceMeasure, DimensionlessMeasure, RatioMeasure[EnergyPriceMeasure, DimensionlessMeasure]]
   {
-    override def divide(numerator: EnergyPriceMeasure, denominator: DimensionlessMeasure): EnergyPriceMeasure = numerator
+    override def divide(numerator: EnergyPriceMeasure, denominator: DimensionlessMeasure): RatioMeasure[EnergyPriceMeasure, DimensionlessMeasure] =
+      RatioMeasure(numerator, denominator)
   }
 
   implicit object EnergyPriceCurrencyPriceCanMultiply extends CanMultiply[EnergyPriceMeasure, CurrencyPriceMeasure, ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure]]

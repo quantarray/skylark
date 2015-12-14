@@ -107,14 +107,26 @@ package object conversion
    */
   object EnergyPriceConverter extends Converter[EnergyPriceMeasure, EnergyPriceMeasure]
   {
-    override def apply(from: EnergyPriceMeasure, to: EnergyPriceMeasure): Option[Double] =
-    {
-      Some(1.0)
-    }
+    override def apply(from: EnergyPriceMeasure, to: EnergyPriceMeasure): Option[Double] = Some(1.0)
   }
 
   implicit object EnergyPriceCanConvert extends CanConvert[EnergyPriceMeasure, EnergyPriceMeasure]
   {
     override def convert: Converter[EnergyPriceMeasure, EnergyPriceMeasure] = EnergyPriceConverter
   }
+
+  /**
+   * EnergyPrice/() -> EnergyPrice/().
+   */
+  object EnergyPricePerDimensionlessConverter extends Converter[EnergyPricePerDimensionlessMeasure, EnergyPricePerDimensionlessMeasure]
+  {
+    override def apply(from: EnergyPricePerDimensionlessMeasure, to: EnergyPricePerDimensionlessMeasure): Option[Double] =
+      Some(to.denominator.base / from.denominator.base)
+  }
+
+  implicit object EnergyPricePerDimensionlessCanConvert extends CanConvert[EnergyPricePerDimensionlessMeasure, EnergyPricePerDimensionlessMeasure]
+  {
+    override def convert: Converter[EnergyPricePerDimensionlessMeasure, EnergyPricePerDimensionlessMeasure] = EnergyPricePerDimensionlessConverter
+  }
+
 }
