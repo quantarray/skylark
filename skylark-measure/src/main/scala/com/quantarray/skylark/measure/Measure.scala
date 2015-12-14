@@ -92,6 +92,8 @@ trait Measure[Self <: Measure[Self]]
    * Converts to target measure.
    */
   def to[M2 <: Measure[M2]](to: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, to)
+
+  def reduce[R](implicit cr: CanReduce[Self, R]): R = cr.reduce(this)
 }
 
 /**
@@ -104,8 +106,6 @@ trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[Produ
   val multiplier: M2
 
   type D = ProductDimension[multiplicand.D, multiplier.D]
-
-  val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
 
   val dimension = ProductDimension(multiplicand.dimension, multiplier.dimension)
 
@@ -125,6 +125,8 @@ object ProductMeasure
       lazy val multiplicand: M1 = params._1
 
       lazy val multiplier: M2 = params._2
+
+      lazy val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
@@ -152,8 +154,6 @@ trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMe
 
   type D = RatioDimension[numerator.D, denominator.D]
 
-  val name = s"${numerator.structuralName} / ${denominator.structuralName}"
-
   val dimension = RatioDimension(numerator.dimension, denominator.dimension)
 
   val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
@@ -172,6 +172,8 @@ object RatioMeasure
       lazy val numerator: M1 = params._1
 
       lazy val denominator: M2 = params._2
+
+      lazy val name = s"${numerator.structuralName} / ${denominator.structuralName}"
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
@@ -222,7 +224,7 @@ object ExponentialMeasure
 
       override def exponent: Double = params._2
 
-      override lazy val name = params._3.getOrElse(baseName)
+      lazy val name = params._3.getOrElse(baseName)
 
       override def composes(name: String, system: SystemOfUnits, multiple: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent, Some(name))
 

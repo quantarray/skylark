@@ -19,8 +19,9 @@
 
 package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.quantity._
 import com.quantarray.skylark.measure.conversion._
+import com.quantarray.skylark.measure.quantity._
+import com.quantarray.skylark.measure.reduction._
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.language.postfixOps
@@ -62,10 +63,10 @@ class QuantitySpec extends FlatSpec with Matchers
     }
 
   "ft" should "convertible to in" in
-  {
-    (1.0.ft to in) should be(12.0 in)
-    (12.0.in to ft) should be(1.0 ft)
-  }
+    {
+      (1.0.ft to in) should be(12.0 in)
+      (12.0.in to ft) should be(1.0 ft)
+    }
 
   "yd" should "convertible to in" in
     {
@@ -124,9 +125,32 @@ class QuantitySpec extends FlatSpec with Matchers
 
   "Quantity per percent" should "be convertible to another quantity of per basis point" in
     {
-//      val rhoPercent = Quantity(2.5, (USD / MMBtu) / percent)
-//      val rhoBasisPoint = rhoPercent to ((USD / MMBtu) / bp)
-//
-//      rhoBasisPoint should equal(Quantity(0.025, (USD / MMBtu) / bp))
+      //      val rhoPercent = Quantity(2.5, (USD / MMBtu) / percent)
+      //      val rhoBasisPoint = rhoPercent to ((USD / MMBtu) / bp)
+      //
+      //      rhoBasisPoint should equal(Quantity(0.025, (USD / MMBtu) / bp))
+    }
+
+  "Price times FX rate" should "reduce" in
+    {
+      val usdPrice = Quantity(3.0, USD / MMBtu)
+      val fxRate = Quantity(2, CAD / USD)
+
+      val cadPrice = usdPrice * fxRate
+
+      val expectedCadPrice = Quantity(6, (USD / MMBtu) * (CAD / USD))
+
+      cadPrice should equal(expectedCadPrice)
+
+      def reducer(reduction: Either[ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure], EnergyPriceMeasure]): EnergyPriceMeasure =
+      {
+        reduction match
+        {
+          case Left(x) => x.multiplicand
+          case Right(x) => x
+        }
+      }
+
+      cadPrice.reduce(reducer) should equal(Quantity(6, CAD / MMBtu))
     }
 }

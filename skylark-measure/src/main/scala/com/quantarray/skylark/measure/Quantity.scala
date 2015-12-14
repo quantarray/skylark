@@ -48,6 +48,8 @@ case class Quantity[M <: Measure[M]](value: Double, measure: M)
 
   def to[M2 <: Measure[M2]](to: M2)(implicit cc: CanConvert[M, M2]): Quantity[M2] = Quantity(value * cc.convert(measure, to).getOrElse(1.0), to)
 
+  def reduce[R <: Measure[R], D](f: D => R)(implicit cr: CanReduce[M, D]): Quantity[R] = Quantity(value, f(cr.reduce(measure)))
+
   override def toString = s"$value $measure"
 }
 
