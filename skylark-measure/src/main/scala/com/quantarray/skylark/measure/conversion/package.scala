@@ -71,8 +71,6 @@ package object conversion
     override def convert: Converter[EnergyMeasure, EnergyMeasure] = EnergyConverter
   }
 
-  type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]
-
   object ExponentialLengthConverter extends Converter[ExponentialLengthMeasure, ExponentialLengthMeasure]
   {
     override def apply(from: ExponentialLengthMeasure, to: ExponentialLengthMeasure): Option[Double] = (from, to) match
@@ -88,6 +86,9 @@ package object conversion
     override def convert: Converter[ExponentialLengthMeasure, ExponentialLengthMeasure] = ExponentialLengthConverter
   }
 
+  /**
+   * Volume -> Length^3^.
+   */
   object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLengthMeasure]
   {
     override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = (from, to) match
@@ -99,5 +100,21 @@ package object conversion
   implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLengthMeasure]
   {
     override def convert: Converter[VolumeMeasure, ExponentialLengthMeasure] = VolumeToExponentialLengthConverter
+  }
+
+  /**
+   * EnergyPrice -> EnergyPrice.
+   */
+  object EnergyPriceConverter extends Converter[EnergyPriceMeasure, EnergyPriceMeasure]
+  {
+    override def apply(from: EnergyPriceMeasure, to: EnergyPriceMeasure): Option[Double] =
+    {
+      Some(1.0)
+    }
+  }
+
+  implicit object EnergyPriceCanConvert extends CanConvert[EnergyPriceMeasure, EnergyPriceMeasure]
+  {
+    override def convert: Converter[EnergyPriceMeasure, EnergyPriceMeasure] = EnergyPriceConverter
   }
 }

@@ -86,18 +86,24 @@ package object measure
 
   val LuminousFlux = LuminousIntensity * Dimensionless
 
-  type VoltageType = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]],
+  type VoltageDimension = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]],
     ProductDimension[ExponentialDimension[TimeDimension],  ElectricCurrentDimension]]
 
   val Voltage = (Mass * (Length ^ 2)) / ((Time ^ 3) * ElectricCurrent)
 
-  type TemporalFrequencyType = RatioDimension[measure.NoDimension, measure.TimeDimension]
+  type TemporalFrequencyDimension = RatioDimension[NoDimension, TimeDimension]
 
   val TemporalFrequency = Dimensionless / Time
 
+  type SpatialFrequencyDimension = RatioDimension[NoDimension, LengthDimension]
+
   val SpatialFrequency = Dimensionless / Length
 
+  type AngularFrequencyDimension = RatioDimension[NoDimension, TimeDimension]
+
   val AngularFrequency = TemporalFrequency
+
+  type ElectricChargeDimension =  ProductDimension[ElectricCurrentDimension, TimeDimension]
 
   val ElectricCharge = ElectricCurrent * Time
 
@@ -163,11 +169,22 @@ package object measure
 
   val Yi = new BinaryMultiple("Yi", 17)
 
-  val UnitMeasure = DimensionlessMeasure("1", Universal())
+  final val UnitMeasure = DimensionlessMeasure("1", Universal())
+
+  type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]
+
+  type EnergyPriceMeasure = RatioMeasure[Currency, EnergyMeasure]
+
+  trait AnyDimensionlessCanDivide[A] extends CanDivide[A, DimensionlessMeasure, A]
+  {
+    override def divide(numerator: A, denominator: DimensionlessMeasure): A = numerator
+
+    override def unit(numerator: A, denominator: DimensionlessMeasure): Double = 1 / denominator.base
+  }
 
   implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
   {
-    override def divide(n: MassMeasure, d: MassMeasure): DimensionlessMeasure = UnitMeasure
+    override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = UnitMeasure
   }
 
   implicit object MassCanExponentiate extends CanExponentiate[MassMeasure, ExponentialMeasure[MassMeasure]]
@@ -188,7 +205,7 @@ package object measure
 
   implicit object MassLengthCanDivide extends CanDivide[MassMeasure, LengthMeasure, RatioMeasure[MassMeasure, LengthMeasure]]
   {
-    override def divide(n: MassMeasure, d: LengthMeasure): RatioMeasure[MassMeasure, LengthMeasure] = RatioMeasure(n, d)
+    override def divide(numerator: MassMeasure, denominator: LengthMeasure): RatioMeasure[MassMeasure, LengthMeasure] = RatioMeasure(numerator, denominator)
   }
 
   implicit object MassDimensionlessCanMultiply extends CanMultiply[MassMeasure, DimensionlessMeasure, MassMeasure]
@@ -205,7 +222,7 @@ package object measure
 
   implicit object CurrencyEnergyCanDivide extends CanDivide[Currency, EnergyMeasure, RatioMeasure[Currency, EnergyMeasure]]
   {
-    override def divide(n: Currency, d: EnergyMeasure): RatioMeasure[Currency, EnergyMeasure] = RatioMeasure(n, d)
+    override def divide(numerator: Currency, denominator: EnergyMeasure): RatioMeasure[Currency, EnergyMeasure] = RatioMeasure(numerator, denominator)
   }
 
   implicit object CurrencyDimensionlessCanMultiply extends CanMultiply[Currency, DimensionlessMeasure, Currency]
@@ -217,9 +234,14 @@ package object measure
 
   implicit object CurrencyDimensionlessCanDivide extends CanDivide[Currency, DimensionlessMeasure, Currency]
   {
-    override def divide(n: Currency, d: DimensionlessMeasure): Currency = n
+    override def divide(numerator: Currency, denominator: DimensionlessMeasure): Currency = numerator
 
-    override def unit(n: Currency, d: DimensionlessMeasure): Double = 1 / d.base
+    override def unit(numerator: Currency, denominator: DimensionlessMeasure): Double = 1 / denominator.base
+  }
+
+  implicit object EnergyPriceDimensionlessCanDivide extends AnyDimensionlessCanDivide[EnergyPriceMeasure]
+  {
+    override def divide(numerator: EnergyPriceMeasure, denominator: DimensionlessMeasure): EnergyPriceMeasure = numerator
   }
 
   /**

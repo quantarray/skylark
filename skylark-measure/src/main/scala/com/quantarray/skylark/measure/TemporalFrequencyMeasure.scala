@@ -26,7 +26,7 @@ package com.quantarray.skylark.measure
  */
 case class TemporalFrequencyMeasure(name: String, system: SystemOfUnits) extends Measure[TemporalFrequencyMeasure]
 {
-  type D = TemporalFrequencyType
+  type D = TemporalFrequencyDimension
 
   val dimension = TemporalFrequency
 
