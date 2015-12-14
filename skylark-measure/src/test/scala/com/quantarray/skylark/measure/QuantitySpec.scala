@@ -20,6 +20,7 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.quantity._
+import com.quantarray.skylark.measure.conversion._
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.language.postfixOps
@@ -34,8 +35,6 @@ class QuantitySpec extends FlatSpec with Matchers
   "Quantity" should "perform constant arithmetic" in
     {
       10.0.kg * 5 should be(50.0.kg)
-
-      //      (10 * (kg of cotton)) * 5 should be(50 * (kg of cotton))
     }
 
   it should "perform quantity arithmetic" in
@@ -84,40 +83,39 @@ class QuantitySpec extends FlatSpec with Matchers
   "Barrel" should "be convertible to gallon" in
     {
       // Some general substance, like water
-      //(1.0.bbl to gal) should equal(31.5.gal)
+      (1.0.bbl to gal) should equal(31.5.gal)
+
+      import com.quantarray.skylark.measure.conversion.commodity._
 
       // Specific petroleum substance, having a special conversion
-      //(1 * (bbl of wti) to gal) should equal(42.gal)
+      (1.0.bbl to gal) should equal(42.0.gal)
     }
 
   "Quantity of currency" should "be convertible to another quantity of currency via percent" in
     {
       val potOfGold = 30000.0.USD
-
       val rate = 5.0.percent
 
-      //      val panOfGold = potOfGold * rate
-      //
-      //      panOfGold should equal(1500 * (USD * UnitMeasure))
+      val panOfGold = potOfGold * rate
+
+      panOfGold should equal(Quantity(1500, USD))
     }
 
   "Quantity of currency" should "be convertible to another quantity of currency via basis point" in
     {
       val potOfGold = 30000.0.USD
-
       val rate = 100.0.bp
 
-      //      val panOfGold = potOfGold * rate
-      //
-      //      panOfGold should equal(300 * (USD * UnitMeasure))
+      val panOfGold = potOfGold * rate
+
+      panOfGold should equal(Quantity(300, USD))
     }
 
   "Quantity per percent" should "be convertible to another quantity of per basis point" in
     {
-      //      val rhoPercent = 2.5 * ((USD / MMBtu) / percent)
-      //
-      //      val rhoBasisPoint = rhoPercent to ((USD / MMBtu) / bp)
-      //
-      //      rhoBasisPoint should equal(0.025 * ((USD / MMBtu) / bp))
+//      val rhoPercent = 2.5 * ((USD / MMBtu) / percent)
+//      val rhoBasisPoint = rhoPercent to ((USD / MMBtu) / bp)
+//
+//      rhoBasisPoint should equal(0.025 * ((USD / MMBtu) / bp))
     }
 }

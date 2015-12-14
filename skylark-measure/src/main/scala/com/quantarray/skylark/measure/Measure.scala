@@ -197,7 +197,7 @@ trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]]
 
   type D = ExponentialDimension[base.D]
 
-  val name = exponent match
+  val baseName = exponent match
   {
     case 1.0 => s"$base"
     case _ => s"${base.structuralName} ^ $exponent"
@@ -212,15 +212,19 @@ trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]]
 
 object ExponentialMeasure
 {
-  def apply[B <: Measure[B]](base: B, exponent: Double): ExponentialMeasure[B] =
+  def apply[B <: Measure[B]](base: B, exponent: Double, name: Option[String] = None): ExponentialMeasure[B] =
   {
-    val params = (base, exponent)
+    val params = (base, exponent, name)
 
     new ExponentialMeasure[B]
     {
       lazy val base: B = params._1
 
       override def exponent: Double = params._2
+
+      override lazy val name = params._3.getOrElse(baseName)
+
+      override def composes(name: String, system: SystemOfUnits, multiple: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent, Some(name))
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
