@@ -23,6 +23,23 @@ package object conversion
   }
 
   /**
+   * Time -> Time.
+   */
+  object TimeConverter extends Converter[TimeMeasure, TimeMeasure]
+  {
+    override def apply(from: TimeMeasure, to: TimeMeasure): Option[Double] = (from, to) match
+    {
+      case (`h`, `s`) => Some(3600)
+      case _ => super.apply(from, to)
+    }
+  }
+
+  implicit object TimeCanConvert extends CanConvert[TimeMeasure, TimeMeasure]
+  {
+    override def convert: Converter[TimeMeasure, TimeMeasure] = TimeConverter
+  }
+
+  /**
    * Mass -> Mass.
    */
   object MassConverter extends Converter[MassMeasure, MassMeasure]
@@ -51,6 +68,7 @@ package object conversion
     {
       case (`ft`, `in`) => Some(12)
       case (`yd`, `ft`) => Some(3)
+      case (`mi`, `m`) => Some(1609.34)
       case _ if attemptInverse => tryConvert(to, from, attemptInverse = false).fold(super.apply(from, to))(x => Some(1 / x))
       case _ => super.apply(from, to)
     }

@@ -91,7 +91,7 @@ trait Measure[Self <: Measure[Self]]
   /**
    * Converts to target measure.
    */
-  def to[M2 <: Measure[M2]](to: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, to)
+  def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, target)
 
   def reduce[R](implicit cr: CanReduce[Self, R]): R = cr.reduce(this)
 }
@@ -159,6 +159,19 @@ trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMe
   val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 
   final override val isStructuralAtom = false
+
+  /**
+   * Converts to target measure.
+   */
+  def to[M3 <: Measure[M3], M4 <: Measure[M4]](target: RatioMeasure[M3, M4])
+                                              (implicit ccn: CanConvert[M1, M3], ccd: CanConvert[M2, M4]): Option[Double] =
+  {
+    (numerator.to(target.numerator), denominator.to(target.denominator)) match
+    {
+      case (Some(n), Some(d)) => Some(n / d)
+      case _ => None
+    }
+  }
 }
 
 object RatioMeasure

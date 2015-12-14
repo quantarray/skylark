@@ -179,16 +179,11 @@ package object measure
 
   type EnergyPricePerDimensionlessMeasure = RatioMeasure[EnergyPriceMeasure, DimensionlessMeasure]
 
+  type SpeedMeasure = RatioMeasure[LengthMeasure, TimeMeasure]
+
   trait AnyDimensionCanMultiply[A] extends CanMultiply[A, DimensionlessMeasure, A]
   {
     override def times(multiplicand: A, multiplier: DimensionlessMeasure): A = multiplicand
-  }
-
-  trait AnyDimensionlessCanDivide[A] extends CanDivide[A, DimensionlessMeasure, A]
-  {
-    override def divide(numerator: A, denominator: DimensionlessMeasure): A = numerator
-
-    override def unit(numerator: A, denominator: DimensionlessMeasure): Double = 1 / denominator.base
   }
 
   implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
@@ -227,6 +222,11 @@ package object measure
   implicit object LengthCanExponentiate extends CanExponentiate[LengthMeasure, ExponentialMeasure[LengthMeasure]]
   {
     override def pow(base: LengthMeasure, exponent: Double): ExponentialMeasure[LengthMeasure] = ExponentialMeasure(base, exponent)
+  }
+
+  implicit object LengthTimeCanDivide extends CanDivide[LengthMeasure, TimeMeasure, SpeedMeasure]
+  {
+    override def divide(numerator: LengthMeasure, denominator: TimeMeasure): SpeedMeasure = RatioMeasure(numerator, denominator)
   }
 
   implicit object CurrencyEnergyCanDivide extends CanDivide[Currency, EnergyMeasure, RatioMeasure[Currency, EnergyMeasure]]
