@@ -142,13 +142,10 @@ class QuantitySpec extends FlatSpec with Matchers
 
       cadPrice should equal(expectedCadPrice)
 
-      def reducer(reduction: Either[ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure], EnergyPriceMeasure]): EnergyPriceMeasure =
+      def reducer(reduction: Either[ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure], EnergyPriceMeasure]): EnergyPriceMeasure = reduction match
       {
-        reduction match
-        {
-          case Left(x) => x.multiplicand
-          case Right(x) => x
-        }
+        case Left(x) => x.multiplicand
+        case Right(x) => x
       }
 
       cadPrice.reduce(reducer) should equal(Quantity(6, CAD / MMBtu))
