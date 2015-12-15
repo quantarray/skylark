@@ -34,6 +34,7 @@ class MeasureParsersSpec extends FlatSpec with Matchers with MeasureParsers
         case "bbl" => Some(bbl)
         case "m" => Some(m)
         case "s" => Some(s)
+        case "kg" => Some(kg)
       }
     }
   }
@@ -48,14 +49,14 @@ class MeasureParsersSpec extends FlatSpec with Matchers with MeasureParsers
       parseAll(measureExpression, "USD / bbl").get should equal(USD / bbl)
     }
 
-  "USD * (MMBtu / bbl) ^ 3" should "be parsable" in
+  "(m / s) ^ 3" should "be parsable" in
     {
       parseAll(measureExpression, "(m / s) ^ 3").get should equal((m / s) ^ 3)
     }
 
-  "((USD * (MMBtu / bbl) ^ 3) ^ 2) / MMBtu" should "be parsable" in
+  "kg * ((m / s) ^ 2)" should "be parsable" in
     {
-      //      parseAll(measureExpression, "((USD * (MMBtu / bbl) ^ 3) ^ 2) / MMBtu").get should equal(((USD * ((MMBtu / bbl) ^ 3)) ^ 2) / MMBtu)
+      parseAll(measureExpression, "kg * ((m / s) ^ 2)").get should equal(kg * ((m / s) ^ 2))
     }
 
   "XYZ" should "not be parsable" in

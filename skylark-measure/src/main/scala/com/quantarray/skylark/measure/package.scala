@@ -180,9 +180,9 @@ package object measure
 
   type SpeedMeasure = RatioMeasure[LengthMeasure, TimeMeasure]
 
-  trait AnyDimensionCanMultiply[A] extends CanMultiply[A, DimensionlessMeasure, A]
+  trait ProductCanMultiply[M1 <: Measure[M1], M2 <: Measure[M2]] extends CanMultiply[M1, M2, ProductMeasure[M1, M2]]
   {
-    override def times(multiplicand: A, multiplier: DimensionlessMeasure): A = multiplicand
+    override def times(multiplicand: M1, multiplier: M2): ProductMeasure[M1, M2] = ProductMeasure(multiplicand, multiplier)
   }
 
   trait ExponentialCanExponentiate[B <: Measure[B]] extends CanExponentiate[B, ExponentialMeasure[B]]
@@ -197,16 +197,9 @@ package object measure
 
   implicit object MassCanExponentiate extends ExponentialCanExponentiate[MassMeasure]
 
-  implicit object MassTimeCanMultiply extends CanMultiply[MassMeasure, TimeMeasure, ProductMeasure[MassMeasure, TimeMeasure]]
-  {
-    override def times(multiplicand: MassMeasure, multiplier: TimeMeasure): ProductMeasure[MassMeasure, TimeMeasure] = ProductMeasure(multiplicand, multiplier)
-  }
+  implicit object MassTimeCanMultiply extends ProductCanMultiply[MassMeasure, TimeMeasure]
 
-  implicit object MassLengthCanMultiply extends CanMultiply[MassMeasure, LengthMeasure, ProductMeasure[MassMeasure, LengthMeasure]]
-  {
-    override def times(multiplicand: MassMeasure, multiplier: LengthMeasure): ProductMeasure[MassMeasure, LengthMeasure] =
-      ProductMeasure(multiplicand, multiplier)
-  }
+  implicit object MassLengthCanMultiply extends ProductCanMultiply[MassMeasure, LengthMeasure]
 
   implicit object MassLengthCanDivide extends CanDivide[MassMeasure, LengthMeasure, RatioMeasure[MassMeasure, LengthMeasure]]
   {
@@ -219,6 +212,8 @@ package object measure
 
     override def unit(multiplicand: MassMeasure, multiplier: DimensionlessMeasure): Double = multiplier.base
   }
+
+  implicit object MassSpeedCanMultiply extends ProductCanMultiply[MassMeasure, ExponentialMeasure[SpeedMeasure]]
 
   implicit object LengthCanExponentiate extends ExponentialCanExponentiate[LengthMeasure]
 
@@ -256,7 +251,7 @@ package object measure
     override def divide(numerator: Currency, denominator: Currency): CurrencyPriceMeasure = RatioMeasure(numerator, denominator)
   }
 
-  implicit object EnergyPriceDimensionlessCanMultiply extends AnyDimensionCanMultiply[EnergyPriceMeasure]
+  implicit object EnergyPriceDimensionlessCanMultiply extends CanMultiply[EnergyPriceMeasure, DimensionlessMeasure, EnergyPriceMeasure]
   {
     override def times(multiplicand: EnergyPriceMeasure, multiplier: DimensionlessMeasure): EnergyPriceMeasure = multiplicand
   }
@@ -268,12 +263,7 @@ package object measure
       RatioMeasure(numerator, denominator)
   }
 
-  implicit object EnergyPriceCurrencyPriceCanMultiply
-    extends CanMultiply[EnergyPriceMeasure, CurrencyPriceMeasure, ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure]]
-  {
-    override def times(multiplicand: EnergyPriceMeasure, multiplier: CurrencyPriceMeasure): ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure] =
-      ProductMeasure(multiplicand, multiplier)
-  }
+  implicit object EnergyPriceCurrencyPriceCanMultiply extends ProductCanMultiply[EnergyPriceMeasure, CurrencyPriceMeasure]
 
   implicit object SpeedCanExponentiate extends ExponentialCanExponentiate[SpeedMeasure]
 
