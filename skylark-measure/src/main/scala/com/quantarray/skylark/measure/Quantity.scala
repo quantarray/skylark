@@ -54,3 +54,9 @@ case class Quantity[M <: Measure[M]](value: Double, measure: M)
   override def toString = s"$value $measure"
 }
 
+object Quantity
+{
+  def reduced[M <: Measure[M], R <: Measure[R]](value: Double, measure: M)
+                                               (implicit cr: CanReduce[M, R]): Quantity[R] = Quantity[R](value, cr.reduce(measure))
+}
+

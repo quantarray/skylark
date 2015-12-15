@@ -22,7 +22,6 @@ package com.quantarray.skylark
 package object measure
 {
   // TODO: Transfer conversion constants to CanCoverts
-  // TODO: Fix QuantitySpec
 
   case class NoDimension() extends Dimension[NoDimension]
 
