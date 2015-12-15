@@ -8,13 +8,32 @@ package com.quantarray.skylark.measure
  */
 package object conversion
 {
+  trait SameTypeConverter[T] extends Converter[T, T]
+  {
+    override def apply(from: T, to: T): Option[Double] = convert(from, to)
+
+    final def convert(from: T, to: T, attemptInverse: Boolean = true): Option[Double] =
+    {
+      if (convert.isDefinedAt(from, to))
+        convert.lift.apply((from, to))
+      else if (attemptInverse)
+        convert(to, from, attemptInverse = false).fold(super.apply(from, to))(x => Some(1 / x))
+      else
+        super.apply(from, to)
+    }
+
+    protected def convert: PartialFunction[(T, T), Double]
+  }
 
   /**
    * () -> ().
    */
-  object DimensionlessConverter extends Converter[DimensionlessMeasure, DimensionlessMeasure]
+  object DimensionlessConverter extends SameTypeConverter[DimensionlessMeasure]
   {
-    override def apply(from: DimensionlessMeasure, to: DimensionlessMeasure): Option[Double] = Some(from.base / to.base)
+    override protected def convert: PartialFunction[(DimensionlessMeasure, DimensionlessMeasure), Double] =
+    {
+      case (from, to) => from.base / to.base
+    }
   }
 
   implicit object DimensionlessCanConvert extends CanConvert[DimensionlessMeasure, DimensionlessMeasure]
@@ -25,12 +44,11 @@ package object conversion
   /**
    * Time -> Time.
    */
-  object TimeConverter extends Converter[TimeMeasure, TimeMeasure]
+  object TimeConverter extends SameTypeConverter[TimeMeasure]
   {
-    override def apply(from: TimeMeasure, to: TimeMeasure): Option[Double] = (from, to) match
+    override protected def convert: PartialFunction[(TimeMeasure, TimeMeasure), Double] =
     {
-      case (`h`, `s`) => Some(3600)
-      case _ => super.apply(from, to)
+      case (`h`, `s`) => 3600
     }
   }
 
@@ -42,16 +60,12 @@ package object conversion
   /**
    * Mass -> Mass.
    */
-  object MassConverter extends Converter[MassMeasure, MassMeasure]
+  object MassConverter extends SameTypeConverter[MassMeasure]
   {
-    override def apply(from: MassMeasure, to: MassMeasure): Option[Double] = tryConvert(from, to)
-
-    final def tryConvert(from: MassMeasure, to: MassMeasure, attemptInverse: Boolean = true): Option[Double] = (from, to) match
+    protected override def convert: PartialFunction[(MassMeasure, MassMeasure), Double] =
     {
-      case (`kg`, `lb`) => Some(2.204625)
-      case (`kg`, `g`) => Some(1000)
-      case _ if attemptInverse => tryConvert(to, from, attemptInverse = false).fold(super.apply(from, to))(x => Some(1 / x))
-      case _ => super.apply(from, to)
+      case (`kg`, `lb`) => 2.204625
+      case (`kg`, `g`) => 1000.0
     }
   }
 
@@ -65,17 +79,13 @@ package object conversion
   /**
    * Length -> Length.
    */
-  object LengthConverter extends Converter[LengthMeasure, LengthMeasure]
+  object LengthConverter extends SameTypeConverter[LengthMeasure]
   {
-    override def apply(from: LengthMeasure, to: LengthMeasure): Option[Double] = tryConvert(from, to)
-
-    final def tryConvert(from: LengthMeasure, to: LengthMeasure, attemptInverse: Boolean = true): Option[Double] = (from, to) match
+    protected override def convert: PartialFunction[(LengthMeasure, LengthMeasure), Double] =
     {
-      case (`ft`, `in`) => Some(12)
-      case (`yd`, `ft`) => Some(3)
-      case (`mi`, `m`) => Some(1609.34)
-      case _ if attemptInverse => tryConvert(to, from, attemptInverse = false).fold(super.apply(from, to))(x => Some(1 / x))
-      case _ => super.apply(from, to)
+      case (`ft`, `in`) => 12
+      case (`yd`, `ft`) => 3
+      case (`mi`, `m`) => 1609.34
     }
   }
 
@@ -87,20 +97,25 @@ package object conversion
   /**
    * Energy -> Energy.
    */
-  object EnergyConverter extends Converter[EnergyMeasure, EnergyMeasure]
+  object EnergyConverter extends SameTypeConverter[EnergyMeasure]
+  {
+    override protected def convert: PartialFunction[(EnergyMeasure, EnergyMeasure), Double] =
+    {
+      case (MMBtu, GJ) => 1.055056
+    }
+  }
 
   implicit object EnergyCanConvert extends CanConvert[EnergyMeasure, EnergyMeasure]
   {
     override def convert: Converter[EnergyMeasure, EnergyMeasure] = EnergyConverter
   }
 
-  object ExponentialLengthConverter extends Converter[ExponentialLengthMeasure, ExponentialLengthMeasure]
+  object ExponentialLengthConverter extends SameTypeConverter[ExponentialLengthMeasure]
   {
-    override def apply(from: ExponentialLengthMeasure, to: ExponentialLengthMeasure): Option[Double] = (from, to) match
+    override protected def convert: PartialFunction[(ExponentialLengthMeasure, ExponentialLengthMeasure), Double] =
     {
-      case (`gal`, `in3`) => Some(231)
-      case (`ha`, `km2`) => Some(0.01)
-      case _ => super.apply(from, to)
+      case (`gal`, `in3`) => 231
+      case (`ha`, `km2`) => 0.01
     }
   }
 
@@ -128,9 +143,12 @@ package object conversion
   /**
    * EnergyPrice -> EnergyPrice.
    */
-  object EnergyPriceConverter extends Converter[EnergyPriceMeasure, EnergyPriceMeasure]
+  object EnergyPriceConverter extends SameTypeConverter[EnergyPriceMeasure]
   {
-    override def apply(from: EnergyPriceMeasure, to: EnergyPriceMeasure): Option[Double] = Some(1.0)
+    override protected def convert: PartialFunction[(EnergyPriceMeasure, EnergyPriceMeasure), Double] =
+    {
+      case _ => 1.0
+    }
   }
 
   implicit object EnergyPriceCanConvert extends CanConvert[EnergyPriceMeasure, EnergyPriceMeasure]
@@ -141,10 +159,12 @@ package object conversion
   /**
    * EnergyPrice/() -> EnergyPrice/().
    */
-  object EnergyPricePerDimensionlessConverter extends Converter[EnergyPricePerDimensionlessMeasure, EnergyPricePerDimensionlessMeasure]
+  object EnergyPricePerDimensionlessConverter extends SameTypeConverter[EnergyPricePerDimensionlessMeasure]
   {
-    override def apply(from: EnergyPricePerDimensionlessMeasure, to: EnergyPricePerDimensionlessMeasure): Option[Double] =
-      Some(to.denominator.base / from.denominator.base)
+    override protected def convert: PartialFunction[(EnergyPricePerDimensionlessMeasure, EnergyPricePerDimensionlessMeasure), Double] =
+    {
+      case (from, to) => to.denominator.base / from.denominator.base
+    }
   }
 
   implicit object EnergyPricePerDimensionlessCanConvert extends CanConvert[EnergyPricePerDimensionlessMeasure, EnergyPricePerDimensionlessMeasure]
