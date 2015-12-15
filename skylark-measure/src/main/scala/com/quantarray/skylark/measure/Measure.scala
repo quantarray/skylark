@@ -27,7 +27,7 @@ import scala.language.{existentials, implicitConversions}
  * The guiding principle(s) of design is and should be:
  *
  * 1. Construction of a measure should be fast, without any recursion/iteration to perform simplification.
- * 2. Compute-intensive methods, such as reduce, perform simplification and should be called only when necessary. Results can be declared as lazy val.
+ * 2. Compute-intensive methods, such as reduce, perform simplification and should be called only when necessary.
  *
  * @author Araik Grigoryan
  */
@@ -64,9 +64,9 @@ trait Measure[Self <: Measure[Self]]
    */
   def exponent: Double = 1.0
 
-  def composes(name: String, system: SystemOfUnits, multiple: Double): Self = this
+  def composes(name: String, system: SystemOfUnits): Self
 
-  def composes(name: String, multiple: Double): Self = composes(name, system, multiple)
+  def composes(name: String): Self = composes(name, system)
 
   def +[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
 
@@ -132,6 +132,8 @@ object ProductMeasure
 
       lazy val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
 
+      override def composes(name: String, system: SystemOfUnits): ProductMeasure[M1, M2] = this
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: ProductMeasure[_, _] => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
@@ -192,6 +194,8 @@ object RatioMeasure
 
       lazy val name = s"${numerator.structuralName} / ${denominator.structuralName}"
 
+      override def composes(name: String, system: SystemOfUnits): RatioMeasure[M1, M2] = this
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: RatioMeasure[_, _] => this.numerator == that.numerator && this.denominator == that.denominator
@@ -243,7 +247,7 @@ object ExponentialMeasure
 
       lazy val name = params._3.getOrElse(baseName)
 
-      override def composes(name: String, system: SystemOfUnits, multiple: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent, Some(name))
+      override def composes(name: String, system: SystemOfUnits): ExponentialMeasure[B] = ExponentialMeasure(base, exponent, Some(name))
 
       override def equals(obj: scala.Any): Boolean = obj match
       {

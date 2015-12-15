@@ -30,7 +30,9 @@ case class DimensionlessMeasure(name: String, system: SystemOfUnits, base: Doubl
 
   val dimension = Dimensionless
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, base * multiple)
+  override def composes(name: String, system: SystemOfUnits): DimensionlessMeasure = DimensionlessMeasure(name, system, base)
+
+  def composes(name: String, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, base * multiple)
 
   override def toString = name
 }

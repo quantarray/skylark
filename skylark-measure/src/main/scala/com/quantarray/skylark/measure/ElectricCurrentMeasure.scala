@@ -30,5 +30,7 @@ case class ElectricCurrentMeasure(name: String, system: SystemOfUnits) extends M
 
   val dimension = ElectricCurrent
 
+  override def composes(name: String, system: SystemOfUnits): ElectricCurrentMeasure = ElectricCurrentMeasure(name, system)
+
   override def toString = name
 }

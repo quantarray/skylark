@@ -30,5 +30,7 @@ case class LuminousIntensityMeasure(name: String, system: SystemOfUnits) extends
 
   val dimension = LuminousIntensity
 
+  override def composes(name: String, system: SystemOfUnits): LuminousIntensityMeasure = LuminousIntensityMeasure(name, system)
+
   override def toString = name
 }

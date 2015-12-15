@@ -30,5 +30,7 @@ case class EnergyMeasure(name: String, system: SystemOfUnits) extends Measure[En
 
   val dimension = Energy
 
+  override def composes(name: String, system: SystemOfUnits): EnergyMeasure = EnergyMeasure(name, system)
+
   override def toString = name
 }

@@ -30,7 +30,7 @@ case class DecadicMultiple(prefix: String, multiple: Double)
 {
   def ^(exponent: Int) = new DecadicMultiple(prefix * exponent, math.pow(multiple, exponent))
 
-  def *[M <: Measure[M]](measure: M): M = measure.composes(s"$prefix$measure", multiple)
+  def *[M <: Measure[M]](measure: M): M = measure.composes(s"$prefix$measure")
 
   override def toString = s"$prefix ($multiple)"
 }

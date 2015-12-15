@@ -30,5 +30,7 @@ case class InformationMeasure(name: String, system: SystemOfUnits) extends Measu
 
   val dimension = Information
 
+  override def composes(name: String, system: SystemOfUnits): InformationMeasure = InformationMeasure(name, system)
+
   override def toString = name
 }

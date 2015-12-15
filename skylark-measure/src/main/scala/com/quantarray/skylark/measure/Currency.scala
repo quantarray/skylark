@@ -32,5 +32,7 @@ case class Currency(name: String) extends Measure[Currency]
 
   val system = Monetary
 
+  override def composes(name: String, system: SystemOfUnits): Currency = Currency(name)
+
   override def toString = name
 }

@@ -30,7 +30,7 @@ case class MassMeasure(name: String, system: SystemOfUnits) extends Measure[Mass
 
   val dimension = Mass
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): MassMeasure = MassMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits): MassMeasure = MassMeasure(name, system)
 
   override def toString = name
 }

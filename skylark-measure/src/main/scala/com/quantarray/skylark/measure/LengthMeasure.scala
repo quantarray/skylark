@@ -30,7 +30,7 @@ case class LengthMeasure(name: String, system: SystemOfUnits) extends Measure[Le
 
   val dimension = Length
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): LengthMeasure = LengthMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits): LengthMeasure = LengthMeasure(name, system)
 
   override def toString = name
 }

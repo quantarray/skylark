@@ -30,5 +30,7 @@ case class AreaMeasure(name: String, system: SystemOfUnits) extends Measure[Area
 
   val dimension = ExponentialDimension(Length, 2)
 
+  override def composes(name: String, system: SystemOfUnits): AreaMeasure = AreaMeasure(name, system)
+
   override def toString = name
 }

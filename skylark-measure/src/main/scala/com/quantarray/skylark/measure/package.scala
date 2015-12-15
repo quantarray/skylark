@@ -21,8 +21,6 @@ package com.quantarray.skylark
 
 package object measure
 {
-  // TODO: Transfer conversion constants to CanCoverts
-
   case class NoDimension() extends Dimension[NoDimension]
 
   val Dimensionless = NoDimension()
@@ -289,16 +287,16 @@ package object measure
    * Time.
    */
   val s = TimeMeasure("s", SI)
-  val min = s.composes("min", 60)
-  val h = min.composes("h", 60.0)
-  val day = h.composes("day", 24.0)
-  val year365 = day.composes("Year[365]", 365.0)
-  val year360 = day.composes("Year[360]", 360.0)
+  val min = s.composes("min") // 60
+  val h = min.composes("h") // 60)
+  val day = h.composes("day") // 24
+  val year365 = day.composes("Year[365]") // 365
+  val year360 = day.composes("Year[360]") // 360
 
   val ms = Milli * s
   val ns = Nano * s
 
-  val fortnight = day.composes("Fortnight", Imperial(), 14.0)
+  val fortnight = day.composes("Fortnight", Imperial()) // 14
 
   /**
    * Mass.
@@ -335,34 +333,34 @@ package object measure
   val nm = Nano * m
 
   val in = LengthMeasure("Inch", Imperial())
-  val ft = in.composes("Foot", 12.0)
-  val yd = ft.composes("Yard", 3.0)
-  val rd = ft.composes("Rod", 16.5)
-  val fur = rd.composes("Furlong", 40.0)
-  val mi = fur.composes("Mile", 132.0)
+  val ft = in.composes("Foot") // 12
+  val yd = ft.composes("Yard") // 3
+  val rd = ft.composes("Rod") // 16.5
+  val fur = rd.composes("Furlong") // 40.0
+  val mi = fur.composes("Mile") // 132.0
 
-  val nmi = m.composes("Nautical mile", 1852.0)
+  val nmi = m.composes("Nautical mile") // 1852
 
   // http://en.wikipedia.org/wiki/Thou_(length)
-  val thou = in.composes("Thou", 0.001)
+  val thou = in.composes("Thou") // 0.001
 
   //http://en.wikipedia.org/wiki/Astronomical_unit
-  val astronomicalUnit = m.composes("au", 149597870700.0)
+  val astronomicalUnit = m.composes("au") // 149597870700.0
   val au = astronomicalUnit
 
   // http://en.wikipedia.org/wiki/Light-year
-  val lightYear = m.composes("ly", 9460730472580800.0)
+  val lightYear = m.composes("ly") // 9460730472580800.0
   val ly = lightYear
 
   // http://en.wikipedia.org/wiki/Parsec
-  val parsec = au.composes("pc", 648000.0 / scala.math.Pi)
+  val parsec = au.composes("pc") // 648000.0 / scala.math.Pi
   val pc = parsec
 
   // http://en.wikipedia.org/wiki/List_of_unusual_units_of_measurement#Siriometer
-  val siriometer = au.composes("Siriometer", 1E6)
+  val siriometer = au.composes("Siriometer") // 1E6
 
   // http://en.wikipedia.org/wiki/List_of_humorous_units_of_measurement#Beard-second
-  val beardSecond = nm.composes("Beard-second", 5.0)
+  val beardSecond = nm.composes("Beard-second") // 5.0
 
   /**
    * Area.
@@ -371,32 +369,32 @@ package object measure
   val km2 = km ^ 2
   // Hectometer
   val hm2 = m ^ 2
-  val ha = m2.composes("Hectare", 10000.0)
+  val ha = m2.composes("Hectare") // 10000.0
 
   val ft2 = ft ^ 2
-  val acre = ft2.composes("Acre", 43560.0)
+  val acre = ft2.composes("Acre") // 43560.0
 
   /**
    * Volume.
    */
   val m3 = m ^ 3
   val cm3 = cm ^ 3
-  val liter = m3.composes("Liter", 0.001)
+  val liter = m3.composes("Liter") // 0.001
 
   val in3 = in ^ 3
 
   // Liquid
-  val pi_liquid = in3.composes("Pint", 28.875)
-  val qt_liquid = pi_liquid.composes("Quart", 2.0)
-  val gal = qt_liquid.composes("gal", US, 4.0)
+  val pi_liquid = in3.composes("Pint") // 28.875
+  val qt_liquid = pi_liquid.composes("Quart") // 2.0
+  val gal = qt_liquid.composes("gal", US) // 4.0
 
   val bbl = VolumeMeasure("bbl", Imperial())
 
   // Dry
-  val pi_dry = in3.composes("Pint", US, 33.6003125)
-  val qt_dry = pi_dry.composes("Quart", 2.0)
-  val peck = qt_dry.composes("Peck", 8.0)
-  val bushel = peck.composes("Bushel", 4.0)
+  val pi_dry = in3.composes("Pint", US) // 33.6003125
+  val qt_dry = pi_dry.composes("Quart") // 2.0
+  val peck = qt_dry.composes("Peck") // 8.0
+  val bushel = peck.composes("Bushel") // 4.0
 
   /**
    * Force.
@@ -440,7 +438,7 @@ package object measure
    * Information.
    */
   val b = InformationMeasure("Bit", SI)
-  val B = b.composes("Byte", 8.0)
+  val B = b.composes("Byte") // 8.0
 
   /**
    * Luminous flux.

@@ -30,5 +30,7 @@ case class ForceMeasure(name: String, system: SystemOfUnits) extends Measure[For
 
   val dimension = Force
 
+  override def composes(name: String, system: SystemOfUnits): ForceMeasure = ForceMeasure(name, system)
+
   override def toString = name
 }
