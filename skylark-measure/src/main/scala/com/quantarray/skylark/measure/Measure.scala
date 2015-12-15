@@ -209,7 +209,7 @@ object RatioMeasure
 /**
  * Exponential measure.
  */
-trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] //with ExponentialUntypedMeasure
+trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with ExponentialUntypedMeasure
 {
   val base: B
 

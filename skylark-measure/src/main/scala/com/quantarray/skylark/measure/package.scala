@@ -195,10 +195,7 @@ package object measure
     override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = UnitMeasure
   }
 
-  implicit object MassCanExponentiate extends CanExponentiate[MassMeasure, ExponentialMeasure[MassMeasure]]
-  {
-    override def pow(base: MassMeasure, exponent: Double): ExponentialMeasure[MassMeasure] = ExponentialMeasure(base, exponent)
-  }
+  implicit object MassCanExponentiate extends ExponentialCanExponentiate[MassMeasure]
 
   implicit object MassTimeCanMultiply extends CanMultiply[MassMeasure, TimeMeasure, ProductMeasure[MassMeasure, TimeMeasure]]
   {
@@ -223,10 +220,7 @@ package object measure
     override def unit(multiplicand: MassMeasure, multiplier: DimensionlessMeasure): Double = multiplier.base
   }
 
-  implicit object LengthCanExponentiate extends CanExponentiate[LengthMeasure, ExponentialMeasure[LengthMeasure]]
-  {
-    override def pow(base: LengthMeasure, exponent: Double): ExponentialMeasure[LengthMeasure] = ExponentialMeasure(base, exponent)
-  }
+  implicit object LengthCanExponentiate extends ExponentialCanExponentiate[LengthMeasure]
 
   implicit object LengthTimeCanDivide extends CanDivide[LengthMeasure, TimeMeasure, SpeedMeasure]
   {
@@ -281,7 +275,7 @@ package object measure
       ProductMeasure(multiplicand, multiplier)
   }
 
-  //implicit object SpeedCanExponentiate extends ExponentialCanExponentiate[SpeedMeasure]
+  implicit object SpeedCanExponentiate extends ExponentialCanExponentiate[SpeedMeasure]
 
   /**
    * Dimensionless.

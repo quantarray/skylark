@@ -50,7 +50,7 @@ class MeasureParsersSpec extends FlatSpec with Matchers with MeasureParsers
 
   "USD * (MMBtu / bbl) ^ 3" should "be parsable" in
     {
-      //      parseAll(measureExpression, "(m / s) ^ 3").get should equal(foo)
+      parseAll(measureExpression, "(m / s) ^ 3").get should equal((m / s) ^ 3)
     }
 
   "((USD * (MMBtu / bbl) ^ 3) ^ 2) / MMBtu" should "be parsable" in
