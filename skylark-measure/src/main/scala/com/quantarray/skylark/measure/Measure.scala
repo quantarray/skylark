@@ -31,7 +31,7 @@ import scala.language.{existentials, implicitConversions}
  *
  * @author Araik Grigoryan
  */
-trait Measure[Self <: Measure[Self]]
+trait Measure[Self <: Measure[Self]] extends UntypedMeasure
 {
   self: Self =>
 
@@ -57,12 +57,7 @@ trait Measure[Self <: Measure[Self]]
   /**
    * Gets structural name of this measure.
    */
-  val structuralName = if (isStructuralAtom) name else s"($name)"
-
-  /**
-   * Gets exponent of this measure.
-   */
-  def exponent: Double = 1.0
+  final val structuralName = if (isStructuralAtom) name else s"($name)"
 
   def composes(name: String, system: SystemOfUnits): Self
 
@@ -103,7 +98,7 @@ trait Measure[Self <: Measure[Self]]
 /**
  * Product measure.
  */
-trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]]
+trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]] with ProductUntypedMeasure
 {
   val multiplicand: M1
 
@@ -152,7 +147,7 @@ object ProductMeasure
 /**
  * Ratio measure.
  */
-trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]]
+trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]] with RatioUntypedMeasure
 {
   val numerator: M1
 
@@ -214,7 +209,7 @@ object RatioMeasure
 /**
  * Exponential measure.
  */
-trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]]
+trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] //with ExponentialUntypedMeasure
 {
   val base: B
 

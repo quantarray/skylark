@@ -84,7 +84,7 @@ package object measure
   val LuminousFlux = LuminousIntensity * Dimensionless
 
   type VoltageDimension = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]],
-    ProductDimension[ExponentialDimension[TimeDimension],  ElectricCurrentDimension]]
+    ProductDimension[ExponentialDimension[TimeDimension], ElectricCurrentDimension]]
 
   val Voltage = (Mass * (Length ^ 2)) / ((Time ^ 3) * ElectricCurrent)
 
@@ -100,7 +100,7 @@ package object measure
 
   val AngularFrequency = TemporalFrequency
 
-  type ElectricChargeDimension =  ProductDimension[ElectricCurrentDimension, TimeDimension]
+  type ElectricChargeDimension = ProductDimension[ElectricCurrentDimension, TimeDimension]
 
   val ElectricCharge = ElectricCurrent * Time
 
@@ -185,6 +185,11 @@ package object measure
     override def times(multiplicand: A, multiplier: DimensionlessMeasure): A = multiplicand
   }
 
+  trait ExponentialCanExponentiate[B <: Measure[B]] extends CanExponentiate[B, ExponentialMeasure[B]]
+  {
+    override def pow(base: B, exponent: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent)
+  }
+
   implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
   {
     override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = UnitMeasure
@@ -228,6 +233,11 @@ package object measure
     override def divide(numerator: LengthMeasure, denominator: TimeMeasure): SpeedMeasure = RatioMeasure(numerator, denominator)
   }
 
+  implicit object CurrencyVolumeCanDivide extends CanDivide[Currency, VolumeMeasure, RatioMeasure[Currency, VolumeMeasure]]
+  {
+    override def divide(numerator: Currency, denominator: VolumeMeasure): RatioMeasure[Currency, VolumeMeasure] = RatioMeasure(numerator, denominator)
+  }
+
   implicit object CurrencyEnergyCanDivide extends CanDivide[Currency, EnergyMeasure, RatioMeasure[Currency, EnergyMeasure]]
   {
     override def divide(numerator: Currency, denominator: EnergyMeasure): RatioMeasure[Currency, EnergyMeasure] = RatioMeasure(numerator, denominator)
@@ -257,17 +267,21 @@ package object measure
     override def times(multiplicand: EnergyPriceMeasure, multiplier: DimensionlessMeasure): EnergyPriceMeasure = multiplicand
   }
 
-  implicit object EnergyPriceDimensionlessCanDivide extends CanDivide[EnergyPriceMeasure, DimensionlessMeasure, RatioMeasure[EnergyPriceMeasure, DimensionlessMeasure]]
+  implicit object EnergyPriceDimensionlessCanDivide extends CanDivide[EnergyPriceMeasure, DimensionlessMeasure, RatioMeasure[EnergyPriceMeasure,
+    DimensionlessMeasure]]
   {
     override def divide(numerator: EnergyPriceMeasure, denominator: DimensionlessMeasure): RatioMeasure[EnergyPriceMeasure, DimensionlessMeasure] =
       RatioMeasure(numerator, denominator)
   }
 
-  implicit object EnergyPriceCurrencyPriceCanMultiply extends CanMultiply[EnergyPriceMeasure, CurrencyPriceMeasure, ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure]]
+  implicit object EnergyPriceCurrencyPriceCanMultiply
+    extends CanMultiply[EnergyPriceMeasure, CurrencyPriceMeasure, ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure]]
   {
     override def times(multiplicand: EnergyPriceMeasure, multiplier: CurrencyPriceMeasure): ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure] =
       ProductMeasure(multiplicand, multiplier)
   }
+
+  //implicit object SpeedCanExponentiate extends ExponentialCanExponentiate[SpeedMeasure]
 
   /**
    * Dimensionless.
@@ -287,10 +301,14 @@ package object measure
    * Time.
    */
   val s = TimeMeasure("s", SI)
-  val min = s.composes("min") // 60
-  val h = min.composes("h") // 60)
-  val day = h.composes("day") // 24
-  val year365 = day.composes("Year[365]") // 365
+  val min = s.composes("min")
+  // 60
+  val h = min.composes("h")
+  // 60)
+  val day = h.composes("day")
+  // 24
+  val year365 = day.composes("Year[365]")
+  // 365
   val year360 = day.composes("Year[360]") // 360
 
   val ms = Milli * s
@@ -333,10 +351,14 @@ package object measure
   val nm = Nano * m
 
   val in = LengthMeasure("Inch", Imperial())
-  val ft = in.composes("Foot") // 12
-  val yd = ft.composes("Yard") // 3
-  val rd = ft.composes("Rod") // 16.5
-  val fur = rd.composes("Furlong") // 40.0
+  val ft = in.composes("Foot")
+  // 12
+  val yd = ft.composes("Yard")
+  // 3
+  val rd = ft.composes("Rod")
+  // 16.5
+  val fur = rd.composes("Furlong")
+  // 40.0
   val mi = fur.composes("Mile") // 132.0
 
   val nmi = m.composes("Nautical mile") // 1852
@@ -345,15 +367,18 @@ package object measure
   val thou = in.composes("Thou") // 0.001
 
   //http://en.wikipedia.org/wiki/Astronomical_unit
-  val astronomicalUnit = m.composes("au") // 149597870700.0
+  val astronomicalUnit = m.composes("au")
+  // 149597870700.0
   val au = astronomicalUnit
 
   // http://en.wikipedia.org/wiki/Light-year
-  val lightYear = m.composes("ly") // 9460730472580800.0
+  val lightYear = m.composes("ly")
+  // 9460730472580800.0
   val ly = lightYear
 
   // http://en.wikipedia.org/wiki/Parsec
-  val parsec = au.composes("pc") // 648000.0 / scala.math.Pi
+  val parsec = au.composes("pc")
+  // 648000.0 / scala.math.Pi
   val pc = parsec
 
   // http://en.wikipedia.org/wiki/List_of_unusual_units_of_measurement#Siriometer
@@ -384,16 +409,21 @@ package object measure
   val in3 = in ^ 3
 
   // Liquid
-  val pi_liquid = in3.composes("Pint") // 28.875
-  val qt_liquid = pi_liquid.composes("Quart") // 2.0
+  val pi_liquid = in3.composes("Pint")
+  // 28.875
+  val qt_liquid = pi_liquid.composes("Quart")
+  // 2.0
   val gal = qt_liquid.composes("gal", US) // 4.0
 
   val bbl = VolumeMeasure("bbl", Imperial())
 
   // Dry
-  val pi_dry = in3.composes("Pint", US) // 33.6003125
-  val qt_dry = pi_dry.composes("Quart") // 2.0
-  val peck = qt_dry.composes("Peck") // 8.0
+  val pi_dry = in3.composes("Pint", US)
+  // 33.6003125
+  val qt_dry = pi_dry.composes("Quart")
+  // 2.0
+  val peck = qt_dry.composes("Peck")
+  // 8.0
   val bushel = peck.composes("Bushel") // 4.0
 
   /**
