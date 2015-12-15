@@ -68,6 +68,10 @@ trait Measure[Self <: Measure[Self]]
 
   def composes(name: String, multiple: Double): Self = composes(name, system, multiple)
 
+  def +[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
+
+  def -[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
+
   /**
    * Turns this measure into a general RatioMeasure.
    */

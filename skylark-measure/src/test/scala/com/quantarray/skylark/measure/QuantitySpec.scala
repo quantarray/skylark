@@ -35,16 +35,20 @@ class QuantitySpec extends FlatSpec with Matchers
 {
   "Quantity" should "perform constant arithmetic" in
     {
-      10.0.kg * 5 should be(50.0.kg)
+      10.0.kg * 5 should equal(50.0.kg)
     }
 
   it should "perform quantity arithmetic" in
     {
-      10.0.kg * 4.0.m should be(Quantity(40, kg * m))
-      4.0.oz_troy * 7.0.percent should be(Quantity(0.28, oz_troy))
+      10.0.kg * 4.0.m should equal(Quantity(40, kg * m))
+      4.0.oz_troy * 7.0.percent should equal(Quantity(0.28, oz_troy))
 
-      10.0.kg / 2.0.m should be(Quantity(5, kg / m))
-      10.0.USD / 2.0.percent should be(Quantity(500, USD))
+      10.0.kg / 2.0.m should equal(Quantity(5, kg / m))
+      10.0.USD / 2.0.percent should equal(Quantity(500, USD))
+
+      10.0.kg + 3.0.kg should equal(13.0.kg)
+      10.0.kg - 3.0.kg should equal(7.0.kg)
+      10.0.kg + (3.0.lb to kg) should equal(11.360775642116007.kg)
     }
 
   it should "be passable to typesafe method" in
@@ -59,25 +63,25 @@ class QuantitySpec extends FlatSpec with Matchers
 
   it should "convertible to lb" in
     {
-      ((10.0 kg) to lb) should be(22.04625 lb)
+      ((10.0 kg) to lb) should equal(22.04625 lb)
     }
 
   "ft" should "convertible to in" in
     {
-      (1.0.ft to in) should be(12.0 in)
-      (12.0.in to ft) should be(1.0 ft)
+      (1.0.ft to in) should equal(12.0 in)
+      (12.0.in to ft) should equal(1.0 ft)
     }
 
   "yd" should "convertible to in" in
     {
-      //(1.0.yd to in) should be(36.0 in)
+      //(1.0.yd to in) should equal(36.0 in)
     }
 
   "Basis point" should "be convertible to percent" in
     {
       val rate = 50.0 bp
       val apy = rate to percent
-      apy should be(0.5.percent)
+      apy should equal(0.5.percent)
     }
 
   "Hectare" should "be convertible to square kilometers" in
@@ -158,7 +162,6 @@ class QuantitySpec extends FlatSpec with Matchers
         def trade[M <: Measure[M], N <: Measure[N]](quantity: Quantity[M], price: Quantity[Price[N]])
                                                    (implicit cc: CanConvert[M, N]): Unit =
         {
-
         }
       }
 

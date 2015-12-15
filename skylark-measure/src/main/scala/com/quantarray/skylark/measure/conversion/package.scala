@@ -44,10 +44,13 @@ package object conversion
    */
   object MassConverter extends Converter[MassMeasure, MassMeasure]
   {
-    override def apply(from: MassMeasure, to: MassMeasure): Option[Double] = (from, to) match
+    override def apply(from: MassMeasure, to: MassMeasure): Option[Double] = tryConvert(from, to)
+
+    final def tryConvert(from: MassMeasure, to: MassMeasure, attemptInverse: Boolean = true): Option[Double] = (from, to) match
     {
       case (`kg`, `lb`) => Some(2.204625)
       case (`kg`, `g`) => Some(1000)
+      case _ if attemptInverse => tryConvert(to, from, attemptInverse = false).fold(super.apply(from, to))(x => Some(1 / x))
       case _ => super.apply(from, to)
     }
   }
@@ -55,6 +58,8 @@ package object conversion
   implicit object MassCanConvert extends CanConvert[MassMeasure, MassMeasure]
   {
     override def convert: Converter[MassMeasure, MassMeasure] = MassConverter
+
+    override def toString: String = "MassCanConvert"
   }
 
   /**

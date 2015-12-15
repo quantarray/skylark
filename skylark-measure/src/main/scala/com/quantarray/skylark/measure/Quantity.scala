@@ -38,6 +38,10 @@ case class Quantity[M <: Measure[M]](value: Double, measure: M)
 
   def -(constant: Double) = Quantity(value - constant, measure)
 
+  def +[M2 <: Measure[M2]](quantity: Quantity[M2])(implicit ev: M =:= M2): Quantity[M] = Quantity(value + quantity.value, measure + quantity.measure)
+
+  def -[M2 <: Measure[M2]](quantity: Quantity[M2])(implicit ev: M =:= M2): Quantity[M] = Quantity(value - quantity.value, measure - quantity.measure)
+
   def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[M2])(implicit cd: CanDivide[M, M2, R]): Quantity[R] =
     Quantity(value / quantity.value * cd.unit(measure, quantity.measure), measure / quantity.measure)
 
@@ -46,8 +50,11 @@ case class Quantity[M <: Measure[M]](value: Double, measure: M)
 
   def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[M, R]): Quantity[R] = Quantity(math.pow(value, exponent), measure ^ exponent)
 
-  // FIXME: Should failure to obtain a conversion factor raise an exception?
-  def to[M2 <: Measure[M2]](to: M2)(implicit cc: CanConvert[M, M2]): Quantity[M2] = Quantity(value * cc.convert(measure, to).getOrElse(1.0), to)
+  def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[M, M2]): Quantity[M2] = cc.convert(measure, target) match
+  {
+    case Some(cf) => Quantity(value * cf, target)
+    case _ => throw new Exception(s"No conversion from [$measure] to [$target] available in $cc.")
+  }
 
   def reduce[R <: Measure[R], D](f: D => R)(implicit cr: CanReduce[M, D]): Quantity[R] = Quantity(value, f(cr.reduce(measure)))
 

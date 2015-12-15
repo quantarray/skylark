@@ -46,6 +46,6 @@ class MeasureSpec extends FlatSpec with Matchers
 
   "mi/h" should "be convertible to m/s" in
     {
-      (mi / h).to(m / s) should be(Some(0.4470388888888889))
+      (mi / h) to (m / s) should be(Some(0.4470388888888889))
     }
 }

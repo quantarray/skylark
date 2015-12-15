@@ -172,6 +172,8 @@ package object measure
 
   type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]
 
+  type Price[M <: Measure[M]] = RatioMeasure[Currency, M]
+
   type EnergyPriceMeasure = RatioMeasure[Currency, EnergyMeasure]
 
   type CurrencyPriceMeasure = RatioMeasure[Currency, Currency]
@@ -305,13 +307,13 @@ package object measure
   val kg = Kilo * g
   val cg = Centi * g
   val mg = Milli * g
-  val t = MassMeasure("Tonnne", SI)
+  val t = MassMeasure("t", SI)
   val oz_metric = MassMeasure("Metric Ounce", SI) // http://en.wikipedia.org/wiki/Ounce#Metric_ounces
 
-  val oz = MassMeasure("Ounce", US)
-  val lb = MassMeasure("Pound", US)
+  val oz = MassMeasure("oz", US)
+  val lb = MassMeasure("lb", US)
   // http://en.wikipedia.org/wiki/Short_ton
-  val ton = MassMeasure("Ton", US)
+  val ton = MassMeasure("ton", US)
 
   // http://en.wikipedia.org/wiki/Grain_(unit)
   val gr = MassMeasure("Grain", Imperial())
@@ -449,8 +451,6 @@ package object measure
    * Frequency.
    */
   val Hz = TemporalFrequencyMeasure("Hz", Derived(SI))
-
-  type Price[M <: Measure[M]] = RatioMeasure[Currency, M]
 
   /**
    * Currency.
