@@ -2,7 +2,7 @@ name := "skylark-learning"
 
 organization := Build.organization
 
-version := "0.0.1"
+version := Build.version
 
 scalaVersion := Build.scalaVersion
 

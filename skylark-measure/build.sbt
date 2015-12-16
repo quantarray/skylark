@@ -2,7 +2,7 @@ name := "skylark-measure"
 
 organization := Build.organization
 
-version := "0.0.3"
+version := Build.version
 
 scalaVersion := Build.scalaVersion
 
