@@ -41,29 +41,29 @@ class MeasureParsersSpec extends FlatSpec with Matchers with MeasureParsers
 
   "USD" should "be parsable" in
     {
-      parseAll(measureExpression, "USD").get should equal(USD)
+      parseMeasure("USD").get should equal(USD)
     }
 
   "USD / bbl" should "be parsable" in
     {
-      parseAll(measureExpression, "USD / bbl").get should equal(USD / bbl)
+      parseMeasure("USD / bbl").get should equal(USD / bbl)
     }
 
   "(m / s) ^ 3" should "be parsable" in
     {
-      parseAll(measureExpression, "(m / s) ^ 3").get should equal((m / s) ^ 3)
+      parseMeasure("(m / s) ^ 3").get should equal((m / s) ^ 3)
     }
 
   "kg * ((m / s) ^ 2)" should "be parsable" in
     {
-      parseAll(measureExpression, "kg * ((m / s) ^ 2)").get should equal(kg * ((m / s) ^ 2))
+      parseMeasure("kg * ((m / s) ^ 2)").get should equal(kg * ((m / s) ^ 2))
     }
 
   "XYZ" should "not be parsable" in
     {
       intercept[MatchError]
       {
-        parseAll(measureExpression, "XYZ")
+        parseMeasure("XYZ")
       }
     }
 }

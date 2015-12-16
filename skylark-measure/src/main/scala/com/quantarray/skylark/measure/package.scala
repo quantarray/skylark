@@ -22,18 +22,30 @@ package com.quantarray.skylark
 package object measure
 {
   case class NoDimension() extends Dimension[NoDimension]
+  {
+    override def toString: String = "1"
+  }
 
   val Dimensionless = NoDimension()
 
   case class TimeDimension() extends Dimension[TimeDimension]
+  {
+    override def toString: String = "Time"
+  }
 
   val Time = TimeDimension()
 
   case class LengthDimension() extends Dimension[LengthDimension]
+  {
+    override def toString: String = "Length"
+  }
 
   val Length = LengthDimension()
 
   case class MassDimension() extends Dimension[MassDimension]
+  {
+    override def toString: String = "Mass"
+  }
 
   val Mass = MassDimension()
 

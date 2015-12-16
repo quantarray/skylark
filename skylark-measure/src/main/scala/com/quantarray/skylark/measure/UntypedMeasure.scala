@@ -10,6 +10,21 @@ import scala.language.dynamics
 trait UntypedMeasure extends Dynamic
 {
   /**
+   * Gets dimension of this measure.
+   */
+  def dimension: UntypedDimension
+
+  /**
+   * Gets system of units.
+   */
+  def system: SystemOfUnits
+
+  /**
+   * Determines if this measure can be decomposed into constituent measures.
+   */
+  val isStructuralAtom: Boolean = true
+
+  /**
    * Gets exponent of this measure.
    */
   def exponent: Double = 1.0
@@ -20,6 +35,10 @@ trait ProductUntypedMeasure extends UntypedMeasure
   val multiplicand: UntypedMeasure
 
   val multiplier: UntypedMeasure
+
+  lazy val dimension = ProductUntypedDimension(multiplicand.dimension, multiplier.dimension)
+
+  lazy val system = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
 }
 
 object ProductUntypedMeasure
@@ -52,6 +71,10 @@ trait RatioUntypedMeasure extends UntypedMeasure
   val numerator: UntypedMeasure
 
   val denominator: UntypedMeasure
+
+  lazy val dimension: UntypedDimension = RatioUntypedDimension(numerator.dimension, denominator.dimension)
+
+  lazy val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 }
 
 object RatioUntypedMeasure
@@ -82,6 +105,10 @@ object RatioUntypedMeasure
 trait ExponentialUntypedMeasure extends UntypedMeasure
 {
   val base: UntypedMeasure
+
+  lazy val dimension: UntypedDimension = ExponentialUntypedDimension(base.dimension, exponent)
+
+  lazy val system = base.system
 }
 
 object ExponentialUntypedMeasure

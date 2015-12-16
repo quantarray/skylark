@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.measure
 
-import scala.language.{existentials, implicitConversions}
+import scala.language.implicitConversions
 
 /**
  * Measure.
@@ -37,27 +37,20 @@ trait Measure[Self <: Measure[Self]] extends UntypedMeasure
 
   type D <: Dimension[D]
 
+  /**
+   * Measure name.
+   */
   val name: String
-
-  /**
-   * Gets dimension of this measure.
-   */
-  val dimension: D
-
-  /**
-   * Gets system of units.
-   */
-  val system: SystemOfUnits
-
-  /**
-   * Determines if this measure can be decomposed into constituent measures.
-   */
-  val isStructuralAtom = true
 
   /**
    * Gets structural name of this measure.
    */
   final val structuralName = if (isStructuralAtom) name else s"($name)"
+
+  /**
+   * Gets dimension of this measure.
+   */
+  def dimension: D
 
   def composes(name: String, system: SystemOfUnits): Self
 
@@ -106,9 +99,7 @@ trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[Produ
 
   type D = ProductDimension[multiplicand.D, multiplier.D]
 
-  val dimension = ProductDimension(multiplicand.dimension, multiplier.dimension)
-
-  val system = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
+  override lazy val dimension = ProductDimension(multiplicand.dimension, multiplier.dimension)
 
   final override val isStructuralAtom = false
 }
@@ -155,9 +146,7 @@ trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMe
 
   type D = RatioDimension[numerator.D, denominator.D]
 
-  val dimension = RatioDimension(numerator.dimension, denominator.dimension)
-
-  val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
+  override lazy val dimension = RatioDimension(numerator.dimension, denominator.dimension)
 
   final override val isStructuralAtom = false
 
@@ -221,11 +210,11 @@ trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]]
     case _ => s"${base.structuralName} ^ $exponent"
   }
 
-  val dimension = ExponentialDimension(base.dimension, exponent)
-
-  val system = base.system
+  override lazy val dimension = ExponentialDimension(base.dimension, exponent)
 
   final override val isStructuralAtom = false
+
+  val lift: Option[B] = if (exponent == 1.0) Some(base) else None
 }
 
 object ExponentialMeasure

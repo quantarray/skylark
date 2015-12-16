@@ -44,4 +44,6 @@ trait MeasureParsers extends JavaTokenParsers
       {
         case measureName if measureProvider.read(measureName).isDefined => measureProvider.read(measureName).get
       }
+
+  def parseMeasure(measure: String): ParseResult[UntypedMeasure] = parseAll(measureExpression, measure)
 }
