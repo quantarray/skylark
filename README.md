@@ -7,7 +7,7 @@ Skylark is a set of libraries for quantitative and financial computation.
 **skylark-measure** is a library dealing with unit-of-measure conversions in a type-safe manner. Many libraries provide similar functionality on 
 their surface but in the end lack the richness and versatility necessary to use in real enterprise applications.
 
-``scala
+```scala
 libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.0.5"
 ``
 
