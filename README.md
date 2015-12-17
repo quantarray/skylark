@@ -9,7 +9,7 @@ their surface but in the end lack the richness and versatility necessary to use 
 
 ```scala
 libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.0.5"
-``
+```
 
 Many units of measure are defined for you.
 
