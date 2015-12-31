@@ -24,7 +24,7 @@ import java.io.Reader
 import com.github.tototoshi.csv.CSVReader
 import com.quantarray.skylark.time.DateTimeSupport.Implicits._
 import com.quantarray.skylark.time.IntervalSupport.Implicits._
-import com.quantarray.skylark.time.StringDate._
+import com.quantarray.skylark.time.DateTimeQuote._
 import org.joda.time.{DateTime, Interval}
 
 import scala.concurrent.Future

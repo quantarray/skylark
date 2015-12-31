@@ -23,12 +23,16 @@ import org.joda.time.DateTime
 import org.joda.time.chrono.ISOChronology
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter, ISODateTimeFormat}
 
+import scala.reflect.macros.blackbox
+import scala.language.experimental.macros
+
+
 /**
- * String date.
- *
- * @author Araik Grigoryan
- */
-object StringDate
+  * DateTime quote.
+  *
+  * @author Araik Grigoryan
+  */
+object DateTimeQuote
 {
 
   implicit final class StringToDateTime(private val string: String) extends AnyVal
@@ -42,6 +46,37 @@ object StringDate
       .withOffsetParsed()
       .parseDateTime(string)
 
+  }
+
+  def dImpl(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[DateTime] =
+  {
+    import c.universe._
+
+    val quoteRegex = """^(\d{4})-(\d{2})-(\d{2})$""".r
+
+    c.prefix.tree match
+    {
+      case Apply(_, List(Apply(_, partTrees))) =>
+
+        val parts: List[String] = partTrees map
+          { case Literal(Constant(const: String)) => const }
+
+        val quote = parts.head
+
+        quoteRegex.pattern.matcher(quote).matches() match
+        {
+          case true => c.Expr[DateTime](q"com.quantarray.skylark.time.DateTimeQuote.StringToDateTime($quote).d")
+          case _ => c.abort(c.enclosingPosition, s"Cannot parse $quote to convert it into ${classOf[DateTime]}.")
+        }
+
+
+      case _ => c.abort(c.enclosingPosition, "Invalid date.")
+    }
+  }
+
+  implicit final class DateTimeQuoteContext(private val sc: StringContext) extends AnyVal
+  {
+    def d(args: Any*): DateTime = macro dImpl
   }
 
 }

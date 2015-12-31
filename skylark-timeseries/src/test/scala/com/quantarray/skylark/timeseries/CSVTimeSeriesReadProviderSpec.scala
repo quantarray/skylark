@@ -21,8 +21,8 @@ package com.quantarray.skylark.timeseries
 
 import java.nio.file.Paths
 
+import com.quantarray.skylark.time.DateTimeQuote._
 import com.quantarray.skylark.time.DateTimeSupport.Implicits.RichDateTime
-import com.quantarray.skylark.time.StringDate.StringToDateTime
 import com.quantarray.skylark.timeseries.CSVTimeSerial.CSVStringReaderTimeSerial
 import org.joda.time.DateTime
 import org.scalatest.{FlatSpec, Matchers}
@@ -43,7 +43,7 @@ class CSVTimeSeriesReadProviderSpec extends FlatSpec with Matchers
     {
       val provider = new CSVTimeSeriesReadProvider(Paths.get("data", "futures", "CL_2015Z.price-OfficialSet.csv"))
 
-      val seriesFuture = provider.read.history("CL_2015Z.price", "2015-01-01".d until "2015-10-30".d, OfficialSet, DateTime.now)
+      val seriesFuture = provider.read.history("CL_2015Z.price", d"2015-01-01" until d"2015-10-30", OfficialSet, DateTime.now)
 
       Await.ready(seriesFuture, Duration.Inf)
 
