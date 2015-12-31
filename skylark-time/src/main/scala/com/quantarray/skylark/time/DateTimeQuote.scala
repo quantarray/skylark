@@ -23,8 +23,8 @@ import org.joda.time.DateTime
 import org.joda.time.chrono.ISOChronology
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter, ISODateTimeFormat}
 
-import scala.reflect.macros.blackbox
 import scala.language.experimental.macros
+import scala.reflect.macros.blackbox
 
 
 /**
@@ -52,7 +52,37 @@ object DateTimeQuote
   {
     import c.universe._
 
-    val quoteRegex = """^(\d{4})-(\d{2})-(\d{2})$""".r
+    val quoteRegex =
+      """^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])
+        |(?:[2468][048]|[13579][26])00)-02-29)$""".r
+
+    c.prefix.tree match
+    {
+      case Apply(_, List(Apply(_, partTrees))) =>
+
+        val parts: List[String] = partTrees map
+          { case Literal(Constant(const: String)) => const }
+
+        val quote = parts.head
+
+        quoteRegex.pattern.matcher(quote).matches() match
+        {
+          case true => c.Expr[DateTime](q"com.quantarray.skylark.time.DateTimeQuote.StringToDateTime($quote).d")
+          case _ => c.abort(c.enclosingPosition, s"Cannot parse $quote to convert it into ${classOf[DateTime]}.")
+        }
+
+
+      case _ => c.abort(c.enclosingPosition, "Invalid date.")
+    }
+  }
+
+  def dtImpl(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[DateTime] =
+  {
+    import c.universe._
+
+    val quoteRegex =
+      """^(?:[1-9]\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])
+        |(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:Z|[+-][01]\d:[0-5]\d)$""".r
 
     c.prefix.tree match
     {
@@ -77,6 +107,8 @@ object DateTimeQuote
   implicit final class DateTimeQuoteContext(private val sc: StringContext) extends AnyVal
   {
     def d(args: Any*): DateTime = macro dImpl
+
+    def dt(args: Any*): DateTime = macro dtImpl
   }
 
 }

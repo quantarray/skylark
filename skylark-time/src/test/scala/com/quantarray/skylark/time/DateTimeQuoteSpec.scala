@@ -24,10 +24,17 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class DateTimeQuoteSpec extends FlatSpec with Matchers
 {
-  "Valid date" should "compile and equal itself" in
+  "Valid ISO 8601 date" should "compile and equal itself" in
     {
       val wayBackWhen = d"2015-07-01"
 
       wayBackWhen should equal(d"2015-07-01")
+    }
+
+  "Valid ISO 8601 date/time" should "compile and equal itself" in
+    {
+      val wayBackWhen = dt"2015-07-01T03:33:59Z"
+
+      wayBackWhen should equal(dt"2015-07-01T03:33:59Z")
     }
 }
