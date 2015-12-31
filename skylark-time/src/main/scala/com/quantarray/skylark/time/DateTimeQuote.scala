@@ -19,9 +19,9 @@
 
 package com.quantarray.skylark.time
 
-import org.joda.time.DateTime
 import org.joda.time.chrono.ISOChronology
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter, ISODateTimeFormat}
+import org.joda.time.{DateTime, DateTimeZone}
 
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
@@ -34,18 +34,22 @@ import scala.reflect.macros.blackbox
   */
 object DateTimeQuote
 {
+  def isoDateTime(s: String): DateTime = dateTime(s, ISODateTimeFormat.dateTimeParser())
 
-  implicit final class StringToDateTime(private val string: String) extends AnyVal
+  def dateTime(s: String, formatString: String): DateTime = dateTime(s, DateTimeFormat.forPattern(formatString))
+
+  def dateTime(s: String, formatter: DateTimeFormatter)(implicit timeZone: DateTimeZone): DateTime = formatter
+    .withChronology(ISOChronology.getInstance(timeZone))
+    .withOffsetParsed()
+    .parseDateTime(s)
+
+  implicit final class StringToDateTime(private val s: String) extends AnyVal
   {
     def d: DateTime = d(ISODateTimeFormat.dateTimeParser())
 
     def d(formatString: String): DateTime = d(DateTimeFormat.forPattern(formatString))
 
-    def d(formatter: DateTimeFormatter): DateTime = formatter
-      .withChronology(ISOChronology.getInstance(DefaultTimeZone))
-      .withOffsetParsed()
-      .parseDateTime(string)
-
+    def d(formatter: DateTimeFormatter): DateTime = dateTime(s, formatter)
   }
 
   def dImpl(c: blackbox.Context)(args: c.Expr[Any]*): c.Expr[DateTime] =
@@ -67,7 +71,7 @@ object DateTimeQuote
 
         quoteRegex.pattern.matcher(quote).matches() match
         {
-          case true => c.Expr[DateTime](q"com.quantarray.skylark.time.DateTimeQuote.StringToDateTime($quote).d")
+          case true => c.Expr[DateTime](q"com.quantarray.skylark.time.DateTimeQuote.isoDateTime($quote)")
           case _ => c.abort(c.enclosingPosition, s"Cannot parse $quote to convert it into ${classOf[DateTime]}.")
         }
 
@@ -95,7 +99,7 @@ object DateTimeQuote
 
         quoteRegex.pattern.matcher(quote).matches() match
         {
-          case true => c.Expr[DateTime](q"com.quantarray.skylark.time.DateTimeQuote.StringToDateTime($quote).d")
+          case true => c.Expr[DateTime](q"com.quantarray.skylark.time.DateTimeQuote.isoDateTime($quote)")
           case _ => c.abort(c.enclosingPosition, s"Cannot parse $quote to convert it into ${classOf[DateTime]}.")
         }
 

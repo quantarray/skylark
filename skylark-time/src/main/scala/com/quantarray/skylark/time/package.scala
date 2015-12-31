@@ -23,5 +23,5 @@ import org.joda.time.DateTimeZone
 
 package object time
 {
-  val DefaultTimeZone = DateTimeZone.UTC
+  implicit val DefaultTimeZone = DateTimeZone.UTC
 }
