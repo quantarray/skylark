@@ -16,7 +16,7 @@ lazy val `skylark-timeseries` = project.dependsOn(`skylark-time`)
 
 lazy val `skylark-timeseries-cassandra` = project.dependsOn(`skylark-time`, `skylark-timeseries`, `skylark-db`)
 
-lazy val `skylark-measure` = project.dependsOn(`skylark-natural-language`)
+lazy val `skylark-measure` = project
 
 lazy val `skylark-learning` = project
 

@@ -89,6 +89,10 @@ package object quantity
   implicit final class DoubleQuantity(private val value: Double) extends AnyVal with Units
   {
     override def toDouble: Double = value
+
+    def *[M <: Measure[M]](measure: M): Quantity[M] = Quantity(value, measure)
+
+    def apply[M <: Measure[M]](measure: M): Quantity[M] = Quantity(value, measure)
   }
 
 }

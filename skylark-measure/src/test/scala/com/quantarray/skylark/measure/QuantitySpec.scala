@@ -137,8 +137,8 @@ class QuantitySpec extends FlatSpec with Matchers
 
   "Price times FX rate" should "reduce" in
     {
-      val usdPrice = Quantity(3.0, USD / MMBtu)
-      val fxRate = Quantity(2, CAD / USD)
+      val usdPrice = 3.0 * (USD / MMBtu)
+      val fxRate = 2.0 * (CAD / USD)
 
       val cadPrice = usdPrice * fxRate
 
