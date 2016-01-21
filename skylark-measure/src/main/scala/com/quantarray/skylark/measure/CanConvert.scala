@@ -21,4 +21,14 @@ object CanConvert
     {
     }
   }
+
+  def apply[From, To](convert: Converter[From, To]): CanConvert[From, To] =
+  {
+    val params = convert
+
+    new CanConvert[From, To]
+    {
+      val convert: Converter[From, To] = params
+    }
+  }
 }

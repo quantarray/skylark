@@ -1,0 +1,41 @@
+/*
+ * Skylark
+ * http://skylark.io
+ *
+ * Copyright 2012-2016 Quantarray, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.quantarray.skylark.measure.conversion
+
+import com.quantarray.skylark.measure._
+
+/**
+  * Mass converter.
+  *
+  * @author Araik Grigoryan
+  */
+trait MassConverter extends SameTypeConverter[MassMeasure]
+{
+  protected override def convert: PartialFunction[(MassMeasure, MassMeasure), Double] =
+  {
+    case (`kg`, `lb`) => 2.204625
+    case (`kg`, `g`) => 1000.0
+  }
+}
+
+object MassConverter
+{
+  def apply(): MassConverter = new MassConverter {}
+}

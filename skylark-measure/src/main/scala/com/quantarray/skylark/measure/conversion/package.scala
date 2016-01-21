@@ -8,141 +8,45 @@ package com.quantarray.skylark.measure
  */
 package object conversion
 {
-  trait SameTypeConverter[T] extends Converter[T, T]
-  {
-    override def apply(from: T, to: T): Option[Double] = convert(from, to)
-
-    final def convert(from: T, to: T, attemptInverse: Boolean = true): Option[Double] =
-    {
-      if (convert.isDefinedAt(from, to))
-        convert.lift.apply((from, to))
-      else if (attemptInverse)
-        convert(to, from, attemptInverse = false).fold(super.apply(from, to))(x => Some(1 / x))
-      else
-        super.apply(from, to)
-    }
-
-    protected def convert: PartialFunction[(T, T), Double] = PartialFunction.empty
-  }
+  /**
+    * () -> ().
+    */
+  implicit val dimensionlessCanConvert = CanConvert(DimensionlessConverter())
 
   /**
-   * () -> ().
-   */
-  object DimensionlessConverter extends SameTypeConverter[DimensionlessMeasure]
-  {
-    override protected def convert: PartialFunction[(DimensionlessMeasure, DimensionlessMeasure), Double] =
-    {
-      case (from, to) => from.base / to.base
-    }
-  }
-
-  implicit object DimensionlessCanConvert extends CanConvert[DimensionlessMeasure, DimensionlessMeasure]
-  {
-    override def convert: Converter[DimensionlessMeasure, DimensionlessMeasure] = DimensionlessConverter
-  }
+    * Time -> Time.
+    */
+  implicit val timeCanConvert = CanConvert(TimeConverter())
 
   /**
-   * Time -> Time.
-   */
-  object TimeConverter extends SameTypeConverter[TimeMeasure]
-  {
-    override protected def convert: PartialFunction[(TimeMeasure, TimeMeasure), Double] =
-    {
-      case (`h`, `s`) => 3600
-    }
-  }
-
-  implicit object TimeCanConvert extends CanConvert[TimeMeasure, TimeMeasure]
-  {
-    override def convert: Converter[TimeMeasure, TimeMeasure] = TimeConverter
-  }
+    * Mass -> Mass.
+    */
+  implicit val massCanConvert = CanConvert(MassConverter())
 
   /**
-   * Mass -> Mass.
-   */
-  object MassConverter extends SameTypeConverter[MassMeasure]
-  {
-    protected override def convert: PartialFunction[(MassMeasure, MassMeasure), Double] =
-    {
-      case (`kg`, `lb`) => 2.204625
-      case (`kg`, `g`) => 1000.0
-    }
-  }
-
-  implicit object MassCanConvert extends CanConvert[MassMeasure, MassMeasure]
-  {
-    override def convert: Converter[MassMeasure, MassMeasure] = MassConverter
-
-    override def toString: String = "MassCanConvert"
-  }
+    * Length -> Length.
+    */
+  implicit val lengthCanConvert = CanConvert(LengthConverter())
 
   /**
-   * Length -> Length.
-   */
-  object LengthConverter extends SameTypeConverter[LengthMeasure]
-  {
-    protected override def convert: PartialFunction[(LengthMeasure, LengthMeasure), Double] =
-    {
-      case (`ft`, `in`) => 12
-      case (`yd`, `ft`) => 3
-      case (`mi`, `m`) => 1609.34
-    }
-  }
-
-  implicit object LengthCanConvert extends CanConvert[LengthMeasure, LengthMeasure]
-  {
-    override def convert: Converter[LengthMeasure, LengthMeasure] = LengthConverter
-  }
+    * Energy -> Energy.
+    */
+  implicit val energyCanConvert = CanConvert(EnergyConverter())
 
   /**
-   * Energy -> Energy.
-   */
-  object EnergyConverter extends SameTypeConverter[EnergyMeasure]
-  {
-    override protected def convert: PartialFunction[(EnergyMeasure, EnergyMeasure), Double] =
-    {
-      case (MMBtu, GJ) => 1.055056
-    }
-  }
-
-  implicit object EnergyCanConvert extends CanConvert[EnergyMeasure, EnergyMeasure]
-  {
-    override def convert: Converter[EnergyMeasure, EnergyMeasure] = EnergyConverter
-  }
-
-  object ExponentialLengthConverter extends SameTypeConverter[ExponentialLengthMeasure]
-  {
-    override protected def convert: PartialFunction[(ExponentialLengthMeasure, ExponentialLengthMeasure), Double] =
-    {
-      case (`gal`, `in3`) => 231
-      case (`ha`, `km2`) => 0.01
-    }
-  }
-
-  implicit object ExponentialLengthCanConvert extends CanConvert[ExponentialLengthMeasure, ExponentialLengthMeasure]
-  {
-    override def convert: Converter[ExponentialLengthMeasure, ExponentialLengthMeasure] = ExponentialLengthConverter
-  }
+    * Length^n^ -> Length^n^.
+    */
+  implicit val exponentialLengthCanConvert = CanConvert(ExponentialLengthConverter())
 
   /**
-   * Volume -> Length^3^.
-   */
-  object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLengthMeasure]
-  {
-    override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = (from, to) match
-    {
-      case (`bbl`, `gal`) => Some(31.5)
-    }
-  }
+    * Volume -> Length^3^.
+    */
 
-  implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLengthMeasure]
-  {
-    override def convert: Converter[VolumeMeasure, ExponentialLengthMeasure] = VolumeToExponentialLengthConverter
-  }
+  implicit val volumeToExponentialLengthCanConvert = CanConvert(VolumeToExponentialLengthConverter())
 
   /**
-   * EnergyPrice -> EnergyPrice.
-   */
+    * EnergyPrice -> EnergyPrice.
+    */
   object EnergyPriceConverter extends SameTypeConverter[EnergyPriceMeasure]
   {
     override protected def convert: PartialFunction[(EnergyPriceMeasure, EnergyPriceMeasure), Double] =
@@ -157,8 +61,8 @@ package object conversion
   }
 
   /**
-   * EnergyPrice/() -> EnergyPrice/().
-   */
+    * EnergyPrice/() -> EnergyPrice/().
+    */
   object EnergyPricePerDimensionlessConverter extends SameTypeConverter[EnergyPricePerDimensionlessMeasure]
   {
     override protected def convert: PartialFunction[(EnergyPricePerDimensionlessMeasure, EnergyPricePerDimensionlessMeasure), Double] =
