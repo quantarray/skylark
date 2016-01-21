@@ -77,7 +77,8 @@ You can perform the expected arithmetic operations on quantities.
 10.0.kg + (3.0.lb to kg) should equal(11.360775642116007.kg)
 ```
 
-Quantity conversions are also supported via the same `to` operator.
+Quantity conversions are also supported via the same `to` operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
+is defined by converters and require their own CanConvert instances of their components' conversions.
 
 ```scala
 (1.0.ft to in) should equal(12.0 in)

@@ -33,6 +33,11 @@ import scala.language.postfixOps
  */
 class QuantitySpec extends FlatSpec with Matchers
 {
+  /**
+    * EnergyPrice / () -> EnergyPrice / ().
+    */
+  implicit val energyPricePerDimensionlessCanConvert = CanConvert(EnergyPricePerDimensionlessConverter(CanConvert.empty))
+
   "Quantity" should "perform constant arithmetic" in
     {
       10.0.kg * 5 should equal(50.0.kg)

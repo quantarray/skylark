@@ -22,7 +22,7 @@ package com.quantarray.skylark.measure.conversion
 import com.quantarray.skylark.measure._
 
 /**
-  *
+  * Length ^n^ converter.
   *
   * @author Araik Grigoryan
   */
