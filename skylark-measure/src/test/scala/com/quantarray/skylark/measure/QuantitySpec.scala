@@ -170,4 +170,11 @@ class QuantitySpec extends FlatSpec with Matchers
       provider.trade(10.0.MMBtu, Quantity(2.0, CAD / GJ))
     }
 
+  it should "allow trivial empty definition" in
+  {
+    implicit val canConvert = CanConvert.empty[VolumeMeasure, VolumeMeasure]
+
+    5.0.bbl to bbl should equal(5.0 bbl)
+  }
+
 }

@@ -22,7 +22,7 @@ package object conversion
         super.apply(from, to)
     }
 
-    protected def convert: PartialFunction[(T, T), Double]
+    protected def convert: PartialFunction[(T, T), Double] = PartialFunction.empty
   }
 
   /**
