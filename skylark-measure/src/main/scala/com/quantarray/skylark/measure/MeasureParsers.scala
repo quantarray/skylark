@@ -17,17 +17,17 @@ trait MeasureParsers extends JavaTokenParsers
 
   def productMeasureFactor: Parser[UntypedMeasure] = measureFactor ~ "*" ~ measureTerm ^^
     {
-      case multiplicand ~ _ ~ multiplier => ProductUntypedMeasure(multiplicand, multiplier)
+      case multiplicand ~ _ ~ multiplier => UntypedProductMeasure(multiplicand, multiplier)
     }
 
   def ratioMeasureFactor: Parser[UntypedMeasure] = measureFactor ~ "/" ~ measureTerm ^^
     {
-      case numerator ~ _ ~ denominator => RatioUntypedMeasure(numerator, denominator)
+      case numerator ~ _ ~ denominator => UntypedRatioMeasure(numerator, denominator)
     }
 
   def exponentialMeasureFactor: Parser[UntypedMeasure] = measureFactor ~ "^" ~ floatingPointNumber ^^
     {
-      case base ~ _ ~ exponent => ExponentialUntypedMeasure(base, exponent.toDouble)
+      case base ~ _ ~ exponent => UntypedExponentialMeasure(base, exponent.toDouble)
     }
 
   def measureFactor: Parser[UntypedMeasure] = measureMatter | measureParenthesizedExpression

@@ -86,15 +86,12 @@ trait Measure[Self <: Measure[Self]] extends UntypedMeasure
   def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, target)
 
   def reduce[R](implicit cr: CanReduce[Self, R]): R = cr.reduce(this)
-
-  @inline
-  final def collect[B](pf: PartialFunction[Self, B]): B = pf(this)
 }
 
 /**
   * Product measure.
   */
-trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]] with ProductUntypedMeasure
+trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]] with UntypedProductMeasure
 {
   val multiplicand: M1
 
@@ -141,7 +138,7 @@ object ProductMeasure
 /**
   * Ratio measure.
   */
-trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]] with RatioUntypedMeasure
+trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]] with UntypedRatioMeasure
 {
   val numerator: M1
 
@@ -201,7 +198,7 @@ object RatioMeasure
 /**
   * Exponential measure.
   */
-trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with ExponentialUntypedMeasure
+trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with UntypedExponentialMeasure
 {
   val base: B
 
@@ -232,7 +229,7 @@ object ExponentialMeasure
 
       override def exponent: Double = params._2
 
-      lazy val name = params._3.getOrElse(baseName)
+      val name = params._3.getOrElse(baseName)
 
       override def composes(name: String, system: SystemOfUnits): ExponentialMeasure[B] = ExponentialMeasure(base, exponent, Some(name))
 
