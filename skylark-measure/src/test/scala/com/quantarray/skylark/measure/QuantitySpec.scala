@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,7 +151,7 @@ class QuantitySpec extends FlatSpec with Matchers
 
       cadPrice should equal(expectedCadPrice)
 
-      def reducer(reduction: Either[ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure], EnergyPriceMeasure]): EnergyPriceMeasure = reduction match
+      def reducer(reduction: Either[ProductMeasure[EnergyPrice, CurrencyPriceMeasure], EnergyPrice]): EnergyPrice = reduction match
       {
         case Left(x) => throw new Exception("No reduction possible.")
         case Right(x) => x
@@ -164,8 +164,8 @@ class QuantitySpec extends FlatSpec with Matchers
     {
       case class TradeProvider()
       {
-        def trade[M <: Measure[M], N <: Measure[N]](quantity: Quantity[M], price: Quantity[Price[N]])
-                                                   (implicit cc: CanConvert[M, N]): Unit =
+        def trade[Q <: Measure[Q], D <: Measure[D]](quantity: Quantity[Q], price: Quantity[Price[Currency, D]])
+                                                   (implicit cc: CanConvert[Q, D]): Unit =
         {
         }
       }

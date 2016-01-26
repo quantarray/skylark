@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,8 +136,6 @@ object ProductMeasure
   }
 
   def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](pm: ProductMeasure[M1, M2]): Option[(M1, M2)] = Some((pm.multiplicand, pm.multiplier))
-
-  def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](multiplicand: M1, multiplier: M2): Option[(M1, M2)] = Some((multiplicand, multiplier))
 }
 
 /**
@@ -198,8 +196,6 @@ object RatioMeasure
   }
 
   def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](rm: RatioMeasure[M1, M2]): Option[(M1, M2)] = Some((rm.numerator, rm.denominator))
-
-  def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](numerator: M1, denominator: M2): Option[(M1, M2)] = Some((numerator, denominator))
 }
 
 /**
@@ -253,6 +249,4 @@ object ExponentialMeasure
   }
 
   def unapply[B <: Measure[B]](em: ExponentialMeasure[B]): Option[(B, Double)] = Some((em.base, em.exponent))
-
-  def unapply[B <: Measure[B]](base: B, exponent: Double): Option[(B, Double)] = Some((base, exponent))
 }

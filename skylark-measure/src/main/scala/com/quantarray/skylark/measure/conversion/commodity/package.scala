@@ -10,16 +10,16 @@ import com.quantarray.skylark.measure._
  */
 package object commodity
 {
-  object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLengthMeasure]
+  object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLength]
   {
-    override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = (from, to) match
+    override def apply(from: VolumeMeasure, to: ExponentialLength): Option[Double] = (from, to) match
     {
       case (`bbl`, `gal`) => Some(42.0)
     }
   }
 
-  implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLengthMeasure]
+  implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLength]
   {
-    override def convert: Converter[VolumeMeasure, ExponentialLengthMeasure] = VolumeToExponentialLengthConverter
+    override def convert: Converter[VolumeMeasure, ExponentialLength] = VolumeToExponentialLengthConverter
   }
 }

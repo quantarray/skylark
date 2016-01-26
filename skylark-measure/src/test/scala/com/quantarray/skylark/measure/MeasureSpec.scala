@@ -51,6 +51,10 @@ class MeasureSpec extends FlatSpec with Matchers
 
   it should "be collectible" in
     {
-      (mi / h).collect({ case RatioMeasure(n, _) => n }) should be(mi)
+      (mi / h).collect({ case RatioMeasure(x, _) => x }) should be(mi)
+      (kg * h).collect({ case ProductMeasure(_, x) => x }) should be(h)
+      (g ^ 2).collect({ case ExponentialMeasure(base, exp) => (base, exp) }) should be((g, 2))
+
+      (kg * m / (s ^ 2)).collect({ case RatioMeasure(ProductMeasure(x, _), _) => x }) should be(kg)
     }
 }

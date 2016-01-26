@@ -26,9 +26,9 @@ import com.quantarray.skylark.measure._
   *
   * @author Araik Grigoryan
   */
-trait ExponentialLengthConverter extends SameTypeConverter[ExponentialLengthMeasure]
+trait ExponentialLengthConverter extends SameTypeConverter[ExponentialLength]
 {
-  override protected def convert: PartialFunction[(ExponentialLengthMeasure, ExponentialLengthMeasure), Double] =
+  override protected def convert: PartialFunction[(ExponentialLength, ExponentialLength), Double] =
   {
     case (`gal`, `in3`) => 231
     case (`ha`, `km2`) => 0.01

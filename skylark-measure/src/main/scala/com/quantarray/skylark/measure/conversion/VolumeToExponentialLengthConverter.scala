@@ -26,9 +26,9 @@ import com.quantarray.skylark.measure._
   *
   * @author Araik Grigoryan
   */
-trait VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLengthMeasure]
+trait VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLength]
 {
-  override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = (from, to) match
+  override def apply(from: VolumeMeasure, to: ExponentialLength): Option[Double] = (from, to) match
   {
     case (`bbl`, `gal`) => Some(31.5)
   }

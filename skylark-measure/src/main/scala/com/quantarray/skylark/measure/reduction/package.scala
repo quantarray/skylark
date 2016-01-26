@@ -2,12 +2,12 @@ package com.quantarray.skylark.measure
 
 package object reduction
 {
-  type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPriceMeasure, CurrencyPriceMeasure]
+  type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, CurrencyPriceMeasure]
 
   implicit object EnergyPriceTimesCurrencyPriceCanReduce
-    extends CanReduce[EnergyPriceTimesCurrencyPriceMeasure, Either[EnergyPriceTimesCurrencyPriceMeasure, EnergyPriceMeasure]]
+    extends CanReduce[EnergyPriceTimesCurrencyPriceMeasure, Either[EnergyPriceTimesCurrencyPriceMeasure, EnergyPrice]]
   {
-    override def reduce(inflated: EnergyPriceTimesCurrencyPriceMeasure): Either[EnergyPriceTimesCurrencyPriceMeasure, EnergyPriceMeasure] =
+    override def reduce(inflated: EnergyPriceTimesCurrencyPriceMeasure): Either[EnergyPriceTimesCurrencyPriceMeasure, EnergyPrice] =
     {
       if (inflated.multiplicand.numerator == inflated.multiplier.denominator)
       {

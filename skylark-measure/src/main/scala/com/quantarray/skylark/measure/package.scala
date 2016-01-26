@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ package com.quantarray.skylark
 
 package object measure
 {
+
   case class NoDimension() extends Dimension[NoDimension]
   {
     override def toString: String = "1"
@@ -117,8 +118,8 @@ package object measure
   val ElectricCharge = ElectricCurrent * Time
 
   /**
-   * SI prefixes.
-   */
+    * SI prefixes.
+    */
   val Yotta = new DecadicMultiple("Y", 1E24)
 
   val Zetta = new DecadicMultiple("Z", 1E21)
@@ -160,8 +161,8 @@ package object measure
   val Yocto = new DecadicMultiple("y", 1E-24)
 
   /**
-   * IEC (http://en.wikipedia.org/wiki/International_Electrotechnical_Commission) prefixes.
-   */
+    * IEC (http://en.wikipedia.org/wiki/International_Electrotechnical_Commission) prefixes.
+    */
   val Ki = new BinaryMultiple("Ki", 10)
 
   val Mi = new BinaryMultiple("Mi", 11)
@@ -180,17 +181,19 @@ package object measure
 
   final val UnitMeasure = DimensionlessMeasure("1", Universal())
 
-  type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]
+  type ExponentialLength = ExponentialMeasure[LengthMeasure]
 
-  type Price[M <: Measure[M]] = RatioMeasure[Currency, M]
+  type Price[M <: Measure[M], N <: Measure[N]] = RatioMeasure[M, N]
 
-  type EnergyPriceMeasure = RatioMeasure[Currency, EnergyMeasure]
+  type EnergyPrice = RatioMeasure[Currency, EnergyMeasure]
 
   type CurrencyPriceMeasure = RatioMeasure[Currency, Currency]
 
-  type EnergyPricePerDimensionlessMeasure = RatioMeasure[EnergyPriceMeasure, DimensionlessMeasure]
+  type EnergyPricePerDimensionless = RatioMeasure[EnergyPrice, DimensionlessMeasure]
 
-  type SpeedMeasure = RatioMeasure[LengthMeasure, TimeMeasure]
+  type Speed = RatioMeasure[LengthMeasure, TimeMeasure]
+
+  type MassTimesLength = ProductMeasure[MassMeasure, LengthMeasure]
 
   trait ProductCanMultiply[M1 <: Measure[M1], M2 <: Measure[M2]] extends CanMultiply[M1, M2, ProductMeasure[M1, M2]]
   {
@@ -206,6 +209,8 @@ package object measure
   {
     override def pow(base: B, exponent: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent)
   }
+
+  implicit object TimeCanExponentiate extends ExponentialCanExponentiate[TimeMeasure]
 
   implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
   {
@@ -227,7 +232,7 @@ package object measure
     override def unit(multiplicand: MassMeasure, multiplier: DimensionlessMeasure): Double = multiplier.base
   }
 
-  implicit object MassSpeedCanMultiply extends ProductCanMultiply[MassMeasure, ExponentialMeasure[SpeedMeasure]]
+  implicit object MassSpeedCanMultiply extends ProductCanMultiply[MassMeasure, ExponentialMeasure[Speed]]
 
   implicit object LengthCanExponentiate extends ExponentialCanExponentiate[LengthMeasure]
 
@@ -253,20 +258,25 @@ package object measure
 
   implicit object CurrencyCanDivide extends RatioCanDivide[Currency, Currency]
 
-  implicit object EnergyPriceDimensionlessCanMultiply extends CanMultiply[EnergyPriceMeasure, DimensionlessMeasure, EnergyPriceMeasure]
+  implicit object EnergyPriceDimensionlessCanMultiply extends CanMultiply[EnergyPrice, DimensionlessMeasure, EnergyPrice]
   {
-    override def times(multiplicand: EnergyPriceMeasure, multiplier: DimensionlessMeasure): EnergyPriceMeasure = multiplicand
+    override def times(multiplicand: EnergyPrice, multiplier: DimensionlessMeasure): EnergyPrice = multiplicand
   }
 
-  implicit object EnergyPriceDimensionlessCanDivide extends RatioCanDivide[EnergyPriceMeasure, DimensionlessMeasure]
+  implicit object EnergyPriceDimensionlessCanDivide extends RatioCanDivide[EnergyPrice, DimensionlessMeasure]
 
-  implicit object EnergyPriceCurrencyPriceCanMultiply extends ProductCanMultiply[EnergyPriceMeasure, CurrencyPriceMeasure]
+  implicit object EnergyPriceCurrencyPriceCanMultiply extends ProductCanMultiply[EnergyPrice, CurrencyPriceMeasure]
 
-  implicit object SpeedCanExponentiate extends ExponentialCanExponentiate[SpeedMeasure]
+  implicit object SpeedCanExponentiate extends ExponentialCanExponentiate[Speed]
+
+  implicit object MassTimesLengthExponentialTimeCanDivide extends CanDivide[MassTimesLength, ExponentialMeasure[TimeMeasure], RatioMeasure[MassTimesLength, ExponentialMeasure[TimeMeasure]]]
+  {
+    override def divide(numerator: MassTimesLength, denominator: ExponentialMeasure[TimeMeasure]): RatioMeasure[MassTimesLength, ExponentialMeasure[TimeMeasure]] = RatioMeasure(numerator, denominator)
+  }
 
   /**
-   * Dimensionless.
-   */
+    * Dimensionless.
+    */
   val percent = UnitMeasure.composes("%", 0.01)
 
   // http://en.wikipedia.org/wiki/Basis_point
@@ -279,8 +289,8 @@ package object measure
   val sr = DimensionlessMeasure("sr", Derived(SI), 1 / (4 * scala.math.Pi))
 
   /**
-   * Time.
-   */
+    * Time.
+    */
   val s = TimeMeasure("s", SI)
   val min = s.composes("min")
   // 60
@@ -298,8 +308,8 @@ package object measure
   val fortnight = day.composes("Fortnight", Imperial()) // 14
 
   /**
-   * Mass.
-   */
+    * Mass.
+    */
   val g = MassMeasure("g", SI)
   val kg = Kilo * g
   val cg = Centi * g
@@ -320,8 +330,8 @@ package object measure
   val lb_troy = MassMeasure("Troy Pound", Imperial())
 
   /**
-   * Length.
-   */
+    * Length.
+    */
   val m = LengthMeasure("m", SI)
   val km = Kilo * m
   val hm = Hecto * m
@@ -369,8 +379,8 @@ package object measure
   val beardSecond = nm.composes("Beard-second") // 5.0
 
   /**
-   * Area.
-   */
+    * Area.
+    */
   val m2 = m ^ 2
   val km2 = km ^ 2
   // Hectometer
@@ -381,8 +391,8 @@ package object measure
   val acre = ft2.composes("Acre") // 43560.0
 
   /**
-   * Volume.
-   */
+    * Volume.
+    */
   val m3 = m ^ 3
   val cm3 = cm ^ 3
   val liter = m3.composes("Liter") // 0.001
@@ -408,62 +418,62 @@ package object measure
   val bushel = peck.composes("Bushel") // 4.0
 
   /**
-   * Force.
-   */
+    * Force.
+    */
   val N = ForceMeasure("Newton", SI)
 
   val kip = Kilo * lb // http://en.wikipedia.org/wiki/Kip_(unit)
 
   /**
-   * Power.
-   */
+    * Power.
+    */
   val W = PowerMeasure("Watt", SI)
   val MW: PowerMeasure = Mega * W
   val GW: PowerMeasure = Giga * W
 
   /**
-   * Energy.
-   */
+    * Energy.
+    */
   val J = EnergyMeasure("Joule", Derived(SI))
   val GJ = Giga * J
 
   val MMBtu = EnergyMeasure("MMBtu", Imperial())
 
   /**
-   * Pressure.
-   */
+    * Pressure.
+    */
   val Pa = PressureMeasure("Pascal", Derived(SI))
   val kPa = Kilo * Pa
 
   /**
-   * Electric current.
-   */
+    * Electric current.
+    */
   val A = ElectricCurrentMeasure("Ampere", SI)
 
   /**
-   * Luminous intensity.
-   */
+    * Luminous intensity.
+    */
   val cd = LuminousIntensityMeasure("Candela", SI)
 
   /**
-   * Information.
-   */
+    * Information.
+    */
   val b = InformationMeasure("Bit", SI)
   val B = b.composes("Byte") // 8.0
 
   /**
-   * Luminous flux.
-   */
+    * Luminous flux.
+    */
   val lm = LuminousFluxMeasure("Lumen", Derived(SI))
 
   /**
-   * Frequency.
-   */
+    * Frequency.
+    */
   val Hz = TemporalFrequencyMeasure("Hz", Derived(SI))
 
   /**
-   * Currency.
-   */
+    * Currency.
+    */
   // United Arab Emirates dirham
   val AED = Currency("AED")
   // Afghan afghani
