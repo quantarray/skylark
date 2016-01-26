@@ -22,15 +22,15 @@ package com.quantarray.skylark.measure
 import scala.language.implicitConversions
 
 /**
- * Measure.
- *
- * The guiding principle(s) of design is and should be:
- *
- * 1. Construction of a measure should be fast, without any recursion/iteration to perform simplification.
- * 2. Compute-intensive methods, such as reduce, perform simplification and should be called only when necessary.
- *
- * @author Araik Grigoryan
- */
+  * Measure.
+  *
+  * The guiding principle(s) of design is and should be:
+  *
+  * 1. Construction of a measure should be fast, without any recursion/iteration to perform simplification.
+  * 2. Compute-intensive methods, such as reduce, perform simplification and should be called only when necessary.
+  *
+  * @author Araik Grigoryan
+  */
 trait Measure[Self <: Measure[Self]] extends UntypedMeasure
 {
   self: Self =>
@@ -38,18 +38,18 @@ trait Measure[Self <: Measure[Self]] extends UntypedMeasure
   type D <: Dimension[D]
 
   /**
-   * Measure name.
-   */
+    * Measure name.
+    */
   val name: String
 
   /**
-   * Gets structural name of this measure.
-   */
+    * Gets structural name of this measure.
+    */
   final val structuralName = if (isStructuralAtom) name else s"($name)"
 
   /**
-   * Gets dimension of this measure.
-   */
+    * Gets dimension of this measure.
+    */
   def dimension: D
 
   def composes(name: String, system: SystemOfUnits): Self
@@ -61,36 +61,39 @@ trait Measure[Self <: Measure[Self]] extends UntypedMeasure
   def -[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
 
   /**
-   * Turns this measure into a general RatioMeasure.
-   */
+    * Turns this measure into a general RatioMeasure.
+    */
   def /[M2 <: Measure[M2], R](denominator: M2)(implicit cd: CanDivide[Self, M2, R]): R = cd.divide(this, denominator)
 
   /**
-   * Turns this measure into a general ProductMeasure.
-   */
+    * Turns this measure into a general ProductMeasure.
+    */
   def *[M2 <: Measure[M2], R](multiplier: M2)(implicit cm: CanMultiply[Self, M2, R]): R = cm.times(this, multiplier)
 
   /**
-   * Turns this measure into a general ExponentialMeasure.
-   */
+    * Turns this measure into a general ExponentialMeasure.
+    */
   def ^[R](exponent: Double)(implicit ce: CanExponentiate[Self, R]): R = ce.pow(this, exponent)
 
   /**
-   * Gets an inverse of this measure.
-   */
+    * Gets an inverse of this measure.
+    */
   def inverse[R](implicit ce: CanExponentiate[Self, R]) = this ^ -exponent
 
   /**
-   * Converts to target measure.
-   */
+    * Converts to target measure.
+    */
   def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, target)
 
   def reduce[R](implicit cr: CanReduce[Self, R]): R = cr.reduce(this)
+
+  @inline
+  final def collect[B](pf: PartialFunction[Self, B]): B = pf(this)
 }
 
 /**
- * Product measure.
- */
+  * Product measure.
+  */
 trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]] with ProductUntypedMeasure
 {
   val multiplicand: M1
@@ -133,11 +136,13 @@ object ProductMeasure
   }
 
   def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](pm: ProductMeasure[M1, M2]): Option[(M1, M2)] = Some((pm.multiplicand, pm.multiplier))
+
+  def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](multiplicand: M1, multiplier: M2): Option[(M1, M2)] = Some((multiplicand, multiplier))
 }
 
 /**
- * Ratio measure.
- */
+  * Ratio measure.
+  */
 trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]] with RatioUntypedMeasure
 {
   val numerator: M1
@@ -151,8 +156,8 @@ trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMe
   final override val isStructuralAtom = false
 
   /**
-   * Converts to target measure.
-   */
+    * Converts to target measure.
+    */
   def to[M3 <: Measure[M3], M4 <: Measure[M4]](target: RatioMeasure[M3, M4])
                                               (implicit ccn: CanConvert[M1, M3], ccd: CanConvert[M2, M4]): Option[Double] =
   {
@@ -193,11 +198,13 @@ object RatioMeasure
   }
 
   def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](rm: RatioMeasure[M1, M2]): Option[(M1, M2)] = Some((rm.numerator, rm.denominator))
+
+  def unapply[M1 <: Measure[M1], M2 <: Measure[M2]](numerator: M1, denominator: M2): Option[(M1, M2)] = Some((numerator, denominator))
 }
 
 /**
- * Exponential measure.
- */
+  * Exponential measure.
+  */
 trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with ExponentialUntypedMeasure
 {
   val base: B
@@ -246,4 +253,6 @@ object ExponentialMeasure
   }
 
   def unapply[B <: Measure[B]](em: ExponentialMeasure[B]): Option[(B, Double)] = Some((em.base, em.exponent))
+
+  def unapply[B <: Measure[B]](base: B, exponent: Double): Option[(B, Double)] = Some((base, exponent))
 }

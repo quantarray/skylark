@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import com.quantarray.skylark.measure.conversion._
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
- * Measure spec.
- *
- * @author Araik Grigoryan
- */
+  * Measure spec.
+  *
+  * @author Araik Grigoryan
+  */
 class MeasureSpec extends FlatSpec with Matchers
 {
   "kg" should "have expected properties" in
@@ -47,5 +47,10 @@ class MeasureSpec extends FlatSpec with Matchers
   "mi/h" should "be convertible to m/s" in
     {
       (mi / h) to (m / s) should be(Some(0.4470388888888889))
+    }
+
+  it should "be collectible" in
+    {
+      (mi / h).collect({ case RatioMeasure(n, _) => n }) should be(mi)
     }
 }
