@@ -1,5 +1,7 @@
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.untyped.UntypedMeasure
+
 /**
  * Measure provider.
  *

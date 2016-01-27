@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.untyped.{UntypedExponentialMeasure, UntypedRatioMeasure, UntypedProductMeasure, UntypedMeasure}
+
 import scala.language.implicitConversions
 
 /**

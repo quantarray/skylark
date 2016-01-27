@@ -17,79 +17,79 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure
+package com.quantarray.skylark.measure.untyped
 
 /**
  * Untyped dimension.
  *
  * @author Araik Grigoryan
  */
-trait UntypedDimension
+trait Dimension
 
-trait ProductUntypedDimension extends UntypedDimension
+trait ProductDimension extends Dimension
 {
-  def multiplicand: UntypedDimension
+  def multiplicand: Dimension
 
-  def multiplier: UntypedDimension
+  def multiplier: Dimension
 }
 
-object ProductUntypedDimension
+object ProductDimension
 {
-  def apply(multiplicand: UntypedDimension, multiplier: UntypedDimension): ProductUntypedDimension =
+  def apply(multiplicand: Dimension, multiplier: Dimension): ProductDimension =
   {
     val params = (multiplicand, multiplier)
 
-    new ProductUntypedDimension
+    new ProductDimension
     {
-      val multiplicand: UntypedDimension = params._1
+      val multiplicand: Dimension = params._1
 
-      val multiplier: UntypedDimension = params._2
+      val multiplier: Dimension = params._2
 
       override def toString: String = s"$multiplicand * $multiplier"
     }
   }
 }
 
-trait RatioUntypedDimension extends UntypedDimension
+trait RatioUntypedDimension extends Dimension
 {
-  def numerator: UntypedDimension
+  def numerator: Dimension
 
-  def denominator: UntypedDimension
+  def denominator: Dimension
 }
 
 object RatioUntypedDimension
 {
-  def apply(numerator: UntypedDimension, denominator: UntypedDimension): RatioUntypedDimension =
+  def apply(numerator: Dimension, denominator: Dimension): RatioUntypedDimension =
   {
     val params = (numerator, denominator)
 
     new RatioUntypedDimension
     {
-      val numerator: UntypedDimension = params._1
+      val numerator: Dimension = params._1
 
-      val denominator: UntypedDimension = params._2
+      val denominator: Dimension = params._2
 
       override def toString: String = s"$numerator / $denominator"
     }
   }
 }
 
-trait ExponentialUntypedDimension extends UntypedDimension
+trait ExponentialDimension extends Dimension
 {
-  def base: UntypedDimension
+  def base: Dimension
 
   def exponent: Double
 }
 
-object ExponentialUntypedDimension
+object ExponentialDimension
 {
-  def apply(base: UntypedDimension, exponent: Double): ExponentialUntypedDimension =
+  def apply(base: Dimension, exponent: Double): ExponentialDimension =
   {
     val params = (base, exponent)
 
-    new ExponentialUntypedDimension
+    new ExponentialDimension
     {
-      val base: UntypedDimension = params._1
+      val base: Dimension = params._1
 
       val exponent: Double = params._2
 

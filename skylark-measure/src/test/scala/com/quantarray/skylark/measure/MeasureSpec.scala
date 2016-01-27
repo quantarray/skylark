@@ -20,6 +20,7 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.conversion._
+import com.quantarray.skylark.measure.untyped.{UntypedRatioMeasure, UntypedProductMeasure}
 import org.scalatest.{FlatSpec, Matchers}
 
 /**

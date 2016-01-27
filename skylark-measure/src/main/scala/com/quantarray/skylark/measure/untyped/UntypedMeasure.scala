@@ -17,7 +17,9 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure
+package com.quantarray.skylark.measure.untyped
+
+import com.quantarray.skylark.measure.{Derived, Hybrid, SystemOfUnits}
 
 import scala.language.dynamics
 
@@ -33,7 +35,7 @@ trait UntypedMeasure extends Dynamic
   /**
     * Gets dimension of this measure.
     */
-  def dimension: UntypedDimension
+  def dimension: Dimension
 
   /**
     * Gets system of units.
@@ -60,7 +62,7 @@ trait UntypedProductMeasure extends UntypedMeasure
 
   val multiplier: UntypedMeasure
 
-  lazy val dimension = ProductUntypedDimension(multiplicand.dimension, multiplier.dimension)
+  lazy val dimension = ProductDimension(multiplicand.dimension, multiplier.dimension)
 
   lazy val system = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
 }
@@ -98,7 +100,7 @@ trait UntypedRatioMeasure extends UntypedMeasure
 
   val denominator: UntypedMeasure
 
-  lazy val dimension: UntypedDimension = RatioUntypedDimension(numerator.dimension, denominator.dimension)
+  lazy val dimension: Dimension = RatioUntypedDimension(numerator.dimension, denominator.dimension)
 
   lazy val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 }
@@ -134,7 +136,7 @@ trait UntypedExponentialMeasure extends UntypedMeasure
 {
   val base: UntypedMeasure
 
-  lazy val dimension: UntypedDimension = ExponentialUntypedDimension(base.dimension, exponent)
+  lazy val dimension: Dimension = ExponentialDimension(base.dimension, exponent)
 
   lazy val system = base.system
 }
