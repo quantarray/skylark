@@ -19,8 +19,6 @@
 
 package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.untyped.{UntypedExponentialMeasure, UntypedRatioMeasure, UntypedProductMeasure, UntypedMeasure}
-
 import scala.language.implicitConversions
 
 /**
@@ -33,7 +31,7 @@ import scala.language.implicitConversions
   *
   * @author Araik Grigoryan
   */
-trait Measure[Self <: Measure[Self]] extends UntypedMeasure
+trait Measure[Self <: Measure[Self]] extends untyped.Measure
 {
   self: Self =>
 
@@ -93,7 +91,7 @@ trait Measure[Self <: Measure[Self]] extends UntypedMeasure
 /**
   * Product measure.
   */
-trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]] with UntypedProductMeasure
+trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]] with untyped.ProductMeasure
 {
   val multiplicand: M1
 
@@ -140,7 +138,7 @@ object ProductMeasure
 /**
   * Ratio measure.
   */
-trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]] with UntypedRatioMeasure
+trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]] with untyped.RatioMeasure
 {
   val numerator: M1
 
@@ -200,7 +198,7 @@ object RatioMeasure
 /**
   * Exponential measure.
   */
-trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with UntypedExponentialMeasure
+trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with untyped.ExponentialMeasure
 {
   val base: B
 

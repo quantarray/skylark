@@ -1,6 +1,23 @@
-package com.quantarray.skylark.measure
+/*
+ * Skylark
+ * http://skylark.io
+ *
+ * Copyright 2012-2016 Quantarray, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import com.quantarray.skylark.measure.untyped.{UntypedExponentialMeasure, UntypedRatioMeasure, UntypedProductMeasure, UntypedMeasure}
+package com.quantarray.skylark.measure
 
 import scala.util.parsing.combinator.JavaTokenParsers
 
@@ -13,39 +30,39 @@ trait MeasureParsers extends JavaTokenParsers
 {
   val measureProvider: MeasureProvider
 
-  def measureExpression: Parser[UntypedMeasure] = measureTerm
+  def measureExpression: Parser[untyped.Measure] = measureTerm
 
-  def measureTerm: Parser[UntypedMeasure] = productMeasureFactor | ratioMeasureFactor | exponentialMeasureFactor | measureFactor
+  def measureTerm: Parser[untyped.Measure] = productMeasureFactor | ratioMeasureFactor | exponentialMeasureFactor | measureFactor
 
-  def productMeasureFactor: Parser[UntypedMeasure] = measureFactor ~ "*" ~ measureTerm ^^
+  def productMeasureFactor: Parser[untyped.Measure] = measureFactor ~ "*" ~ measureTerm ^^
     {
-      case multiplicand ~ _ ~ multiplier => UntypedProductMeasure(multiplicand, multiplier)
+      case multiplicand ~ _ ~ multiplier => untyped.ProductMeasure(multiplicand, multiplier)
     }
 
-  def ratioMeasureFactor: Parser[UntypedMeasure] = measureFactor ~ "/" ~ measureTerm ^^
+  def ratioMeasureFactor: Parser[untyped.Measure] = measureFactor ~ "/" ~ measureTerm ^^
     {
-      case numerator ~ _ ~ denominator => UntypedRatioMeasure(numerator, denominator)
+      case numerator ~ _ ~ denominator => untyped.RatioMeasure(numerator, denominator)
     }
 
-  def exponentialMeasureFactor: Parser[UntypedMeasure] = measureFactor ~ "^" ~ floatingPointNumber ^^
+  def exponentialMeasureFactor: Parser[untyped.Measure] = measureFactor ~ "^" ~ floatingPointNumber ^^
     {
-      case base ~ _ ~ exponent => UntypedExponentialMeasure(base, exponent.toDouble)
+      case base ~ _ ~ exponent => untyped.ExponentialMeasure(base, exponent.toDouble)
     }
 
-  def measureFactor: Parser[UntypedMeasure] = measureMatter | measureParenthesizedExpression
+  def measureFactor: Parser[untyped.Measure] = measureMatter | measureParenthesizedExpression
 
-  def measureParenthesizedExpression: Parser[UntypedMeasure] = "(" ~ measureExpression ~ ")" ^^
+  def measureParenthesizedExpression: Parser[untyped.Measure] = "(" ~ measureExpression ~ ")" ^^
     {
       case _ ~ measure ~ _ => measure
     }
 
-  def measureMatter: Parser[UntypedMeasure] = measureAtom
+  def measureMatter: Parser[untyped.Measure] = measureAtom
 
-  def measureAtom: Parser[UntypedMeasure] =
+  def measureAtom: Parser[untyped.Measure] =
     """[^()*/\^\s]+""".r ^^
       {
         case measureName if measureProvider.read(measureName).isDefined => measureProvider.read(measureName).get
       }
 
-  def parseMeasure(measure: String): ParseResult[UntypedMeasure] = parseAll(measureExpression, measure)
+  def parseMeasure(measure: String): ParseResult[untyped.Measure] = parseAll(measureExpression, measure)
 }

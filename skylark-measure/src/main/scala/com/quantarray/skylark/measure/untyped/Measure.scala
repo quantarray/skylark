@@ -28,7 +28,7 @@ import scala.language.dynamics
   *
   * @author Araik Grigoryan
   */
-trait UntypedMeasure extends Dynamic
+trait Measure extends Dynamic
 {
   self =>
 
@@ -53,35 +53,35 @@ trait UntypedMeasure extends Dynamic
   def exponent: Double = 1.0
 
   @inline
-  def collect[B](pf: PartialFunction[UntypedMeasure, B]): B = pf(this)
+  def collect[B](pf: PartialFunction[Measure, B]): B = pf(this)
 }
 
-trait UntypedProductMeasure extends UntypedMeasure
+trait ProductMeasure extends Measure
 {
-  val multiplicand: UntypedMeasure
+  val multiplicand: Measure
 
-  val multiplier: UntypedMeasure
+  val multiplier: Measure
 
   lazy val dimension = ProductDimension(multiplicand.dimension, multiplier.dimension)
 
   lazy val system = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
 }
 
-object UntypedProductMeasure
+object ProductMeasure
 {
-  def apply(multiplicand: UntypedMeasure, multiplier: UntypedMeasure): UntypedProductMeasure =
+  def apply(multiplicand: Measure, multiplier: Measure): ProductMeasure =
   {
     val params = (multiplicand, multiplier)
 
-    new UntypedProductMeasure
+    new ProductMeasure
     {
-      override val multiplicand: UntypedMeasure = params._1
+      override val multiplicand: Measure = params._1
 
-      override val multiplier: UntypedMeasure = params._2
+      override val multiplier: Measure = params._2
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
-        case that: UntypedProductMeasure => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
+        case that: ProductMeasure => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
         case _ => false
       }
 
@@ -91,35 +91,35 @@ object UntypedProductMeasure
     }
   }
 
-  def unapply(upm: UntypedProductMeasure): Option[(UntypedMeasure, UntypedMeasure)] = Some((upm.multiplicand, upm.multiplier))
+  def unapply(upm: ProductMeasure): Option[(Measure, Measure)] = Some((upm.multiplicand, upm.multiplier))
 }
 
-trait UntypedRatioMeasure extends UntypedMeasure
+trait RatioMeasure extends Measure
 {
-  val numerator: UntypedMeasure
+  val numerator: Measure
 
-  val denominator: UntypedMeasure
+  val denominator: Measure
 
   lazy val dimension: Dimension = RatioUntypedDimension(numerator.dimension, denominator.dimension)
 
   lazy val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 }
 
-object UntypedRatioMeasure
+object RatioMeasure
 {
-  def apply(numerator: UntypedMeasure, denominator: UntypedMeasure): UntypedRatioMeasure =
+  def apply(numerator: Measure, denominator: Measure): RatioMeasure =
   {
     val params = (numerator, denominator)
 
-    new UntypedRatioMeasure
+    new RatioMeasure
     {
-      override val numerator: UntypedMeasure = params._1
+      override val numerator: Measure = params._1
 
-      override val denominator: UntypedMeasure = params._2
+      override val denominator: Measure = params._2
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
-        case that: UntypedRatioMeasure => this.numerator == that.numerator && this.denominator == that.denominator
+        case that: RatioMeasure => this.numerator == that.numerator && this.denominator == that.denominator
         case _ => false
       }
 
@@ -129,33 +129,33 @@ object UntypedRatioMeasure
     }
   }
 
-  def unapply(urm: UntypedRatioMeasure): Option[(UntypedMeasure, UntypedMeasure)] = Some((urm.numerator, urm.denominator))
+  def unapply(urm: RatioMeasure): Option[(Measure, Measure)] = Some((urm.numerator, urm.denominator))
 }
 
-trait UntypedExponentialMeasure extends UntypedMeasure
+trait ExponentialMeasure extends Measure
 {
-  val base: UntypedMeasure
+  val base: Measure
 
   lazy val dimension: Dimension = ExponentialDimension(base.dimension, exponent)
 
   lazy val system = base.system
 }
 
-object UntypedExponentialMeasure
+object ExponentialMeasure
 {
-  def apply(base: UntypedMeasure, exponent: Double): UntypedExponentialMeasure =
+  def apply(base: Measure, exponent: Double): ExponentialMeasure =
   {
     val params = (base, exponent)
 
-    new UntypedExponentialMeasure
+    new ExponentialMeasure
     {
-      override val base: UntypedMeasure = params._1
+      override val base: Measure = params._1
 
       override val exponent: Double = params._2
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
-        case that: UntypedExponentialMeasure => this.base == that.base && this.exponent == that.exponent
+        case that: ExponentialMeasure => this.base == that.base && this.exponent == that.exponent
         case _ => false
       }
 
@@ -165,5 +165,5 @@ object UntypedExponentialMeasure
     }
   }
 
-  def unapply(uem: UntypedExponentialMeasure): Option[(UntypedMeasure, Double)] = Some((uem.base, uem.exponent))
+  def unapply(uem: ExponentialMeasure): Option[(Measure, Double)] = Some((uem.base, uem.exponent))
 }

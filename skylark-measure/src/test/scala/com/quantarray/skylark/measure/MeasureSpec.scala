@@ -20,7 +20,6 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.conversion._
-import com.quantarray.skylark.measure.untyped.{UntypedRatioMeasure, UntypedProductMeasure}
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
@@ -52,6 +51,6 @@ class MeasureSpec extends FlatSpec with Matchers
 
   it should "be collectible" in
     {
-      (kg * m / (s ^ 2)).collect({ case UntypedRatioMeasure(UntypedProductMeasure(x, _), _) => x }) should be(kg)
+      (kg * m / (s ^ 2)).collect({ case untyped.RatioMeasure(untyped.ProductMeasure(x, _), _) => x }) should be(kg)
     }
 }
