@@ -44,7 +44,7 @@ sealed case class ProductDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]](mul
 }
 
 sealed case class RatioDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]](numerator: D1, denominator: D2)
-  extends Dimension[RatioDimension[D1, D2]] with untyped.RatioUntypedDimension
+  extends Dimension[RatioDimension[D1, D2]] with untyped.RatioDimension
 {
   override def toString = s"$numerator / $denominator"
 }

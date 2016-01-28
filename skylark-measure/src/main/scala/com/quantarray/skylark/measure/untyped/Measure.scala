@@ -100,7 +100,7 @@ trait RatioMeasure extends Measure
 
   val denominator: Measure
 
-  lazy val dimension: Dimension = RatioUntypedDimension(numerator.dimension, denominator.dimension)
+  lazy val dimension: Dimension = RatioDimension(numerator.dimension, denominator.dimension)
 
   lazy val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 }

@@ -50,20 +50,20 @@ object ProductDimension
   }
 }
 
-trait RatioUntypedDimension extends Dimension
+trait RatioDimension extends Dimension
 {
   def numerator: Dimension
 
   def denominator: Dimension
 }
 
-object RatioUntypedDimension
+object RatioDimension
 {
-  def apply(numerator: Dimension, denominator: Dimension): RatioUntypedDimension =
+  def apply(numerator: Dimension, denominator: Dimension): RatioDimension =
   {
     val params = (numerator, denominator)
 
-    new RatioUntypedDimension
+    new RatioDimension
     {
       val numerator: Dimension = params._1
 
