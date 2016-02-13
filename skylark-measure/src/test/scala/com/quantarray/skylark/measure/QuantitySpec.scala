@@ -42,30 +42,30 @@ class QuantitySpec extends FlatSpec with Matchers
 
   "Quantity" should "perform constant arithmetic" in
     {
-      10.0.kg * 5 should equal(50.0.kg)
+      10.kg * 5 should equal(50.kg)
     }
 
   it should "perform quantity arithmetic" in
     {
-      10.0.kg * 4.0.m should equal(40.0 * (kg * m))
-      (4.0.oz_troy * 7.0.percent).to(oz_troy) should equal(0.28.oz_troy)
+      10.kg * 4.m should equal(40.0 * (kg * m))
+      (4.oz_troy * 7.percent).to(oz_troy) should equal(0.28.oz_troy)
 
-      10.0.kg / 2.0.m should equal(5.0 * (kg / m))
-      (10.0.USD / 2.0.percent).to(USD) should equal(500.0.USD)
+      10.kg / 2.m should equal(5.0 * (kg / m))
+      (10.USD / 2.percent).to(USD) should equal(500.USD)
 
-      10.0.kg + 3.0.kg should equal(13.0.kg)
-      10.0.kg - 3.0.kg should equal(7.0.kg)
-      10.0.kg + (3.0.lb to kg) should equal(11.360775642116007.kg)
+      10.kg + 3.kg should equal(13.kg)
+      10.kg - 3.kg should equal(7.kg)
+      10.kg + (3.lb to kg) should equal(11.360775642116007.kg)
     }
 
   it should "be passable to typesafe method" in
     {
-      def multiply(quantity: Quantity[MassMeasure], multiplier: Int): Quantity[MassMeasure] =
+      def multiply(quantity: Quantity[Double, MassMeasure], multiplier: Int): Quantity[Double, MassMeasure] =
       {
         quantity * multiplier
       }
 
-      multiply(10.0.kg, 2)
+      multiply(10.kg, 2)
     }
 
   it should "convertible to lb" in
@@ -75,13 +75,13 @@ class QuantitySpec extends FlatSpec with Matchers
 
   "ft" should "convertible to in" in
     {
-      (1.0.ft to in) should equal(12.0 in)
-      (12.0.in to ft) should equal(1.0 ft)
+      (1.ft to in) should equal(12.0 in)
+      (12.in to ft) should equal(1.0 ft)
     }
 
   "yd" should "convertible to in" in
     {
-      //(1.0.yd to in) should equal(36.0 in)
+      (1.yd to in) should equal(36.0 in)
     }
 
   "Basis point" should "be convertible to percent" in
@@ -93,31 +93,31 @@ class QuantitySpec extends FlatSpec with Matchers
 
   "Hectare" should "be convertible to square kilometers" in
     {
-      val plot = 1.0.ha to (km ^ 2)
+      val plot = 1.ha to (km ^ 2)
       plot should equal(0.01.km2)
     }
 
   "US gallon" should "be convertible to cubic inches" in
     {
-      val vessel = 1.0.gal to (in ^ 3)
-      vessel should equal(231.0.in3)
+      val vessel = 1.gal to (in ^ 3)
+      vessel should equal(231.in3)
     }
 
   "Barrel" should "be convertible to gallon" in
     {
       // Some general substance, like water
-      (1.0.bbl to gal) should equal(31.5.gal)
+      (1.bbl to gal) should equal(31.5.gal)
 
       import commodity.Implicits._
 
       // Specific petroleum substance, having a special conversion
-      (1.0.bbl to gal) should equal(42.0.gal)
+      (1.bbl to gal) should equal(42.gal)
     }
 
   "Quantity of currency" should "be convertible to another quantity of currency via percent" in
     {
-      val potOfGold = 30000.0.USD
-      val rate = 5.0.percent
+      val potOfGold = 30000.USD
+      val rate = 5.percent
 
       val panOfGold = potOfGold * rate
 
@@ -126,12 +126,12 @@ class QuantitySpec extends FlatSpec with Matchers
 
   "Quantity of currency" should "be convertible to another quantity of currency via basis point" in
     {
-      val potOfGold = 30000.0.USD
-      val rate = 100.0.bp
+      val potOfGold = 30000.USD
+      val rate = 100.bp
 
       val panOfGold = (potOfGold * rate).to(USD)
 
-      panOfGold should equal(300.0.USD)
+      panOfGold should equal(300.USD)
     }
 
   "Quantity per percent" should "be convertible to another quantity of per basis point" in
@@ -149,7 +149,7 @@ class QuantitySpec extends FlatSpec with Matchers
 
       val cadPrice = usdPrice * fxRate
 
-      val expectedCadPrice = Quantity(6, (USD / MMBtu) * (CAD / USD))
+      val expectedCadPrice = 6.0 * ((USD / MMBtu) * (CAD / USD))
 
       cadPrice should equal(expectedCadPrice)
 
@@ -159,14 +159,14 @@ class QuantitySpec extends FlatSpec with Matchers
         case Right(x) => x
       }
 
-      cadPrice.reduce(reducer) should equal(Quantity(6, CAD / MMBtu))
+      cadPrice.reduce(reducer) should equal(6 * (CAD / MMBtu))
     }
 
   "CanConvert" should "allow flexible units" in
     {
       case class TradeProvider()
       {
-        def trade[Q <: Measure[Q], D <: Measure[D]](quantity: Quantity[Q], price: Quantity[Price[Currency, D]])
+        def trade[Q <: Measure[Q], D <: Measure[D]](quantity: Quantity[Double, Q], price: Quantity[Double, Price[Currency, D]])
                                                    (implicit cc: CanConvert[Q, D]): Unit =
         {
         }
@@ -174,14 +174,14 @@ class QuantitySpec extends FlatSpec with Matchers
 
       val provider = TradeProvider()
 
-      provider.trade(10.0.MMBtu, Quantity(2.0, CAD / GJ))
+      provider.trade(10.MMBtu, Quantity(2.0, CAD / GJ))
     }
 
   it should "allow trivial empty definition" in
     {
       implicit val canConvert = CanConvert.empty[VolumeMeasure, VolumeMeasure]
 
-      5.0.bbl to bbl should equal(5.0 bbl)
+      5.bbl to bbl should equal(5.0 bbl)
     }
 
 }

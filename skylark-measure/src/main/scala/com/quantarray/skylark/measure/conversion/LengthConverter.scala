@@ -32,6 +32,7 @@ trait LengthConverter extends SameTypeConverter[LengthMeasure]
   {
     case (`ft`, `in`) => 12
     case (`yd`, `ft`) => 3
+    case (`yd`, `in`) => 36
     case (`mi`, `m`) => 1609.34
   }
 }

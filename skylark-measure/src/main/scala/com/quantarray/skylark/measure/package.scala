@@ -22,6 +22,8 @@ package com.quantarray.skylark
 package object measure
 {
 
+  implicit val doubleIsQuasiNumeric = DoubleQuasiNumeric
+
   case class NoDimension() extends Dimension[NoDimension]
   {
     override def toString: String = "1"

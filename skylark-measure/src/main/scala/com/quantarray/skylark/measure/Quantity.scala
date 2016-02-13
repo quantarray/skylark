@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,48 +22,46 @@ package com.quantarray.skylark.measure
 import scala.language.implicitConversions
 
 /**
- * Quantity.
- *
- * @author Araik Grigoryan
- */
-case class Quantity[M <: Measure[M]](value: Double, measure: M)
+  * Quantity.
+  *
+  * @author Araik Grigoryan
+  */
+case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit qn: QuasiNumeric[N])
 {
-  def unary_-() = Quantity(-value, measure)
+  def unary_-() = Quantity(qn.negate(value), measure)
 
-  def *(constant: Double) = Quantity(value * constant, measure)
+  def *(constant: Double) = Quantity(qn.timesConstant(value, constant), measure)
 
-  def /(constant: Double) = Quantity(value / constant, measure)
+  def /(constant: Double) = Quantity(qn.divideByConstant(value, constant), measure)
 
-  def +(constant: Double) = Quantity(value + constant, measure)
+  def +(constant: N) = Quantity(qn.plus(value, constant), measure)
 
-  def -(constant: Double) = Quantity(value - constant, measure)
+  def -(constant: N) = Quantity(qn.minus(value, constant), measure)
 
-  def +[M2 <: Measure[M2]](quantity: Quantity[M2])(implicit ev: M =:= M2): Quantity[M] = Quantity(value + quantity.value, measure + quantity.measure)
+  def +[M2 <: Measure[M2]](quantity: Quantity[N, M2])(implicit ev: M =:= M2): Quantity[N, M] =
+    Quantity(qn.plus(value, quantity.value), measure + quantity.measure)
 
-  def -[M2 <: Measure[M2]](quantity: Quantity[M2])(implicit ev: M =:= M2): Quantity[M] = Quantity(value - quantity.value, measure - quantity.measure)
+  def -[M2 <: Measure[M2]](quantity: Quantity[N, M2])(implicit ev: M =:= M2): Quantity[N, M] =
+    Quantity(qn.minus(value, quantity.value), measure - quantity.measure)
 
-  def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[M2])(implicit cd: CanDivide[M, M2, R]): Quantity[R] =
-    Quantity(value / quantity.value, measure / quantity.measure)
+  def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[N, M2])(implicit cd: CanDivide[M, M2, R]): Quantity[N, R] =
+    Quantity(qn.divide(value, quantity.value), measure / quantity.measure)
 
-  def *[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[M2])(implicit cm: CanMultiply[M, M2, R]): Quantity[R] =
-    Quantity(value * quantity.value, measure * quantity.measure)
+  def *[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[N, M2])(implicit cm: CanMultiply[M, M2, R]): Quantity[N, R] =
+    Quantity(qn.times(value, quantity.value), measure * quantity.measure)
 
-  def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[M, R]): Quantity[R] = Quantity(math.pow(value, exponent), measure ^ exponent)
+  def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[M, R]): Quantity[N, R] =
+    Quantity(qn.pow(value, exponent), measure ^ exponent)
 
-  def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[M, M2]): Quantity[M2] = cc.convert(measure, target) match
+  def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[M, M2]): Quantity[N, M2] = cc.convert(measure, target) match
   {
-    case Some(cf) => Quantity(value * cf, target)
+    case Some(cf) => Quantity(qn.timesConstant(value, cf), target)
     case _ => throw new Exception(s"No conversion from [$measure] to [$target] available in $cc.")
   }
 
-  def reduce[R <: Measure[R], D](f: D => R)(implicit cr: CanReduce[M, D]): Quantity[R] = Quantity(value, f(cr.reduce(measure)))
+  def reduce[R <: Measure[R], D](f: D => R)(implicit cr: CanReduce[M, D]): Quantity[N, R] = Quantity(value, f(cr.reduce(measure)))
 
   override def toString = s"$value $measure"
 }
 
-object Quantity
-{
-  def reduced[M <: Measure[M], R <: Measure[R]](value: Double, measure: M)
-                                               (implicit cr: CanReduce[M, R]): Quantity[R] = Quantity[R](value, cr.reduce(measure))
-}
 
