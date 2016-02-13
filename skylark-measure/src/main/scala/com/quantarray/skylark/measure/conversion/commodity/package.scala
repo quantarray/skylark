@@ -5,11 +5,12 @@ import com.quantarray.skylark.measure._
 /*
  * Skylark
  *
- * © 2012-2015, Quantarray
+ * © 2012-2016, Quantarray
  * http://skylark.io
  */
 package object commodity
 {
+
   object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLength]
   {
     override def apply(from: VolumeMeasure, to: ExponentialLength): Option[Double] = (from, to) match
@@ -18,8 +19,14 @@ package object commodity
     }
   }
 
-  implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLength]
+  object Implicits
   {
-    override def convert: Converter[VolumeMeasure, ExponentialLength] = VolumeToExponentialLengthConverter
+
+    implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLength]
+    {
+      override def convert: Converter[VolumeMeasure, ExponentialLength] = VolumeToExponentialLengthConverter
+    }
+
   }
+
 }

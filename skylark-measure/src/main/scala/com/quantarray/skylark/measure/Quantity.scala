@@ -43,10 +43,10 @@ case class Quantity[M <: Measure[M]](value: Double, measure: M)
   def -[M2 <: Measure[M2]](quantity: Quantity[M2])(implicit ev: M =:= M2): Quantity[M] = Quantity(value - quantity.value, measure - quantity.measure)
 
   def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[M2])(implicit cd: CanDivide[M, M2, R]): Quantity[R] =
-    Quantity(value / quantity.value * cd.unit(measure, quantity.measure), measure / quantity.measure)
+    Quantity(value / quantity.value, measure / quantity.measure)
 
   def *[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[M2])(implicit cm: CanMultiply[M, M2, R]): Quantity[R] =
-    Quantity(value * quantity.value * cm.unit(measure, quantity.measure), measure * quantity.measure)
+    Quantity(value * quantity.value, measure * quantity.measure)
 
   def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[M, R]): Quantity[R] = Quantity(math.pow(value, exponent), measure ^ exponent)
 

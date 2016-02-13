@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.Implicits._
+import com.quantarray.skylark.measure.conversion.Implicits._
 import com.quantarray.skylark.measure.conversion._
 import com.quantarray.skylark.measure.quantity._
 import com.quantarray.skylark.measure.reduction._
@@ -27,10 +29,10 @@ import org.scalatest.{FlatSpec, Matchers}
 import scala.language.postfixOps
 
 /**
- * Quantity spec.
- *
- * @author Araik Grigoryan
- */
+  * Quantity spec.
+  *
+  * @author Araik Grigoryan
+  */
 class QuantitySpec extends FlatSpec with Matchers
 {
   /**
@@ -45,11 +47,11 @@ class QuantitySpec extends FlatSpec with Matchers
 
   it should "perform quantity arithmetic" in
     {
-      10.0.kg * 4.0.m should equal(Quantity(40, kg * m))
-      4.0.oz_troy * 7.0.percent should equal(Quantity(0.28, oz_troy))
+      10.0.kg * 4.0.m should equal(40.0 * (kg * m))
+      (4.0.oz_troy * 7.0.percent).to(oz_troy) should equal(0.28.oz_troy)
 
-      10.0.kg / 2.0.m should equal(Quantity(5, kg / m))
-      10.0.USD / 2.0.percent should equal(Quantity(500, USD))
+      10.0.kg / 2.0.m should equal(5.0 * (kg / m))
+      (10.0.USD / 2.0.percent).to(USD) should equal(500.0.USD)
 
       10.0.kg + 3.0.kg should equal(13.0.kg)
       10.0.kg - 3.0.kg should equal(7.0.kg)
@@ -106,7 +108,7 @@ class QuantitySpec extends FlatSpec with Matchers
       // Some general substance, like water
       (1.0.bbl to gal) should equal(31.5.gal)
 
-      import com.quantarray.skylark.measure.conversion.commodity._
+      import commodity.Implicits._
 
       // Specific petroleum substance, having a special conversion
       (1.0.bbl to gal) should equal(42.0.gal)
@@ -119,7 +121,7 @@ class QuantitySpec extends FlatSpec with Matchers
 
       val panOfGold = potOfGold * rate
 
-      panOfGold should equal(Quantity(1500, USD))
+      panOfGold should equal(150000.0 * (USD * percent))
     }
 
   "Quantity of currency" should "be convertible to another quantity of currency via basis point" in
@@ -127,9 +129,9 @@ class QuantitySpec extends FlatSpec with Matchers
       val potOfGold = 30000.0.USD
       val rate = 100.0.bp
 
-      val panOfGold = potOfGold * rate
+      val panOfGold = (potOfGold * rate).to(USD)
 
-      panOfGold should equal(Quantity(300, USD))
+      panOfGold should equal(300.0.USD)
     }
 
   "Quantity per percent" should "be convertible to another quantity of per basis point" in
@@ -176,10 +178,10 @@ class QuantitySpec extends FlatSpec with Matchers
     }
 
   it should "allow trivial empty definition" in
-  {
-    implicit val canConvert = CanConvert.empty[VolumeMeasure, VolumeMeasure]
+    {
+      implicit val canConvert = CanConvert.empty[VolumeMeasure, VolumeMeasure]
 
-    5.0.bbl to bbl should equal(5.0 bbl)
-  }
+      5.0.bbl to bbl should equal(5.0 bbl)
+    }
 
 }

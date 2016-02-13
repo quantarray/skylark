@@ -11,6 +11,4 @@ import scala.annotation.implicitNotFound
 trait CanDivide[N, D, R]
 {
   def divide(numerator: N, denominator: D): R
-
-  def unit(numerator: N, denominator: D): Double = 1.0
 }

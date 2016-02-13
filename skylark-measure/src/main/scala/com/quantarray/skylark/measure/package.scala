@@ -189,90 +189,33 @@ package object measure
 
   type CurrencyPriceMeasure = RatioMeasure[Currency, Currency]
 
-  type EnergyPricePerDimensionless = RatioMeasure[EnergyPrice, DimensionlessMeasure]
-
-  type Speed = RatioMeasure[LengthMeasure, TimeMeasure]
-
-  type MassTimesLength = ProductMeasure[MassMeasure, LengthMeasure]
-
-  trait ProductCanMultiply[M1 <: Measure[M1], M2 <: Measure[M2]] extends CanMultiply[M1, M2, ProductMeasure[M1, M2]]
+  trait DefaultImplicits
   {
-    override def times(multiplicand: M1, multiplier: M2): ProductMeasure[M1, M2] = ProductMeasure(multiplicand, multiplier)
+    implicit def productCanMultiply[M1 <: Measure[M1], M2 <: Measure[M2]] = new CanMultiply[M1, M2, ProductMeasure[M1, M2]]
+    {
+      override def times(multiplicand: M1, multiplier: M2): ProductMeasure[M1, M2] = ProductMeasure(multiplicand, multiplier)
+    }
+
+    implicit def ratioCanDivide[N <: Measure[N], D <: Measure[D]] = new CanDivide[N, D, RatioMeasure[N, D]]
+    {
+      override def divide(numerator: N, denominator: D): RatioMeasure[N, D] = RatioMeasure(numerator, denominator)
+    }
+
+    implicit def exponentialCanExponentiate[B <: Measure[B]] = new CanExponentiate[B, ExponentialMeasure[B]]
+    {
+      override def pow(base: B, exponent: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent)
+    }
   }
 
-  trait RatioCanDivide[N <: Measure[N], D <: Measure[D]] extends CanDivide[N, D, RatioMeasure[N, D]]
+  object Implicits extends DefaultImplicits
   {
-    override def divide(numerator: N, denominator: D): RatioMeasure[N, D] = RatioMeasure(numerator, denominator)
+    implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
+    {
+      override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = UnitMeasure
+    }
   }
 
-  trait ExponentialCanExponentiate[B <: Measure[B]] extends CanExponentiate[B, ExponentialMeasure[B]]
-  {
-    override def pow(base: B, exponent: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent)
-  }
-
-  implicit object TimeCanExponentiate extends ExponentialCanExponentiate[TimeMeasure]
-
-  implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
-  {
-    override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = UnitMeasure
-  }
-
-  implicit object MassCanExponentiate extends ExponentialCanExponentiate[MassMeasure]
-
-  implicit object MassTimeCanMultiply extends ProductCanMultiply[MassMeasure, TimeMeasure]
-
-  implicit object MassLengthCanMultiply extends ProductCanMultiply[MassMeasure, LengthMeasure]
-
-  implicit object MassLengthCanDivide extends RatioCanDivide[MassMeasure, LengthMeasure]
-
-  implicit object MassDimensionlessCanMultiply extends CanMultiply[MassMeasure, DimensionlessMeasure, MassMeasure]
-  {
-    override def times(multiplicand: MassMeasure, multiplier: DimensionlessMeasure): MassMeasure = multiplicand
-
-    override def unit(multiplicand: MassMeasure, multiplier: DimensionlessMeasure): Double = multiplier.base
-  }
-
-  implicit object MassSpeedCanMultiply extends ProductCanMultiply[MassMeasure, ExponentialMeasure[Speed]]
-
-  implicit object LengthCanExponentiate extends ExponentialCanExponentiate[LengthMeasure]
-
-  implicit object LengthTimeCanDivide extends RatioCanDivide[LengthMeasure, TimeMeasure]
-
-  implicit object CurrencyVolumeCanDivide extends RatioCanDivide[Currency, VolumeMeasure]
-
-  implicit object CurrencyEnergyCanDivide extends RatioCanDivide[Currency, EnergyMeasure]
-
-  implicit object CurrencyDimensionlessCanMultiply extends CanMultiply[Currency, DimensionlessMeasure, Currency]
-  {
-    override def times(multiplicand: Currency, multiplier: DimensionlessMeasure): Currency = multiplicand
-
-    override def unit(multiplicand: Currency, multiplier: DimensionlessMeasure): Double = multiplier.base
-  }
-
-  implicit object CurrencyDimensionlessCanDivide extends CanDivide[Currency, DimensionlessMeasure, Currency]
-  {
-    override def divide(numerator: Currency, denominator: DimensionlessMeasure): Currency = numerator
-
-    override def unit(numerator: Currency, denominator: DimensionlessMeasure): Double = 1 / denominator.base
-  }
-
-  implicit object CurrencyCanDivide extends RatioCanDivide[Currency, Currency]
-
-  implicit object EnergyPriceDimensionlessCanMultiply extends CanMultiply[EnergyPrice, DimensionlessMeasure, EnergyPrice]
-  {
-    override def times(multiplicand: EnergyPrice, multiplier: DimensionlessMeasure): EnergyPrice = multiplicand
-  }
-
-  implicit object EnergyPriceDimensionlessCanDivide extends RatioCanDivide[EnergyPrice, DimensionlessMeasure]
-
-  implicit object EnergyPriceCurrencyPriceCanMultiply extends ProductCanMultiply[EnergyPrice, CurrencyPriceMeasure]
-
-  implicit object SpeedCanExponentiate extends ExponentialCanExponentiate[Speed]
-
-  implicit object MassTimesLengthExponentialTimeCanDivide extends CanDivide[MassTimesLength, ExponentialMeasure[TimeMeasure], RatioMeasure[MassTimesLength, ExponentialMeasure[TimeMeasure]]]
-  {
-    override def divide(numerator: MassTimesLength, denominator: ExponentialMeasure[TimeMeasure]): RatioMeasure[MassTimesLength, ExponentialMeasure[TimeMeasure]] = RatioMeasure(numerator, denominator)
-  }
+  import Implicits._
 
   /**
     * Dimensionless.

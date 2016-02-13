@@ -42,3 +42,16 @@ trait SameTypeConverter[T] extends Converter[T, T]
 
   protected def convert: PartialFunction[(T, T), Double] = PartialFunction.empty
 }
+
+object SameTypeConverter
+{
+  def one[T]: SameTypeConverter[T] = new SameTypeConverter[T]
+  {
+    override protected def convert: PartialFunction[(T, T), Double] =
+    {
+      case (from, to) if from == to => 1.0
+    }
+
+    override def toString: String = "SameTypeConverter.one"
+  }
+}
