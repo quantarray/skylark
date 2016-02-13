@@ -8,7 +8,7 @@ Skylark is a set of libraries for quantitative and financial computation.
 their surface but in the end lack the richness and versatility necessary to use in real enterprise applications.
 
 ```scala
-libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.3.3"
+libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.4.0"
 ```
 
 Many units of measure are defined for you.
@@ -42,13 +42,12 @@ You can take existing units and compose more complex ones by multiplying, dividi
 kg * m / sec ^ 2
 ```
 
-You can find our the conversion factor from one *to* another.  No conversion factor may exist.
+You can find our the conversion factor from one `to` another.  No conversion factor may exist.
 
 ```scala
 (kg to lb).value should be(2.204625)
 ```
-
-Too many systems omit units of measure when storing or presenting numerical quantities. Now you can store units of measure along with a numeric value as a plain string.
+Many systems omit units of measure when storing or presenting numerical quantities. Now you can store units of measure along with a numeric value as a plain string.
 With `MeasureParsers` you can turn that string back into a measure.
  
 ```scala
@@ -66,21 +65,22 @@ It's easy to compose numerical quantities with units of measure using a dot or p
 You can perform the expected arithmetic operations on quantities.
 
 ```scala
-10.0.kg * 4.0.m should equal(Quantity(40, kg * m))
-4.0.oz_troy * 7.0.percent should equal(Quantity(0.28, oz_troy))
+10.kg * 4.m should equal(40.0 * (kg * m))
+(4.oz_troy * 7.percent).to(oz_troy) should equal(0.28.oz_troy)
 
-10.0.kg / 2.0.m should equal(Quantity(5, kg / m))
-10.0.USD / 2.0.percent should equal(Quantity(500, USD))
+10.kg / 2.m should equal(5.0 * (kg / m))
+(10.USD / 2.percent).to(USD) should equal(500.USD)
 
-10.0.kg + 3.0.kg should equal(13.0.kg)
-10.0.kg - 3.0.kg should equal(7.0.kg)
-10.0.kg + (3.0.lb to kg) should equal(11.360775642116007.kg)
+10.kg + 3.kg should equal(13.kg)
+10.kg - 3.kg should equal(7.kg)
+10.kg + (3.lb to kg) should equal(11.360775642116007.kg)
 ```
 
 Quantity conversions are also supported via the same `to` operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
-is defined by converters and require their own CanConvert instances of their components' conversions.
+are defined by converters and require their own CanConvert instances of their components' conversions.
 
 ```scala
-(1.0.ft to in) should equal(12.0 in)
-(12.0.in to ft) should equal(1.0 ft)
+(1.ft to in) should equal(12.0 in)
+(12.in to ft) should equal(1.0 ft)
 ```
+

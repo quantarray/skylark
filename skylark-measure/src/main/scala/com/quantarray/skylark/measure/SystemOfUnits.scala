@@ -41,5 +41,5 @@ case object Monetary extends SystemOfUnits
 // Derived is formed as a product or ratio of more fundamental units, e.g. lumen
 case class Derived(system: SystemOfUnits) extends SystemOfUnits
 
-// Hybrid is formed as a product of ratio of more fundamental units of different systems, e.g. meter-pound
+// Hybrid is formed as a product or ratio of more fundamental units of different systems, e.g. meter-pound
 case class Hybrid(systems: SystemOfUnits*) extends SystemOfUnits
