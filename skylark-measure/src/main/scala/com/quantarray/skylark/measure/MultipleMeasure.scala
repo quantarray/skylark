@@ -24,9 +24,19 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-trait MultipleMeasure[Self <: Measure[Self]]
+trait MultipleMeasure[Self <: MultipleMeasure[Self]]
 {
-  self: Self with Measure[Self] =>
+  self: Self with MultipleMeasure[Self] =>
 
   def base: Option[(Self, Double)]
+
+  def toUltimateBase: Double =
+  {
+    def descend(m: Option[Self], multiple: Double): Double =
+    {
+      m.fold(multiple)(m1 => descend(m1.base.map(_._1), m1.base.map(_._2).getOrElse(1.0) * multiple))
+    }
+
+    descend(Some(this), 1.0)
+  }
 }

@@ -31,7 +31,8 @@ trait MassConverter extends SameTypeConverter[MassMeasure]
   protected override def convert: PartialFunction[(MassMeasure, MassMeasure), Double] =
   {
     case (`kg`, `lb`) => 2.204625
-    case (`kg`, `g`) => kg.base.get._2
+    case (`kg`, `g`) => kg.toUltimateBase
+    case (from, to) if from.system == to.system => from.toUltimateBase / to.toUltimateBase
   }
 }
 

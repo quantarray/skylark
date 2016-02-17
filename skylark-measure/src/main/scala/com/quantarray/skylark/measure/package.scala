@@ -357,8 +357,8 @@ package object measure
     * Power.
     */
   val W = PowerMeasure("Watt", SI)
-  val MW: PowerMeasure = Mega * W
-  val GW: PowerMeasure = Giga * W
+  val MW = Mega * W
+  val GW = Giga * W
 
   /**
     * Energy.
