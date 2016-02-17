@@ -28,7 +28,7 @@ trait MeasureComposition[Self <: Measure[Self]]
 {
   self: Self with Measure[Self] =>
 
-  def composes(name: String, system: SystemOfUnits): Self
+  def composes(name: String, system: SystemOfUnits, multiple: Double): Self
 
-  def composes(name: String): Self = composes(name, system)
+  def composes(name: String, multiple: Double): Self = composes(name, system, multiple)
 }

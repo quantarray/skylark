@@ -30,7 +30,7 @@ case class TimeMeasure(name: String, system: SystemOfUnits) extends Measure[Time
 
   val dimension = Time
 
-  override def composes(name: String, system: SystemOfUnits): TimeMeasure = TimeMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): TimeMeasure = TimeMeasure(name, system)
 
   override def toString = name
 }

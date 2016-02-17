@@ -30,7 +30,7 @@ case class PowerMeasure(name: String, system: SystemOfUnits) extends Measure[Pow
 
   val dimension = Power
 
-  override def composes(name: String, system: SystemOfUnits): PowerMeasure = PowerMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): PowerMeasure = PowerMeasure(name, system)
 
   override def toString = name
 }

@@ -20,19 +20,13 @@
 package com.quantarray.skylark.measure
 
 /**
-  * Dimensionless measure.
+  * Multiple measure.
   *
   * @author Araik Grigoryan
   */
-case class DimensionlessMeasure(name: String, system: SystemOfUnits, base: Double = 1) extends Measure[DimensionlessMeasure] with MeasureComposition[DimensionlessMeasure]
+trait MultipleMeasure[Self <: Measure[Self]]
 {
-  type D = NoDimension
+  self: Self with Measure[Self] =>
 
-  val dimension = Dimensionless
-
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, base)
-
-  override def composes(name: String, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, base * multiple)
-
-  override def toString = name
+  def base: Option[(Self, Double)]
 }

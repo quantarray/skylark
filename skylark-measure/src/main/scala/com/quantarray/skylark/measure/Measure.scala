@@ -223,7 +223,7 @@ object ExponentialMeasure
 
       val name = params._3.getOrElse(baseName)
 
-      override def composes(name: String, system: SystemOfUnits): ExponentialMeasure[B] = ExponentialMeasure(base, exponent, Some(name))
+      override def composes(name: String, system: SystemOfUnits, multiple: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent, Some(name))
 
       override def equals(obj: scala.Any): Boolean = obj match
       {

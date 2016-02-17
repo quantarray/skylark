@@ -30,7 +30,7 @@ case class VolumeMeasure(name: String, system: SystemOfUnits) extends Measure[Vo
 
   val dimension = ExponentialDimension(Length, 3)
 
-  override def composes(name: String, system: SystemOfUnits): VolumeMeasure = VolumeMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): VolumeMeasure = VolumeMeasure(name, system)
 
   override def toString = name
 }

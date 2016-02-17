@@ -30,7 +30,7 @@ case class PressureMeasure(name: String, system: SystemOfUnits) extends Measure[
 
   val dimension = Pressure
 
-  override def composes(name: String, system: SystemOfUnits): PressureMeasure = PressureMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): PressureMeasure = PressureMeasure(name, system)
 
   override def toString = name
 }

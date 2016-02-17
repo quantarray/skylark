@@ -30,7 +30,7 @@ case class TemporalFrequencyMeasure(name: String, system: SystemOfUnits) extends
 
   val dimension = TemporalFrequency
 
-  override def composes(name: String, system: SystemOfUnits): TemporalFrequencyMeasure = TemporalFrequencyMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): TemporalFrequencyMeasure = TemporalFrequencyMeasure(name, system)
 
   override def toString = name
 }

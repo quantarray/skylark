@@ -24,13 +24,20 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class MassMeasure(name: String, system: SystemOfUnits) extends Measure[MassMeasure] with MeasureComposition[MassMeasure]
+case class MassMeasure private(name: String, system: SystemOfUnits,
+                               base: Option[(MassMeasure, Double)]) extends Measure[MassMeasure] with MeasureComposition[MassMeasure] with
+                                                                            MultipleMeasure[MassMeasure]
 {
   type D = MassDimension
 
   val dimension = Mass
 
-  override def composes(name: String, system: SystemOfUnits): MassMeasure = MassMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double) = new MassMeasure(name, system, Some(this, multiple))
 
   override def toString = name
+}
+
+object MassMeasure
+{
+  def apply(name: String, system: SystemOfUnits) = new MassMeasure(name, system, None)
 }
