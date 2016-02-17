@@ -52,10 +52,6 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
     */
   def dimension: D
 
-  def composes(name: String, system: SystemOfUnits): Self
-
-  def composes(name: String): Self = composes(name, system)
-
   def +[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
 
   def -[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
@@ -118,8 +114,6 @@ object ProductMeasure
 
       lazy val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
 
-      override def composes(name: String, system: SystemOfUnits): ProductMeasure[M1, M2] = this
-
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: ProductMeasure[_, _] => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
@@ -178,8 +172,6 @@ object RatioMeasure
 
       lazy val name = s"${numerator.structuralName} / ${denominator.structuralName}"
 
-      override def composes(name: String, system: SystemOfUnits): RatioMeasure[M1, M2] = this
-
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: RatioMeasure[_, _] => this.numerator == that.numerator && this.denominator == that.denominator
@@ -198,7 +190,7 @@ object RatioMeasure
 /**
   * Exponential measure.
   */
-trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with untyped.ExponentialMeasure
+trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with untyped.ExponentialMeasure with MeasureComposition[ExponentialMeasure[B]]
 {
   val base: B
 

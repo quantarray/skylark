@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,17 @@
 package com.quantarray.skylark.measure
 
 /**
- * Decadic multiple.
- *
- * http://en.wikipedia.org/wiki/Metric_prefixß
- *
- * @author Araik Grigoryan
- */
+  * Decadic multiple.
+  *
+  * http://en.wikipedia.org/wiki/Metric_prefixß
+  *
+  * @author Araik Grigoryan
+  */
 case class DecadicMultiple(prefix: String, multiple: Double)
 {
   def ^(exponent: Int) = new DecadicMultiple(prefix * exponent, math.pow(multiple, exponent))
 
-  def *[M <: Measure[M]](measure: M): M = measure.composes(s"$prefix$measure")
+  def *[M <: Measure[M] with MeasureComposition[M]](measure: M): M = measure.composes(s"$prefix$measure")
 
   override def toString = s"$prefix ($multiple)"
 }

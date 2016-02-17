@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@
 package com.quantarray.skylark.measure
 
 /**
- * Area measure.
- *
- * @author Araik Grigoryan
- */
-case class AreaMeasure(name: String, system: SystemOfUnits) extends Measure[AreaMeasure]
+  * Area measure.
+  *
+  * @author Araik Grigoryan
+  */
+case class AreaMeasure(name: String, system: SystemOfUnits) extends Measure[AreaMeasure] with MeasureComposition[AreaMeasure]
 {
   type D = ExponentialDimension[LengthDimension]
 

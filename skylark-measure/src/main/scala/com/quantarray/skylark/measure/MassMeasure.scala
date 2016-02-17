@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@
 package com.quantarray.skylark.measure
 
 /**
- * Mass measure.
- *
- * @author Araik Grigoryan
- */
-case class MassMeasure(name: String, system: SystemOfUnits) extends Measure[MassMeasure]
+  * Mass measure.
+  *
+  * @author Araik Grigoryan
+  */
+case class MassMeasure(name: String, system: SystemOfUnits) extends Measure[MassMeasure] with MeasureComposition[MassMeasure]
 {
   type D = MassDimension
 

@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2015 Quantarray, LLC
+ * Copyright 2012-2016 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,17 @@
 package com.quantarray.skylark.measure
 
 /**
- * Binary multiple
- *
- * @author Araik Grigoryan
- */
+  * Binary multiple
+  *
+  * @author Araik Grigoryan
+  */
 class BinaryMultiple(val prefix: String, val powerOf2: Int)
 {
   val multiple = math.pow(2, powerOf2)
 
   def ^(exponent: Int) = new BinaryMultiple(prefix * exponent, math.pow(multiple, exponent).toInt)
 
-  def *[M <: Measure[M]](measure: M): M = measure.composes(s"$prefix$measure")
+  def *[M <: Measure[M] with MeasureComposition[M]](measure: M): M = measure.composes(s"$prefix$measure")
 
   override def toString = s"$prefix ($multiple)"
 }

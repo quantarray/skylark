@@ -20,17 +20,15 @@
 package com.quantarray.skylark.measure
 
 /**
-  * Electric current measure.
+  * Measure composition refinement trait.
   *
   * @author Araik Grigoryan
   */
-case class ElectricCurrentMeasure(name: String, system: SystemOfUnits) extends Measure[ElectricCurrentMeasure] with MeasureComposition[ElectricCurrentMeasure]
+trait MeasureComposition[Self <: Measure[Self]]
 {
-  type D = ElectricCurrentDimension
+  self: Self with Measure[Self] =>
 
-  val dimension = ElectricCurrent
+  def composes(name: String, system: SystemOfUnits): Self
 
-  override def composes(name: String, system: SystemOfUnits): ElectricCurrentMeasure = ElectricCurrentMeasure(name, system)
-
-  override def toString = name
+  def composes(name: String): Self = composes(name, system)
 }
