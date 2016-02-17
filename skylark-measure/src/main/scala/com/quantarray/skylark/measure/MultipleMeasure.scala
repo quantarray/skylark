@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.measure
 
+import scala.annotation.tailrec
+
 /**
   * Multiple measure.
   *
@@ -32,9 +34,14 @@ trait MultipleMeasure[Self <: MultipleMeasure[Self]]
 
   def toUltimateBase: Double =
   {
-    def descend(m: Option[Self], multiple: Double): Double =
+    @tailrec
+    def descend(measure: Option[Self], multiple: Double): Double =
     {
-      m.fold(multiple)(m1 => descend(m1.base.map(_._1), m1.base.map(_._2).getOrElse(1.0) * multiple))
+      measure match
+      {
+        case None => multiple
+        case Some(m) => descend(m.base.map(_._1), m.base.map(_._2).getOrElse(1.0) * multiple)
+      }
     }
 
     descend(Some(this), 1.0)
