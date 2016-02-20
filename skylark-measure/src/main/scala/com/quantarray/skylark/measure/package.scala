@@ -211,21 +211,24 @@ package object measure
 
   object Implicits extends DefaultImplicits
   {
+
     implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
     {
       override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = UnitMeasure
     }
+
   }
 
   import Implicits._
+  import Measure.Composition._
 
   /**
     * Dimensionless.
     */
-  val percent = UnitMeasure.composes("%", 0.01)
+  val percent = "%" := 0.01 * UnitMeasure
 
   // http://en.wikipedia.org/wiki/Basis_point
-  val bp = UnitMeasure.composes("bp", 0.0001)
+  val bp = "bp" := 0.0001 * UnitMeasure
 
   // http://en.wikipedia.org/wiki/Radian
   val rad = DimensionlessMeasure("rad", Derived(SI), 1 / (2 * scala.math.Pi))
@@ -237,11 +240,11 @@ package object measure
     * Time.
     */
   val s = TimeMeasure("s", SI)
-  val min = s.composes("min", 60)
-  val h = min.composes("h", 60)
-  val day = h.composes("day", 24)
-  val year365 = day.composes("Year[365]", 365)
-  val year360 = day.composes("Year[360]", 360)
+  val min = "min" := 60 * s
+  val h = "h" := 60 * min
+  val day = "day" := 24 * h
+  val year365 = "Year[365]" := 365 * day
+  val year360 = "Year[360]" := 360 * day
 
   val ms = Milli * s
   val ns = Nano * s
@@ -282,12 +285,12 @@ package object measure
   val mm = Milli * m
   val nm = Nano * m
 
-  val in = LengthMeasure("Inch", Imperial())
-  val ft = in.composes("Foot", 12)
-  val yd = ft.composes("Yard", 3)
-  val rd = ft.composes("Rod", 16.5)
-  val fur = rd.composes("Furlong", 40)
-  val mi = fur.composes("Mile", 132)
+  val in = LengthMeasure("in", Imperial())
+  val ft = "ft" := 12 * in
+  val yd = "yd" := 3 * ft
+  val rd = ft.composes("rod", 16.5)
+  val fur = rd.composes("furlong", 40)
+  val mi = fur.composes("mile", 132)
 
   val nmi = m.composes("Nautical mile", 1852)
 

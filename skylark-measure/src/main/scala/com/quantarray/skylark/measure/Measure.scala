@@ -108,6 +108,29 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   def reduce[R](implicit cr: CanReduce[Self, R]): R = cr.reduce(this)
 }
 
+object Measure
+{
+  object Composition
+  {
+    implicit final class IntQuantity(private val value: Int) extends AnyVal
+    {
+      def *[M <: Measure[M]](measure: M): (Double, M) = (value, measure)
+    }
+
+    implicit final class DoubleQuantity(private val value: Double) extends AnyVal
+    {
+      def *[M <: Measure[M]](measure: M): (Double, M) = (value, measure)
+    }
+
+    implicit final class StringMeasureComposition(private val name: String) extends AnyVal
+    {
+      def :=[M <: Measure[M]](quantity: (Double, M)): M = quantity._2.composes(name, quantity._1)
+
+      def :=[M <: Measure[M]](measure: M): M = measure.composes(name, 1.0)
+    }
+  }
+}
+
 /**
   * Product measure.
   */
