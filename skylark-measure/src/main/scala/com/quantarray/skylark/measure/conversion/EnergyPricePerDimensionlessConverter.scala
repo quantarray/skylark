@@ -34,7 +34,7 @@ trait EnergyPricePerDimensionlessConverter extends SameMeasureConverter[RatioMea
 
   implicit val cc1: CanConvert[RatioMeasure[Currency, EnergyMeasure], RatioMeasure[Currency, EnergyMeasure]]
 
-  protected override def convert(from: From, to: To): Option[Double] = Some(to.denominator.baseMultiple / from.denominator.baseMultiple)
+  protected override def convert(from: From, to: To): Option[Double] = Some(to.denominator.immediateBase / from.denominator.immediateBase)
 }
 
 object EnergyPricePerDimensionlessConverter

@@ -55,6 +55,8 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
 
   def base: Option[(Self, Double)]
 
+  lazy val immediateBase = base.map(_._2).getOrElse(1.0)
+
   lazy val ultimateBase: Double =
   {
     @tailrec
