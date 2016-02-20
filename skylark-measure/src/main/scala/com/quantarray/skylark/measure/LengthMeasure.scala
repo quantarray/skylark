@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class LengthMeasure(name: String, system: SystemOfUnits, base: Option[(LengthMeasure, Double)] = None) extends Measure[LengthMeasure] with MeasureComposition[LengthMeasure]
+case class LengthMeasure(name: String, system: SystemOfUnits, base: Option[(LengthMeasure, Double)] = None) extends Measure[LengthMeasure]
 {
   type D = LengthDimension
 

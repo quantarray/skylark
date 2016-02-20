@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class LuminousIntensityMeasure(name: String, system: SystemOfUnits, base: Option[(LuminousIntensityMeasure, Double)] = None) extends Measure[LuminousIntensityMeasure] with MeasureComposition[LuminousIntensityMeasure]
+case class LuminousIntensityMeasure(name: String, system: SystemOfUnits, base: Option[(LuminousIntensityMeasure, Double)] = None) extends Measure[LuminousIntensityMeasure]
 {
   type D = LuminousIntensityDimension
 
   val dimension = LuminousIntensity
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): LuminousIntensityMeasure = LuminousIntensityMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): LuminousIntensityMeasure = LuminousIntensityMeasure(name, system, Some(this, multiple))
 
   override def toString = name
 }

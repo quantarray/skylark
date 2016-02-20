@@ -30,7 +30,7 @@ class BinaryMultiple(val prefix: String, val powerOf2: Int)
 
   def ^(exponent: Int) = new BinaryMultiple(prefix * exponent, math.pow(multiple, exponent).toInt)
 
-  def *[M <: Measure[M] with MeasureComposition[M]](measure: M): M = measure.composes(s"$prefix$measure", multiple)
+  def *[M <: Measure[M]](measure: M): M = measure.composes(s"$prefix$measure", multiple)
 
   override def toString = s"$prefix ($multiple)"
 }

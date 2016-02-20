@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class Currency(name: String) extends Measure[Currency] with MeasureComposition[Currency]
+case class Currency(name: String) extends Measure[Currency]
 {
   type D = MoneyDimension
 

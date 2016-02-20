@@ -24,8 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class DimensionlessMeasure(name: String, system: SystemOfUnits,
-                                base: Option[(DimensionlessMeasure, Double)] = None) extends Measure[DimensionlessMeasure] with MeasureComposition[DimensionlessMeasure]
+case class DimensionlessMeasure(name: String, system: SystemOfUnits, base: Option[(DimensionlessMeasure, Double)] = None) extends Measure[DimensionlessMeasure]
 {
   type D = NoDimension
 

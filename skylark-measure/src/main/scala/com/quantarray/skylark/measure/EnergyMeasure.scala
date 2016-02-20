@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
  *
  * @author Araik Grigoryan
  */
-case class EnergyMeasure(name: String, system: SystemOfUnits, base: Option[(EnergyMeasure, Double)] = None) extends Measure[EnergyMeasure] with MeasureComposition[EnergyMeasure]
+case class EnergyMeasure(name: String, system: SystemOfUnits, base: Option[(EnergyMeasure, Double)] = None) extends Measure[EnergyMeasure]
 {
   type D = EnergyDimension
 
   val dimension = Energy
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): EnergyMeasure = EnergyMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): EnergyMeasure = EnergyMeasure(name, system, Some(this, multiple))
 
   override def toString = name
 }

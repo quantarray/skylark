@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class VolumeMeasure(name: String, system: SystemOfUnits, base: Option[(VolumeMeasure, Double)] = None) extends Measure[VolumeMeasure] with MeasureComposition[VolumeMeasure]
+case class VolumeMeasure(name: String, system: SystemOfUnits, base: Option[(VolumeMeasure, Double)] = None) extends Measure[VolumeMeasure]
 {
   type D = ExponentialDimension[LengthDimension]
 
   val dimension = ExponentialDimension(Length, 3)
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): VolumeMeasure = VolumeMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): VolumeMeasure = VolumeMeasure(name, system, Some(this, multiple))
 
   override def toString = name
 }

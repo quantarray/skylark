@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class TimeMeasure(name: String, system: SystemOfUnits, base: Option[(TimeMeasure, Double)] = None) extends Measure[TimeMeasure] with MeasureComposition[TimeMeasure]
+case class TimeMeasure(name: String, system: SystemOfUnits, base: Option[(TimeMeasure, Double)] = None) extends Measure[TimeMeasure]
 {
   type D = TimeDimension
 

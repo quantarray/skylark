@@ -24,8 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class MassMeasure private(name: String, system: SystemOfUnits,
-                               base: Option[(MassMeasure, Double)]) extends Measure[MassMeasure] with MeasureComposition[MassMeasure]
+case class MassMeasure private(name: String, system: SystemOfUnits, base: Option[(MassMeasure, Double)]) extends Measure[MassMeasure]
 {
   type D = MassDimension
 

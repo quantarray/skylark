@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class PressureMeasure(name: String, system: SystemOfUnits, base: Option[(PressureMeasure, Double)] = None) extends Measure[PressureMeasure] with MeasureComposition[PressureMeasure]
+case class PressureMeasure(name: String, system: SystemOfUnits, base: Option[(PressureMeasure, Double)] = None) extends Measure[PressureMeasure]
 {
   type D = PressureDimension
 
   val dimension = Pressure
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): PressureMeasure = PressureMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): PressureMeasure = PressureMeasure(name, system, Some(this, multiple))
 
   override def toString = name
 }

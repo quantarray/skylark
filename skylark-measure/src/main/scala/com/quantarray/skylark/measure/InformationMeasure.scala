@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class InformationMeasure(name: String, system: SystemOfUnits, base: Option[(InformationMeasure, Double)] = None) extends Measure[InformationMeasure] with MeasureComposition[InformationMeasure]
+case class InformationMeasure(name: String, system: SystemOfUnits, base: Option[(InformationMeasure, Double)] = None) extends Measure[InformationMeasure]
 {
   type D = InformationDimension
 
   val dimension = Information
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): InformationMeasure = InformationMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): InformationMeasure = InformationMeasure(name, system, Some(this, multiple))
 
   override def toString = name
 }

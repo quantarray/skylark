@@ -72,6 +72,10 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
     descend(Some(this), 1.0)
   }
 
+  def composes(name: String, system: SystemOfUnits, multiple: Double): Self
+
+  def composes(name: String, multiple: Double): Self = composes(name, system, multiple)
+
   def +[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
 
   def -[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
@@ -136,6 +140,8 @@ object ProductMeasure
 
       override def base: Option[(ProductMeasure[M1, M2], Double)] = None
 
+      override def composes(name: String, system: SystemOfUnits, multiple: Double): ProductMeasure[M1, M2] = this
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: ProductMeasure[_, _] => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
@@ -196,6 +202,8 @@ object RatioMeasure
 
       override def base: Option[(RatioMeasure[M1, M2], Double)] = None
 
+      override def composes(name: String, system: SystemOfUnits, multiple: Double): RatioMeasure[M1, M2] = this
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: RatioMeasure[_, _] => this.numerator == that.numerator && this.denominator == that.denominator
@@ -214,7 +222,7 @@ object RatioMeasure
 /**
   * Exponential measure.
   */
-trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with untyped.ExponentialMeasure with MeasureComposition[ExponentialMeasure[B]]
+trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with untyped.ExponentialMeasure
 {
   val expBase: B
 

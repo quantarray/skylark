@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class PowerMeasure(name: String, system: SystemOfUnits, base: Option[(PowerMeasure, Double)] = None) extends Measure[PowerMeasure] with MeasureComposition[PowerMeasure]
+case class PowerMeasure(name: String, system: SystemOfUnits, base: Option[(PowerMeasure, Double)] = None) extends Measure[PowerMeasure]
 {
   type D = PowerDimension
 
   val dimension = Power
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): PowerMeasure = PowerMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): PowerMeasure = PowerMeasure(name, system, Some(this, multiple))
 
   override def toString = name
 }

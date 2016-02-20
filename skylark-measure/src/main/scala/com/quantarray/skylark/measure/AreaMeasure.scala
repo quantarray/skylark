@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class AreaMeasure(name: String, system: SystemOfUnits, base: Option[(AreaMeasure, Double)] = None) extends Measure[AreaMeasure] with MeasureComposition[AreaMeasure]
+case class AreaMeasure(name: String, system: SystemOfUnits, base: Option[(AreaMeasure, Double)] = None) extends Measure[AreaMeasure]
 {
   type D = ExponentialDimension[LengthDimension]
 
   val dimension = ExponentialDimension(Length, 2)
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): AreaMeasure = AreaMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): AreaMeasure = AreaMeasure(name, system, Some(this, multiple))
 
   override def toString = name
 }
