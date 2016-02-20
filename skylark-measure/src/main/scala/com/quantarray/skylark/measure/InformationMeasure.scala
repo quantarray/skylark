@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class InformationMeasure(name: String, system: SystemOfUnits) extends Measure[InformationMeasure] with MeasureComposition[InformationMeasure]
+case class InformationMeasure(name: String, system: SystemOfUnits, base: Option[(InformationMeasure, Double)] = None) extends Measure[InformationMeasure] with MeasureComposition[InformationMeasure]
 {
   type D = InformationDimension
 

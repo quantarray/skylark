@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class TemporalFrequencyMeasure(name: String, system: SystemOfUnits) extends Measure[TemporalFrequencyMeasure] with MeasureComposition[TemporalFrequencyMeasure]
+case class TemporalFrequencyMeasure(name: String, system: SystemOfUnits, base: Option[(TemporalFrequencyMeasure, Double)] = None) extends Measure[TemporalFrequencyMeasure] with MeasureComposition[TemporalFrequencyMeasure]
 {
   type D = TemporalFrequencyDimension
 

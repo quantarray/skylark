@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class TimeMeasure(name: String, system: SystemOfUnits) extends Measure[TimeMeasure] with MeasureComposition[TimeMeasure]
+case class TimeMeasure(name: String, system: SystemOfUnits, base: Option[(TimeMeasure, Double)] = None) extends Measure[TimeMeasure] with MeasureComposition[TimeMeasure]
 {
   type D = TimeDimension
 
   val dimension = Time
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): TimeMeasure = TimeMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): TimeMeasure = TimeMeasure(name, system, Some(this, multiple))
 
   override def toString = name
 }

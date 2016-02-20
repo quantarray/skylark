@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class VolumeMeasure(name: String, system: SystemOfUnits) extends Measure[VolumeMeasure] with MeasureComposition[VolumeMeasure]
+case class VolumeMeasure(name: String, system: SystemOfUnits, base: Option[(VolumeMeasure, Double)] = None) extends Measure[VolumeMeasure] with MeasureComposition[VolumeMeasure]
 {
   type D = ExponentialDimension[LengthDimension]
 

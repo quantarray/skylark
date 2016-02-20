@@ -26,13 +26,7 @@ import com.quantarray.skylark.measure._
   *
   * @author Araik Grigoryan
   */
-trait TimeConverter extends SameTypeConverter[TimeMeasure]
-{
-  override protected def convert: PartialFunction[(TimeMeasure, TimeMeasure), Double] =
-  {
-    case (`h`, `s`) => 3600
-  }
-}
+trait TimeConverter extends SameMeasureConverter[TimeMeasure]
 
 object TimeConverter
 {

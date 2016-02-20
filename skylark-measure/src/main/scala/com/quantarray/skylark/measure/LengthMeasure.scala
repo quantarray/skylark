@@ -24,13 +24,13 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class LengthMeasure(name: String, system: SystemOfUnits) extends Measure[LengthMeasure] with MeasureComposition[LengthMeasure]
+case class LengthMeasure(name: String, system: SystemOfUnits, base: Option[(LengthMeasure, Double)] = None) extends Measure[LengthMeasure] with MeasureComposition[LengthMeasure]
 {
   type D = LengthDimension
 
   val dimension = Length
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): LengthMeasure = LengthMeasure(name, system)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): LengthMeasure = LengthMeasure(name, system, Some((this, multiple)))
 
   override def toString = name
 }

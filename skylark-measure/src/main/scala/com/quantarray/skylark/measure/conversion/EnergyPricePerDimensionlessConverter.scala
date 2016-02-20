@@ -26,7 +26,7 @@ import com.quantarray.skylark.measure._
   *
   * @author Araik Grigoryan
   */
-trait EnergyPricePerDimensionlessConverter extends SameTypeConverter[RatioMeasure[RatioMeasure[Currency, EnergyMeasure], DimensionlessMeasure]]
+trait EnergyPricePerDimensionlessConverter extends SameMeasureConverter[RatioMeasure[RatioMeasure[Currency, EnergyMeasure], DimensionlessMeasure]]
 {
   type From = RatioMeasure[RatioMeasure[Currency, EnergyMeasure], DimensionlessMeasure]
 
@@ -34,10 +34,7 @@ trait EnergyPricePerDimensionlessConverter extends SameTypeConverter[RatioMeasur
 
   implicit val cc1: CanConvert[RatioMeasure[Currency, EnergyMeasure], RatioMeasure[Currency, EnergyMeasure]]
 
-  override protected def convert: PartialFunction[(From, To), Double] =
-  {
-    case (from, to) => to.denominator.base / from.denominator.base
-  }
+  protected override def convert(from: From, to: To): Option[Double] = Some(to.denominator.baseMultiple / from.denominator.baseMultiple)
 }
 
 object EnergyPricePerDimensionlessConverter

@@ -24,15 +24,23 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class DimensionlessMeasure(name: String, system: SystemOfUnits, base: Double = 1) extends Measure[DimensionlessMeasure] with MeasureComposition[DimensionlessMeasure]
+case class DimensionlessMeasure(name: String, system: SystemOfUnits,
+                                base: Option[(DimensionlessMeasure, Double)] = None) extends Measure[DimensionlessMeasure] with MeasureComposition[DimensionlessMeasure]
 {
   type D = NoDimension
 
   val dimension = Dimensionless
 
-  override def composes(name: String, system: SystemOfUnits, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, base)
+  val baseMultiple = base.map(_._2).getOrElse(1.0)
 
-  override def composes(name: String, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, base * multiple)
+  override def composes(name: String, system: SystemOfUnits, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, Some(this, multiple))
+
+  override def composes(name: String, multiple: Double): DimensionlessMeasure = DimensionlessMeasure(name, system, Some(this, multiple))
 
   override def toString = name
+}
+
+object DimensionlessMeasure
+{
+  def apply(name: String, system: SystemOfUnits, base: Double): DimensionlessMeasure = new DimensionlessMeasure(name, system, Some(UnitMeasure, base))
 }

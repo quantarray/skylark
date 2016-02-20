@@ -22,7 +22,7 @@ package object conversion
     {
       override def convert: Converter[P_[M], M] = new Converter[P_[M], M]
       {
-        override def apply(from: P_[M], to: M): Option[Double] = Some(from.multiplier.base)
+        override def apply(from: P_[M], to: M): Option[Double] = Some(from.multiplier.baseMultiple)
       }
     }
 
@@ -32,7 +32,7 @@ package object conversion
     {
       override def convert: Converter[R_[M], M] = new Converter[R_[M], M]
       {
-        override def apply(from: R_[M], to: M): Option[Double] = Some(1 / from.denominator.base)
+        override def apply(from: R_[M], to: M): Option[Double] = Some(1 / from.denominator.baseMultiple)
       }
     }
   }
@@ -43,7 +43,7 @@ package object conversion
     /**
       * () -> ().
       */
-    implicit val dimensionlessCanConvert = CanConvert(DimensionlessConverter())
+    implicit val dimensionlessCanConvert = CanConvert(DimensionlessConverter)
 
     /**
       * Time -> Time.

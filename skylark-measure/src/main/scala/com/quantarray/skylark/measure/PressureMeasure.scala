@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class PressureMeasure(name: String, system: SystemOfUnits) extends Measure[PressureMeasure] with MeasureComposition[PressureMeasure]
+case class PressureMeasure(name: String, system: SystemOfUnits, base: Option[(PressureMeasure, Double)] = None) extends Measure[PressureMeasure] with MeasureComposition[PressureMeasure]
 {
   type D = PressureDimension
 

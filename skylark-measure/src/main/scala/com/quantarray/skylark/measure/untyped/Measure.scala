@@ -134,11 +134,11 @@ object RatioMeasure
 
 trait ExponentialMeasure extends Measure
 {
-  val base: Measure
+  val expBase: Measure
 
-  lazy val dimension: Dimension = ExponentialDimension(base.dimension, exponent)
+  lazy val dimension: Dimension = ExponentialDimension(expBase.dimension, exponent)
 
-  lazy val system = base.system
+  lazy val system = expBase.system
 }
 
 object ExponentialMeasure
@@ -149,13 +149,13 @@ object ExponentialMeasure
 
     new ExponentialMeasure
     {
-      override val base: Measure = params._1
+      override val expBase: Measure = params._1
 
       override val exponent: Double = params._2
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
-        case that: ExponentialMeasure => this.base == that.base && this.exponent == that.exponent
+        case that: ExponentialMeasure => this.expBase == that.expBase && this.exponent == that.exponent
         case _ => false
       }
 
@@ -165,5 +165,5 @@ object ExponentialMeasure
     }
   }
 
-  def unapply(uem: ExponentialMeasure): Option[(Measure, Double)] = Some((uem.base, uem.exponent))
+  def unapply(uem: ExponentialMeasure): Option[(Measure, Double)] = Some((uem.expBase, uem.exponent))
 }

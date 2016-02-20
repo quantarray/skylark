@@ -32,6 +32,8 @@ case class Currency(name: String) extends Measure[Currency] with MeasureComposit
 
   val system = Monetary
 
+  val base: Option[(Currency, Double)] = None
+
   override def composes(name: String, system: SystemOfUnits, multiple: Double): Currency = Currency(name)
 
   override def toString = name

@@ -26,15 +26,4 @@ import com.quantarray.skylark.measure.DimensionlessMeasure
   *
   * @author Araik Grigoryan
   */
-trait DimensionlessConverter extends SameTypeConverter[DimensionlessMeasure]
-{
-  override protected def convert: PartialFunction[(DimensionlessMeasure, DimensionlessMeasure), Double] =
-  {
-    case (from, to) => from.base / to.base
-  }
-}
-
-object DimensionlessConverter
-{
-  def apply(): DimensionlessConverter = new DimensionlessConverter {}
-}
+case object DimensionlessConverter extends SameMeasureConverter[DimensionlessMeasure]

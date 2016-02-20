@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class LuminousFluxMeasure(name: String, system: SystemOfUnits) extends Measure[LuminousFluxMeasure] with MeasureComposition[LuminousFluxMeasure]
+case class LuminousFluxMeasure(name: String, system: SystemOfUnits, base: Option[(LuminousFluxMeasure, Double)] = None) extends Measure[LuminousFluxMeasure] with MeasureComposition[LuminousFluxMeasure]
 {
   type D = LuminousFluxDimension
 

@@ -26,14 +26,12 @@ import com.quantarray.skylark.measure._
   *
   * @author Araik Grigoryan
   */
-trait LengthConverter extends SameTypeConverter[LengthMeasure]
+trait LengthConverter extends SameMeasureConverter[LengthMeasure]
 {
-  protected override def convert: PartialFunction[(LengthMeasure, LengthMeasure), Double] =
+  override protected def convert(from: LengthMeasure, to: LengthMeasure): Option[Double] = (from, to) match
   {
-    case (`ft`, `in`) => 12
-    case (`yd`, `ft`) => 3
-    case (`yd`, `in`) => 36
-    case (`mi`, `m`) => 1609.34
+    case (`mi`, `m`) => Some(1609.34)
+    case _ => super.convert(from, to)
   }
 }
 

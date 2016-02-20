@@ -17,33 +17,19 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure
+package com.quantarray.skylark.measure.conversion
 
-import scala.annotation.tailrec
+import com.quantarray.skylark.measure.Measure
 
 /**
-  * Multiple measure.
+  * Same measure converter.
   *
   * @author Araik Grigoryan
   */
-trait MultipleMeasure[Self <: MultipleMeasure[Self]]
+trait SameMeasureConverter[T <: Measure[T]] extends SameTypeConverter[T]
 {
-  self: Self with MultipleMeasure[Self] =>
-
-  def base: Option[(Self, Double)]
-
-  def toUltimateBase: Double =
+  protected override def convert(from: T, to: T): Option[Double] =
   {
-    @tailrec
-    def descend(measure: Option[Self], multiple: Double): Double =
-    {
-      measure match
-      {
-        case None => multiple
-        case Some(m) => descend(m.base.map(_._1), m.base.map(_._2).getOrElse(1.0) * multiple)
-      }
-    }
-
-    descend(Some(this), 1.0)
+    if (from.system == to.system) Some(from.ultimateBase / to.ultimateBase) else super.convert(from, to)
   }
 }

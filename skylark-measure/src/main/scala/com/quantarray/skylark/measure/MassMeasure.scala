@@ -25,8 +25,7 @@ package com.quantarray.skylark.measure
   * @author Araik Grigoryan
   */
 case class MassMeasure private(name: String, system: SystemOfUnits,
-                               base: Option[(MassMeasure, Double)]) extends Measure[MassMeasure] with MeasureComposition[MassMeasure] with
-                                                                            MultipleMeasure[MassMeasure]
+                               base: Option[(MassMeasure, Double)]) extends Measure[MassMeasure] with MeasureComposition[MassMeasure]
 {
   type D = MassDimension
 
@@ -39,5 +38,5 @@ case class MassMeasure private(name: String, system: SystemOfUnits,
 
 object MassMeasure
 {
-  def apply(name: String, system: SystemOfUnits) = new MassMeasure(name, system, None)
+  def apply(name: String, system: SystemOfUnits): MassMeasure = new MassMeasure(name, system, None)
 }

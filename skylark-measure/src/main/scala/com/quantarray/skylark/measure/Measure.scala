@@ -19,6 +19,7 @@
 
 package com.quantarray.skylark.measure
 
+import scala.annotation.tailrec
 import scala.language.implicitConversions
 
 /**
@@ -51,6 +52,23 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
     * Gets dimension of this measure.
     */
   def dimension: D
+
+  def base: Option[(Self, Double)]
+
+  lazy val ultimateBase: Double =
+  {
+    @tailrec
+    def descend(measure: Option[Self], multiple: Double): Double =
+    {
+      measure match
+      {
+        case None => multiple
+        case Some(x) => descend(x.base.map(_._1), x.base.map(_._2).getOrElse(1.0) * multiple)
+      }
+    }
+
+    descend(Some(this), 1.0)
+  }
 
   def +[M2 <: Measure[M2]](that: M2)(implicit ev: Self =:= M2): Self = this
 
@@ -114,6 +132,8 @@ object ProductMeasure
 
       lazy val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
 
+      override def base: Option[(ProductMeasure[M1, M2], Double)] = None
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: ProductMeasure[_, _] => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
@@ -172,6 +192,8 @@ object RatioMeasure
 
       lazy val name = s"${numerator.structuralName} / ${denominator.structuralName}"
 
+      override def base: Option[(RatioMeasure[M1, M2], Double)] = None
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: RatioMeasure[_, _] => this.numerator == that.numerator && this.denominator == that.denominator
@@ -192,38 +214,40 @@ object RatioMeasure
   */
 trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with untyped.ExponentialMeasure with MeasureComposition[ExponentialMeasure[B]]
 {
-  val base: B
+  val expBase: B
 
-  type D = ExponentialDimension[base.D]
+  type D = ExponentialDimension[expBase.D]
 
   val baseName = exponent match
   {
-    case 1.0 => s"$base"
-    case _ => s"${base.structuralName} ^ $exponent"
+    case 1.0 => s"$expBase"
+    case _ => s"${expBase.structuralName} ^ $exponent"
   }
 
-  override lazy val dimension = ExponentialDimension(base.dimension, exponent)
+  override lazy val dimension = ExponentialDimension(expBase.dimension, exponent)
 
   final override val isStructuralAtom = false
 
-  val lift: Option[B] = if (exponent == 1.0) Some(base) else None
+  val lift: Option[B] = if (exponent == 1.0) Some(expBase) else None
 }
 
 object ExponentialMeasure
 {
-  def apply[B <: Measure[B]](base: B, exponent: Double, name: Option[String] = None): ExponentialMeasure[B] =
+  def apply[B <: Measure[B]](expBase: B, exponent: Double, name: Option[String] = None): ExponentialMeasure[B] =
   {
-    val params = (base, exponent, name)
+    val params = (expBase, exponent, name)
 
     new ExponentialMeasure[B]
     {
-      lazy val base: B = params._1
+      lazy val expBase: B = params._1
 
       override def exponent: Double = params._2
 
       val name = params._3.getOrElse(baseName)
 
-      override def composes(name: String, system: SystemOfUnits, multiple: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent, Some(name))
+      override def base: Option[(ExponentialMeasure[B], Double)] = None
+
+      override def composes(name: String, system: SystemOfUnits, multiple: Double): ExponentialMeasure[B] = ExponentialMeasure(expBase, exponent, Some(name))
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
@@ -237,5 +261,5 @@ object ExponentialMeasure
     }
   }
 
-  def unapply[B <: Measure[B]](em: ExponentialMeasure[B]): Option[(B, Double)] = Some((em.base, em.exponent))
+  def unapply[B <: Measure[B]](em: ExponentialMeasure[B]): Option[(B, Double)] = Some((em.expBase, em.exponent))
 }

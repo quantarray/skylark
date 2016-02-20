@@ -28,9 +28,9 @@ import com.quantarray.skylark.measure._
   */
 trait EnergyConverter extends SameTypeConverter[EnergyMeasure]
 {
-  override protected def convert: PartialFunction[(EnergyMeasure, EnergyMeasure), Double] =
+  override protected def convert(from: EnergyMeasure, to: EnergyMeasure): Option[Double] = (from, to) match
   {
-    case (MMBtu, GJ) => 1.055056
+    case (MMBtu, GJ) => Some(1.055056)
   }
 }
 

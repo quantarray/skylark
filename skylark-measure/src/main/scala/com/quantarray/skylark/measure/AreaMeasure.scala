@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class AreaMeasure(name: String, system: SystemOfUnits) extends Measure[AreaMeasure] with MeasureComposition[AreaMeasure]
+case class AreaMeasure(name: String, system: SystemOfUnits, base: Option[(AreaMeasure, Double)] = None) extends Measure[AreaMeasure] with MeasureComposition[AreaMeasure]
 {
   type D = ExponentialDimension[LengthDimension]
 

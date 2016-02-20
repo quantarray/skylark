@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-case class ForceMeasure(name: String, system: SystemOfUnits) extends Measure[ForceMeasure] with MeasureComposition[ForceMeasure]
+case class ForceMeasure(name: String, system: SystemOfUnits, base: Option[(ForceMeasure, Double)] = None) extends Measure[ForceMeasure] with MeasureComposition[ForceMeasure]
 {
   type D = ForceDimension
 
