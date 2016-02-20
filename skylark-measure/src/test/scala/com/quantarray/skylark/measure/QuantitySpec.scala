@@ -23,8 +23,9 @@ import com.quantarray.skylark.measure.Implicits._
 import com.quantarray.skylark.measure.conversion.Implicits._
 import com.quantarray.skylark.measure.conversion._
 import com.quantarray.skylark.measure.quantity._
-import com.quantarray.skylark.measure.reduction._
+import com.quantarray.skylark.measure.simplification.Implicits._
 import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.OptionValues._
 
 import scala.language.postfixOps
 
@@ -142,7 +143,7 @@ class QuantitySpec extends FlatSpec with Matchers
       rhoBasisPoint should equal(Quantity(0.025, (USD / MMBtu) / bp))
     }
 
-  "Price times FX rate" should "reduce" in
+  "Price times FX rate" should "simplify" in
     {
       val usdPrice = 3.0 * (USD / MMBtu)
       val fxRate = 2.0 * (CAD / USD)
@@ -153,13 +154,7 @@ class QuantitySpec extends FlatSpec with Matchers
 
       cadPrice should equal(expectedCadPrice)
 
-      def reducer(reduction: Either[ProductMeasure[EnergyPrice, CurrencyPriceMeasure], EnergyPrice]): EnergyPrice = reduction match
-      {
-        case Left(x) => throw new Exception("No reduction possible.")
-        case Right(x) => x
-      }
-
-      cadPrice.reduce(reducer) should equal(6 * (CAD / MMBtu))
+      cadPrice.simplify.value should equal(6 * (CAD / MMBtu))
     }
 
   "CanConvert" should "allow flexible units" in

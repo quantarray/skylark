@@ -22,12 +22,12 @@ package com.quantarray.skylark.measure
 import scala.annotation.implicitNotFound
 
 /**
- * Can reduce type class. Determines the shape of reduced (deflated) measure.
+ * Can simplify type class. Determines the shape of simplified (deflated) measure.
  *
  * @author Araik Grigoryan
  */
-@implicitNotFound("Cannot find CanReduce implementation that reduces ${I} to ${D}.")
-trait CanReduce[I, D]
+@implicitNotFound("Cannot find CanSimplify implementation that simplifies ${I} to ${D}.")
+trait CanSimplify[I, D]
 {
-  def reduce(inflated: I): D
+  def simplify(inflated: I): Option[D]
 }

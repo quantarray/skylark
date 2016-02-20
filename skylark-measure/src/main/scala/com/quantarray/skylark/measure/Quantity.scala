@@ -59,7 +59,7 @@ case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit qn: Quasi
     case _ => throw new Exception(s"No conversion from [$measure] to [$target] available in $cc.")
   }
 
-  def reduce[R <: Measure[R], D](f: D => R)(implicit cr: CanReduce[M, D]): Quantity[N, R] = Quantity(value, f(cr.reduce(measure)))
+  def simplify[R <: Measure[R]](implicit cr: CanSimplify[M, R]): Option[Quantity[N, R]] = measure.simplify[R].map(Quantity(value, _))
 
   override def toString = s"$value $measure"
 }

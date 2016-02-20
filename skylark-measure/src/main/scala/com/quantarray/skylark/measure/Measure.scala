@@ -28,7 +28,7 @@ import scala.language.implicitConversions
   * The guiding principle(s) of design is and should be:
   *
   * 1. Construction of a measure should be fast, without any recursion/iteration to perform simplification.
-  * 2. Compute-intensive methods, such as reduce, perform simplification and should be called only when necessary.
+  * 2. Compute-intensive methods, such as simplify, perform simplification and should be called only when necessary.
   *
   * @author Araik Grigoryan
   */
@@ -93,25 +93,30 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   /**
     * Turns this measure into a general ExponentialMeasure.
     */
-  def ^[R](exponent: Double)(implicit ce: CanExponentiate[Self, R]): R = ce.pow(this, exponent)
+  def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[Self, R]): R = ce.pow(this, exponent)
 
   /**
     * Gets an inverse of this measure.
     */
-  def inverse[R](implicit ce: CanExponentiate[Self, R]) = this ^ -exponent
+  def inverse[R <: Measure[R]](implicit ce: CanExponentiate[Self, R]) = this ^ -exponent
 
   /**
     * Converts to target measure.
     */
   def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, target)
 
-  def reduce[R](implicit cr: CanReduce[Self, R]): R = cr.reduce(this)
+  /**
+    * Attempts to simplify to target type.
+    */
+  def simplify[R <: Measure[R]](implicit cr: CanSimplify[Self, R]): Option[R] = cr.simplify(this)
 }
 
 object Measure
 {
+
   object Composition
   {
+
     implicit final class IntQuantity(private val value: Int) extends AnyVal
     {
       def *[M <: Measure[M]](measure: M): (Double, M) = (value, measure)
@@ -128,7 +133,9 @@ object Measure
 
       def :=[M <: Measure[M]](measure: M): M = measure.composes(name, 1.0)
     }
+
   }
+
 }
 
 /**
