@@ -38,11 +38,11 @@ case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit qn: Quasi
 
   def -(constant: N) = Quantity(qn.minus(value, constant), measure)
 
-  def +[M2 <: Measure[M2]](quantity: Quantity[N, M2])(implicit ev: M =:= M2): Quantity[N, M] =
-    Quantity(qn.plus(value, quantity.value), measure + quantity.measure)
+  def +[M2 <: Measure[M2]](quantity: Quantity[N, M2])(implicit cc: CanConvert[M2, M]): Option[Quantity[N, M]] =
+    cc.convert(quantity.measure, measure).map(cf => Quantity(qn.plus(value, qn.timesConstant(quantity.value, cf)), measure))
 
-  def -[M2 <: Measure[M2]](quantity: Quantity[N, M2])(implicit ev: M =:= M2): Quantity[N, M] =
-    Quantity(qn.minus(value, quantity.value), measure - quantity.measure)
+  def -[M2 <: Measure[M2]](quantity: Quantity[N, M2])(implicit cc: CanConvert[M2, M]): Option[Quantity[N, M]] =
+    cc.convert(quantity.measure, measure).map(cf => Quantity(qn.minus(value, qn.timesConstant(quantity.value, cf)), measure))
 
   def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[N, M2])(implicit cd: CanDivide[M, M2, R]): Quantity[N, R] =
     Quantity(qn.divide(value, quantity.value), measure / quantity.measure)

@@ -52,11 +52,14 @@ class QuantitySpec extends FlatSpec with Matchers
       (4.oz_troy * 7.percent).to(oz_troy).value should equal(0.28.oz_troy)
 
       10.kg / 2.m should equal(5.0 * (kg / m))
-      (10.USD / 2.percent).to(USD).value should equal(500.USD)
+      (10.USD / 2.percent).to(USD).value should equal(500 USD)
 
-      10.kg + 3.kg should equal(13.kg)
-      10.kg - 3.kg should equal(7.kg)
-      10.kg + (3.lb to kg).value should equal(11.360775642116007.kg)
+      10.kg - 3 should equal(7 kg)
+
+      (10.kg + 3.kg).value should equal(13 kg)
+      (10.kg - 3.kg).value should equal(7 kg)
+      (10.kg + 3.lb).value should equal(11.360775642116007 kg)
+      (10.lb - 3.kg).value should equal(3.386125 lb)
     }
 
   it should "be passable to typesafe method" in
