@@ -53,11 +53,8 @@ case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit qn: Quasi
   def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[M, R]): Quantity[N, R] =
     Quantity(qn.pow(value, exponent), measure ^ exponent)
 
-  def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[M, M2]): Quantity[N, M2] = cc.convert(measure, target) match
-  {
-    case Some(cf) => Quantity(qn.timesConstant(value, cf), target)
-    case _ => throw new Exception(s"No conversion from [$measure] to [$target] available in $cc.")
-  }
+  def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[M, M2]): Option[Quantity[N, M2]] =
+    cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
 
   def simplify[R <: Measure[R]](implicit cr: CanSimplify[M, R]): Option[Quantity[N, R]] = measure.simplify[R].map(Quantity(value, _))
 

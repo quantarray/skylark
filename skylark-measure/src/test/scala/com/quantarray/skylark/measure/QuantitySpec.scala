@@ -49,14 +49,14 @@ class QuantitySpec extends FlatSpec with Matchers
   it should "perform quantity arithmetic" in
     {
       10.kg * 4.m should equal(40.0 * (kg * m))
-      (4.oz_troy * 7.percent).to(oz_troy) should equal(0.28.oz_troy)
+      (4.oz_troy * 7.percent).to(oz_troy).value should equal(0.28.oz_troy)
 
       10.kg / 2.m should equal(5.0 * (kg / m))
-      (10.USD / 2.percent).to(USD) should equal(500.USD)
+      (10.USD / 2.percent).to(USD).value should equal(500.USD)
 
       10.kg + 3.kg should equal(13.kg)
       10.kg - 3.kg should equal(7.kg)
-      10.kg + (3.lb to kg) should equal(11.360775642116007.kg)
+      10.kg + (3.lb to kg).value should equal(11.360775642116007.kg)
     }
 
   it should "be passable to typesafe method" in
@@ -71,48 +71,48 @@ class QuantitySpec extends FlatSpec with Matchers
 
   it should "convertible to lb" in
     {
-      ((10.0 kg) to lb) should equal(22.04625 lb)
+      ((10.0 kg) to lb).value should equal(22.04625 lb)
     }
 
   "ft" should "convertible to in" in
     {
-      (1.ft to in) should equal(12.0 in)
-      (12.in to ft) should equal(1.0 ft)
+      (1.ft to in).value should equal(12.0 in)
+      (12.in to ft).value should equal(1.0 ft)
     }
 
   "yd" should "convertible to in" in
     {
-      (1.yd to in) should equal(36.0 in)
+      (1.yd to in).value should equal(36.0 in)
     }
 
   "Basis point" should "be convertible to percent" in
     {
       val rate = 50.0 bp
       val apy = rate to percent
-      apy should equal(0.5.percent)
+      apy.value should equal(0.5.percent)
     }
 
   "Hectare" should "be convertible to square kilometers" in
     {
       val plot = 1.ha to (km ^ 2)
-      plot should equal(0.01.km2)
+      plot.value should equal(0.01.km2)
     }
 
   "US gallon" should "be convertible to cubic inches" in
     {
       val vessel = 1.gal to (in ^ 3)
-      vessel should equal(231.in3)
+      vessel.value should equal(231.in3)
     }
 
   "Barrel" should "be convertible to gallon" in
     {
       // Some general substance, like water
-      (1.bbl to gal) should equal(31.5.gal)
+      (1.bbl to gal).value should equal(31.5.gal)
 
       import commodity.Implicits._
 
       // Specific petroleum substance, having a special conversion
-      (1.bbl to gal) should equal(42.gal)
+      (1.bbl to gal).value should equal(42.gal)
     }
 
   "Quantity of currency" should "be convertible to another quantity of currency via percent" in
@@ -132,7 +132,7 @@ class QuantitySpec extends FlatSpec with Matchers
 
       val panOfGold = (potOfGold * rate).to(USD)
 
-      panOfGold should equal(300.USD)
+      panOfGold.value should equal(300.USD)
     }
 
   "Quantity per percent" should "be convertible to another quantity of per basis point" in
@@ -140,7 +140,7 @@ class QuantitySpec extends FlatSpec with Matchers
       val rhoPercent = Quantity(2.5, (USD / MMBtu) / percent)
       val rhoBasisPoint = rhoPercent to ((USD / MMBtu) / bp)
 
-      rhoBasisPoint should equal(Quantity(0.025, (USD / MMBtu) / bp))
+      rhoBasisPoint.value should equal(Quantity(0.025, (USD / MMBtu) / bp))
     }
 
   "Price times FX rate" should "simplify" in
@@ -174,9 +174,7 @@ class QuantitySpec extends FlatSpec with Matchers
 
   it should "allow trivial empty definition" in
     {
-      implicit val canConvert = CanConvert.empty[VolumeMeasure, VolumeMeasure]
-
-      5.bbl to bbl should equal(5.0 bbl)
+      (5.bbl to bbl).value should equal(5.0 bbl)
     }
 
 }

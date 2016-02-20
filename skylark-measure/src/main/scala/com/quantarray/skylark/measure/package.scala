@@ -267,11 +267,11 @@ package object measure
   val ton = MassMeasure("ton", US)
 
   // http://en.wikipedia.org/wiki/Grain_(unit)
-  val gr = MassMeasure("Grain", Imperial())
+  val gr = MassMeasure("grain", Imperial())
   // http://en.wikipedia.org/wiki/Pennyweight
-  val dwt = MassMeasure("Pennyweight", Imperial())
-  val oz_troy = MassMeasure("Troy Ounce", Imperial())
-  val lb_troy = MassMeasure("Troy Pound", Imperial())
+  val dwt = MassMeasure("pennyweight", Imperial())
+  val oz_troy = MassMeasure("troy oz", Imperial())
+  val lb_troy = MassMeasure("troy lb", Imperial())
 
   /**
     * Length.
