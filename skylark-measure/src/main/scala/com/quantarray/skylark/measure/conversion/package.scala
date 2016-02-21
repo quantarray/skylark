@@ -35,6 +35,16 @@ package object conversion
         override def apply(from: R_[M], to: M): Option[Double] = Some(1 / from.denominator.immediateBase)
       }
     }
+
+    type E_ = ExponentialMeasure[DimensionlessMeasure]
+
+    implicit def e_[M <: Measure[M]]: CanConvert[E_, M] = new CanConvert[E_, M]
+    {
+      override def convert: Converter[E_, M] = new Converter[E_, M]
+      {
+        override def apply(from: E_, to: M): Option[Double] = Some(math.pow(from.expBase.immediateBase, from.exponent))
+      }
+    }
   }
 
   object Implicits extends DimensionessImplicits

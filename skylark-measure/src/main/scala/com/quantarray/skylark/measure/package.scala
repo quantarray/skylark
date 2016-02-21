@@ -240,10 +240,15 @@ package object measure
     * Time.
     */
   val s = TimeMeasure("s", SI)
+  val (sec, secs) = (s, s)
   val min = "min" := 60 * s
+  val mins = min
   val h = "h" := 60 * min
+  val (hour, hours) = (h, h)
   val day = "day" := 24 * h
+  val days = day
   val year365 = "Year[365]" := 365 * day
+  val years = year365
   val year360 = "Year[360]" := 360 * day
 
   val ms = Milli * s
@@ -259,7 +264,7 @@ package object measure
   val cg = Centi * g
   val mg = Milli * g
   val t = MassMeasure("t", SI)
-  val oz_metric = MassMeasure("Metric Ounce", SI) // http://en.wikipedia.org/wiki/Ounce#Metric_ounces
+  val oz_metric = MassMeasure("metric oz", SI) // http://en.wikipedia.org/wiki/Ounce#Metric_ounces
 
   val oz = MassMeasure("oz", US)
   val lb = MassMeasure("lb", US)
@@ -269,7 +274,7 @@ package object measure
   // http://en.wikipedia.org/wiki/Grain_(unit)
   val gr = MassMeasure("grain", Imperial())
   // http://en.wikipedia.org/wiki/Pennyweight
-  val dwt = MassMeasure("pennyweight", Imperial())
+  val dwt = MassMeasure("dwt", Imperial())
   val oz_troy = MassMeasure("troy oz", Imperial())
   val lb_troy = MassMeasure("troy lb", Imperial())
 
@@ -288,22 +293,20 @@ package object measure
   val in = LengthMeasure("in", Imperial())
   val ft = "ft" := 12 * in
   val yd = "yd" := 3 * ft
-  val rd = ft.composes("rod", 16.5)
-  val fur = rd.composes("furlong", 40)
-  val mi = fur.composes("mile", 132)
+  val rd = "rod" := 16.5 * ft
+  val fur = "fur" := 40 * rd
+  val mi = "mi" := 132 * fur
 
-  val nmi = m.composes("Nautical mile", 1852)
+  val nmi = "nmi" := 1852 * m
 
   // http://en.wikipedia.org/wiki/Thou_(length)
-  val thou = in.composes("Thou", 0.001)
+  val thou = "thou" := 0.001 * in
 
   //http://en.wikipedia.org/wiki/Astronomical_unit
-  val astronomicalUnit = m.composes("au", 149597870700.0)
-  val au = astronomicalUnit
+  val au = "au" := 149597870700.0 * m
 
   // http://en.wikipedia.org/wiki/Light-year
-  val lightYear = m.composes("ly", 9460730472580800.0)
-  val ly = lightYear
+  val ly = "ly" := 9460730472580800.0 * m
 
   // http://en.wikipedia.org/wiki/Parsec
   val parsec = au.composes("pc", 648000.0 / scala.math.Pi)
@@ -332,7 +335,7 @@ package object measure
     */
   val m3 = m ^ 3
   val cm3 = cm ^ 3
-  val liter = m3.composes("Liter", 0.001)
+  val liter = "liter" := 0.001 * m3
 
   val in3 = in ^ 3
 
@@ -352,21 +355,24 @@ package object measure
   /**
     * Force.
     */
-  val N = ForceMeasure("Newton", SI)
+  val N = ForceMeasure("N", SI)
 
   val kip = Kilo * lb // http://en.wikipedia.org/wiki/Kip_(unit)
 
   /**
     * Power.
     */
-  val W = PowerMeasure("Watt", SI)
+  val W = PowerMeasure("W", SI)
+  val kW = Kilo * W
   val MW = Mega * W
   val GW = Giga * W
 
   /**
     * Energy.
     */
-  val J = EnergyMeasure("Joule", Derived(SI))
+  val J = EnergyMeasure("J", Derived(SI))
+  val kJ = Kilo * J
+  val MJ = Mega * J
   val GJ = Giga * J
 
   val MMBtu = EnergyMeasure("MMBtu", Imperial())
@@ -374,29 +380,34 @@ package object measure
   /**
     * Pressure.
     */
-  val Pa = PressureMeasure("Pascal", Derived(SI))
+  val Pa = PressureMeasure("Pa", Derived(SI))
   val kPa = Kilo * Pa
+  val MPa = Mega * Pa
+  val GPa = Giga * Pa
 
   /**
     * Electric current.
     */
-  val A = ElectricCurrentMeasure("Ampere", SI)
+  val A = ElectricCurrentMeasure("A", SI)
 
   /**
     * Luminous intensity.
     */
-  val cd = LuminousIntensityMeasure("Candela", SI)
+  val cd = LuminousIntensityMeasure("cd", SI)
 
   /**
     * Information.
     */
-  val b = InformationMeasure("Bit", SI)
-  val B = b.composes("Byte", 8)
+  // Bit
+  val b = InformationMeasure("b", SI)
+  // Byte
+  val B = "B" := 8 * b
 
   /**
     * Luminous flux.
     */
-  val lm = LuminousFluxMeasure("Lumen", Derived(SI))
+  // Lumen
+  val lm = LuminousFluxMeasure("lm", Derived(SI))
 
   /**
     * Frequency.
