@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/quantarray/skylark.svg?branch=master)](https://travis-ci.org/quantarray/skylark)
+
 # Skylark
 
 Skylark is a set of libraries for quantitative and financial computation.
