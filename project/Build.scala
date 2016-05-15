@@ -7,7 +7,7 @@ object Build
 
   val version = "0.4.0"
 
-  val scalaVersion = "2.11.7"
+  val scalaVersion = "2.11.8"
 
   val scalaParserCombinatorsVersion = "1.0.2"
   val scalaXmlVersion = "1.0.2"
