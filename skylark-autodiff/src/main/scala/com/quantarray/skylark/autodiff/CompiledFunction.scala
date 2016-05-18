@@ -137,19 +137,19 @@ trait CompiledFunction[P, C <: CompiledFunction[P, C]] extends ((P) => Double)
 
   }
 
-  class Compiler(val tape: Seq[CompiledTerm], val indexes: Map[Term[_], Int])
+  class Compiler(val tape: Seq[CompiledTerm], val indexes: Map[Tree[_], Int])
   {
-    def this(vals: Seq[Val]) = this(vals.map(`val` => compiled.Val(`val`.symbol)), vals.foldLeft(Map.empty[Term[_], Int])((is, `val`) => is + (`val` -> is.size)))
+    def this(vals: Seq[Val]) = this(vals.map(`val` => compiled.Val(`val`.symbol)), vals.foldLeft(Map.empty[Tree[_], Int])((is, `val`) => is + (`val` -> is.size)))
 
-    def compile[T <: Term[T]](function: T): Compiler =
+    def compile[T <: Tree[T]](function: T): Compiler =
     {
       val (_, tape, indexes) = visit(function, List.empty, Map.empty)
       new Compiler(tape.reverse, indexes)
     }
 
-    private def visit[T <: Term[_]](term: T, tape: List[CompiledTerm], indexes: Map[Term[_], Int]): (Int, List[CompiledTerm], Map[Term[_], Int]) =
+    private def visit[T <: Tree[_]](term: T, tape: List[CompiledTerm], indexes: Map[Tree[_], Int]): (Int, List[CompiledTerm], Map[Tree[_], Int]) =
     {
-      def compile(compiledTerm: CompiledTerm, tape: List[CompiledTerm], indexes: Map[Term[_], Int]): (Int, List[CompiledTerm], Map[Term[_], Int]) =
+      def compile(compiledTerm: CompiledTerm, tape: List[CompiledTerm], indexes: Map[Tree[_], Int]): (Int, List[CompiledTerm], Map[Tree[_], Int]) =
       {
         if (indexes.contains(term))
           (indexes(term), tape, indexes)
@@ -168,17 +168,17 @@ trait CompiledFunction[P, C <: CompiledFunction[P, C]] extends ((P) => Double)
 
         case Constant(value) => compile(compiled.Constant(value), tape, indexes)
 
-        case Sum(t1: Term[_], t2: Term[_]) =>
+        case Plus(t1: Tree[_], t2: Tree[_]) =>
           val (i1, tape1, is1) = visit(t1, tape, indexes)
           val (i2, tape2, is2) = visit(t2, tape1, is1)
           compile(compiled.Sum(Edge(i1), Edge(i2)), tape2, is2)
 
-        case Product(t1: Term[_], t2: Term[_]) =>
+        case Times(t1: Tree[_], t2: Tree[_]) =>
           val (i1, tape1, is1) = visit(t1, tape, indexes)
           val (i2, tape2, is2) = visit(t2, tape1, is1)
           compile(compiled.Product(Edge(i1), Edge(i2)), tape2, is2)
 
-        case Exp(exponent: Term[_]) =>
+        case Exp(exponent: Tree[_]) =>
           val (i, t, is) = visit(exponent, tape, indexes)
           compile(compiled.Exp(Edge(i)), t, is)
       }
@@ -262,7 +262,7 @@ trait CompiledFunction[P, C <: CompiledFunction[P, C]] extends ((P) => Double)
 
 }
 
-case class CompiledFunction1[T <: Term[T]](function: T, `val`: Val) extends CompiledFunction[Double, CompiledFunction1[T]]
+case class CompiledFunction1[T <: Tree[T]](function: T, `val`: Val) extends CompiledFunction[Double, CompiledFunction1[T]]
 {
   private val compiler = new Compiler(Seq(`val`)).compile(function)
 
@@ -277,7 +277,7 @@ case class CompiledFunction1[T <: Term[T]](function: T, `val`: Val) extends Comp
   override def apply(point: Double): Double = eval(Seq(point))
 }
 
-case class CompiledFunction2[T <: Term[T]](function: T, vals: (Val, Val)) extends CompiledFunction[(Double, Double), CompiledFunction2[T]] with ((Double, Double) => Double)
+case class CompiledFunction2[T <: Tree[T]](function: T, vals: (Val, Val)) extends CompiledFunction[(Double, Double), CompiledFunction2[T]] with ((Double, Double) => Double)
 {
   private val compiler = new Compiler(Seq(vals._1, vals._2)).compile(function)
 
@@ -300,7 +300,7 @@ object CompiledFunction
   object Implicits
   {
 
-    implicit final class TermToCompiledFunction[T <: Term[T]](private val function: T) extends AnyVal
+    implicit final class TermToCompiledFunction[T <: Tree[T]](private val function: T) extends AnyVal
     {
       def compile(`val`: Val): CompiledFunction1[T] = CompiledFunction1(function, `val`)
 

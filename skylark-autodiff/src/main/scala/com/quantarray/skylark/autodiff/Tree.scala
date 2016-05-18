@@ -20,27 +20,27 @@
 package com.quantarray.skylark.autodiff
 
 /**
-  * Term.
+  * Tree.
   *
   * @author Araik Grigoryan
   */
-trait Term[Repr <: Term[Repr]]
+trait Tree[Repr <: Tree[Repr]]
 {
   self: Repr =>
 
-  def +[T <: Term[T]](term: T): Sum[Repr, T] = Sum(this, term)
+  def +[T <: Tree[T]](tree: T): Plus[Repr, T] = Plus(this, tree)
 
-  def *[T <: Term[T]](term: T): Product[Repr, T] = Product(this, term)
+  def *[T <: Tree[T]](tree: T): Times[Repr, T] = Times(this, tree)
 
-  def -[T <: Term[T]](term: T): Sum[Repr, Product[T, Constant]] = Sum(this, term * Constant(-1))
+  def -[T <: Tree[T]](tree: T): Plus[Repr, Times[T, Constant]] = Plus(this, tree * Constant(-1))
 }
 
-case class Val(symbol: Symbol = '@) extends Term[Val]
+case class Val(symbol: Symbol = '@) extends Tree[Val]
 
-case class Constant(value: Double) extends Term[Constant]
+case class Constant(value: Double) extends Tree[Constant]
 
-case class Sum[T1 <: Term[T1], T2 <: Term[T2]](t1: T1, t2: T2) extends Term[Sum[T1, T2]]
+case class Plus[T1 <: Tree[T1], T2 <: Tree[T2]](t1: T1, t2: T2) extends Tree[Plus[T1, T2]]
 
-case class Product[T1 <: Term[T1], T2 <: Term[T2]](t1: T1, t2: T2) extends Term[Product[T1, T2]]
+case class Times[T1 <: Tree[T1], T2 <: Tree[T2]](t1: T1, t2: T2) extends Tree[Times[T1, T2]]
 
-case class Exp[T <: Term[T]](exponent: T) extends Term[Exp[T]]
+case class Exp[T <: Tree[T]](exponent: T) extends Tree[Exp[T]]
