@@ -19,11 +19,12 @@
 
 package com.quantarray.skylark.autodiff
 
-import com.quantarray.skylark.autodiff.CompiledFunction.Implicits._
 import org.scalatest.{FlatSpec, Matchers}
 
-class AutoDiffSpec extends FlatSpec with Matchers
+class AutoDiffSpec extends FlatSpec with Matchers with TreeCompilation
 {
+  import TreeCompilation.Implicits._
+
   val tolerance = 0.0000000000001
 
   "x^2" should "evaluate function and gradient" in
