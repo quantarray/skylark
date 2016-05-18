@@ -31,8 +31,6 @@ object AutoDiffNSC
 
   def main(args: Array[String]): Unit =
   {
-    val f: Double => Double = x => x * x
-
-    val x = f.derivative(-2.0D)
+    //derivative((x: Double) => x * x, -3)
   }
 }

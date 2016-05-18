@@ -27,19 +27,23 @@ import scala.reflect.macros.blackbox
   *
   * @author Araik Grigoryan
   */
-object AutoDiff
+object AutoDiff extends BlackboxTreeCompilation
 {
-  def gradient1Impl(c: blackbox.Context)(point: c.Expr[Double]): c.Expr[Double] =
+  // TODO: How to { val f = (x: Double) => x * x; derivative(f) }?
+
+  def gradient1Impl(c: blackbox.Context)(function: c.Expr[Double => Double], point: c.Expr[Double]): c.Expr[Double] =
   {
     import c.universe._
 
-    point
+    val compiler = new Compiler[c.Tree](c)
+
+    val tape = compiler.compile(function.tree).tape
+
+    val gradient = CompiledFunction1(tape).derivative(c.eval(point))
+
+    c.Expr(q"$gradient")
   }
 
-  implicit final class Function1AutoDiff(private val function1: (Double) => Double) extends AnyVal
-  {
-    def derivative(point: Double): Double = macro gradient1Impl
-  }
-
+  def derivative(function: Double => Double, point: Double): Double = macro gradient1Impl
 
 }

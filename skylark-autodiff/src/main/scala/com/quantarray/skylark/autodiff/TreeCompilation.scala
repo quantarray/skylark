@@ -26,7 +26,7 @@ package com.quantarray.skylark.autodiff
   */
 trait TreeCompilation extends Compilation
 {
-  class Compiler(val tape: Seq[CompiledTerm], val indexes: Map[Tree[_], Int])
+  class Compiler(val tape: Seq[CompiledTree], val indexes: Map[Tree[_], Int])
   {
     def this(vals: Seq[Val]) = this(vals.map(`val` => compiled.Val(`val`.symbol)), vals.foldLeft(Map.empty[Tree[_], Int])((is, `val`) => is + (`val` -> is.size)))
 
@@ -36,9 +36,9 @@ trait TreeCompilation extends Compilation
       new Compiler(tape.reverse, indexes)
     }
 
-    private def visit[T <: Tree[_]](term: T, tape: List[CompiledTerm], indexes: Map[Tree[_], Int]): (Int, List[CompiledTerm], Map[Tree[_], Int]) =
+    private def visit[T <: Tree[_]](term: T, tape: List[CompiledTree], indexes: Map[Tree[_], Int]): (Int, List[CompiledTree], Map[Tree[_], Int]) =
     {
-      def compile(compiledTerm: CompiledTerm, tape: List[CompiledTerm], indexes: Map[Tree[_], Int]): (Int, List[CompiledTerm], Map[Tree[_], Int]) =
+      def compile(compiledTerm: CompiledTree, tape: List[CompiledTree], indexes: Map[Tree[_], Int]): (Int, List[CompiledTree], Map[Tree[_], Int]) =
       {
         if (indexes.contains(term))
           (indexes(term), tape, indexes)
@@ -60,12 +60,12 @@ trait TreeCompilation extends Compilation
         case Plus(t1: Tree[_], t2: Tree[_]) =>
           val (i1, tape1, is1) = visit(t1, tape, indexes)
           val (i2, tape2, is2) = visit(t2, tape1, is1)
-          compile(compiled.Sum(Edge(i1), Edge(i2)), tape2, is2)
+          compile(compiled.Plus(Edge(i1), Edge(i2)), tape2, is2)
 
         case Times(t1: Tree[_], t2: Tree[_]) =>
           val (i1, tape1, is1) = visit(t1, tape, indexes)
           val (i2, tape2, is2) = visit(t2, tape1, is1)
-          compile(compiled.Product(Edge(i1), Edge(i2)), tape2, is2)
+          compile(compiled.Times(Edge(i1), Edge(i2)), tape2, is2)
 
         case Exp(exponent: Tree[_]) =>
           val (i, t, is) = visit(exponent, tape, indexes)
@@ -117,6 +117,7 @@ object TreeCompilation extends TreeCompilation
 
     implicit final class TermToCompiledFunction[T <: Tree[T]](private val function: T) extends AnyVal
     {
+      // TODO: Is val parameter necessary for compilation?
       def compile(`val`: Val): CompiledFunction1[T] = CompiledFunction1(function, `val`)
 
       def compile(vals: (Val, Val)): CompiledFunction2[T] = CompiledFunction2(function, vals)

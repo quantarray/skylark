@@ -28,7 +28,7 @@ trait Compilation
 {
   case class Edge(index: Int, weight: Double = 0.0)
 
-  trait CompiledTerm
+  trait CompiledTree
   {
     def inputs: Seq[Edge]
 
@@ -39,73 +39,73 @@ trait Compilation
     /**
       * Evaluate self given the current values in the tape.
       */
-    def apply(tape: Seq[CompiledTerm]): CompiledTerm
+    def apply(tape: Seq[CompiledTree]): CompiledTree
 
     /**
       * Evaluate derivative of self with respect to inputs.
       */
-    def gradient(tape: Seq[CompiledTerm]): CompiledTerm
+    def gradient(tape: Seq[CompiledTree]): CompiledTree
   }
 
   object compiled
   {
 
-    case class Val(symbol: Symbol, value: Double = 0) extends CompiledTerm
+    case class Val(symbol: Symbol, value: Double = 0) extends CompiledTree
     {
       final val inputs: Seq[Edge] = Seq.empty
 
       /**
         * Evaluate self given the current values in the tape.
         */
-      override def apply(tape: Seq[CompiledTerm]): Val = this
+      override def apply(tape: Seq[CompiledTree]): Val = this
 
       /**
         * Evaluate derivative of self with respect to inputs.
         */
-      override def gradient(tape: Seq[CompiledTerm]): Val = this
+      override def gradient(tape: Seq[CompiledTree]): Val = this
     }
 
-    case class Constant(value: Double, inputs: Seq[Edge] = Seq.empty) extends CompiledTerm
+    case class Constant(value: Double, inputs: Seq[Edge] = Seq.empty) extends CompiledTree
     {
       /**
         * Evaluate self given the current values in the tape.
         */
-      override def apply(tape: Seq[CompiledTerm]): Constant = this
+      override def apply(tape: Seq[CompiledTree]): Constant = this
 
       /**
         * Evaluate derivative of self with respect to inputs.
         */
-      override def gradient(tape: Seq[CompiledTerm]): Constant = this
+      override def gradient(tape: Seq[CompiledTree]): Constant = this
     }
 
-    case class Sum(left: Edge, right: Edge, value: Double = 0) extends CompiledTerm
-    {
-      val inputs = Seq(left, right)
-
-      /**
-        * Evaluate self given the current values in the tape.
-        */
-      override def apply(tape: Seq[CompiledTerm]): Sum = copy(value = tape(left.index).value + tape(right.index).value)
-
-      /**
-        * Evaluate derivative of self with respect to inputs.
-        */
-      override def gradient(tape: Seq[CompiledTerm]): Sum = apply(tape).copy(left = left.copy(weight = 1), right = right.copy(weight = 1))
-    }
-
-    case class Product(left: Edge, right: Edge, value: Double = 0) extends CompiledTerm
+    case class Plus(left: Edge, right: Edge, value: Double = 0) extends CompiledTree
     {
       val inputs = Seq(left, right)
 
       /**
         * Evaluate self given the current values in the tape.
         */
-      override def apply(tape: Seq[CompiledTerm]): Product = copy(value = tape(left.index).value * tape(right.index).value)
+      override def apply(tape: Seq[CompiledTree]): Plus = copy(value = tape(left.index).value + tape(right.index).value)
 
       /**
         * Evaluate derivative of self with respect to inputs.
         */
-      override def gradient(tape: Seq[CompiledTerm]): CompiledTerm =
+      override def gradient(tape: Seq[CompiledTree]): Plus = apply(tape).copy(left = left.copy(weight = 1), right = right.copy(weight = 1))
+    }
+
+    case class Times(left: Edge, right: Edge, value: Double = 0) extends CompiledTree
+    {
+      val inputs = Seq(left, right)
+
+      /**
+        * Evaluate self given the current values in the tape.
+        */
+      override def apply(tape: Seq[CompiledTree]): Times = copy(value = tape(left.index).value * tape(right.index).value)
+
+      /**
+        * Evaluate derivative of self with respect to inputs.
+        */
+      override def gradient(tape: Seq[CompiledTree]): CompiledTree =
       {
         val lv = tape(left.index).value
         val rv = tape(right.index).value
@@ -114,19 +114,19 @@ trait Compilation
       }
     }
 
-    case class Exp(input: Edge, value: Double = 0) extends CompiledTerm
+    case class Exp(input: Edge, value: Double = 0) extends CompiledTree
     {
       val inputs = Seq(input)
 
       /**
         * Evaluate self given the current values in the tape.
         */
-      override def apply(tape: Seq[CompiledTerm]): Exp = copy(value = math.exp(tape(input.index).value))
+      override def apply(tape: Seq[CompiledTree]): Exp = copy(value = math.exp(tape(input.index).value))
 
       /**
         * Evaluate derivative of self with respect to inputs.
         */
-      override def gradient(tape: Seq[CompiledTerm]): Exp =
+      override def gradient(tape: Seq[CompiledTree]): Exp =
       {
         val value = apply(tape)
         value.copy(input.copy(weight = value.value))
@@ -139,14 +139,14 @@ trait Compilation
   {
     self: C =>
 
-    protected def tape: Seq[CompiledTerm]
+    protected def tape: Seq[CompiledTree]
 
     /**
       * Computes value.
       */
     def eval(point: Seq[Double]): Double =
     {
-      val evalTape = tape.zipWithIndex.foldLeft(List.empty[CompiledTerm])((evalTape, cti) =>
+      val evalTape = tape.zipWithIndex.foldLeft(List.empty[CompiledTree])((evalTape, cti) =>
       {
         val ct = cti match
         {
@@ -163,12 +163,12 @@ trait Compilation
     /**
       * Computes gradient.
       */
-    def gradient(point: Seq[Double]): Seq[CompiledTerm] =
+    def gradient(point: Seq[Double]): Seq[CompiledTree] =
     {
-      def forwardSweep(tape: Seq[CompiledTerm]): Seq[CompiledTerm] =
+      def forwardSweep(tape: Seq[CompiledTree]): Seq[CompiledTree] =
       {
         // Traverse in the order of Vals up to top-most
-        val forwardSweepTape = tape.zipWithIndex.foldLeft(List.empty[CompiledTerm])((forwardSweepTape, cti) =>
+        val forwardSweepTape = tape.zipWithIndex.foldLeft(List.empty[CompiledTree])((forwardSweepTape, cti) =>
         {
           val ct = cti match
           {
@@ -182,12 +182,12 @@ trait Compilation
         forwardSweepTape.reverse
       }
 
-      def reverseSweep(forwardSweepTape: Seq[CompiledTerm]): Seq[CompiledTerm] =
+      def reverseSweep(forwardSweepTape: Seq[CompiledTree]): Seq[CompiledTree] =
       {
         val reverseForwardSweepTape = forwardSweepTape.reverse
 
         // Traverse in the order of top-most down to Vals
-        val reverseSweepTape = reverseForwardSweepTape.zipWithIndex.foldLeft(List.empty[CompiledTerm])((reverseSweepTape, cti) =>
+        val reverseSweepTape = reverseForwardSweepTape.zipWithIndex.foldLeft(List.empty[CompiledTree])((reverseSweepTape, cti) =>
         {
           val ct = cti match
           {

@@ -61,10 +61,10 @@ class AutoDiffSpec extends FlatSpec with Matchers with TreeCompilation
 
   "" should "" in
     {
-      val f: Double => Double = x => x * x
-
       import AutoDiff._
 
-      f.derivative(-2.0D)
+//      val foo = derivative((x: Double) => x * x, -3)
+//
+//      println(foo)
     }
 }
