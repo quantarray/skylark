@@ -57,4 +57,13 @@ class AutoDiffSpec extends FlatSpec with Matchers
 
       f(vals)(point) should equal(-20.085536923187668 +- tolerance)
     }
+
+  "" should "" in
+    {
+      val f: Double => Double = x => x * x
+
+      import AutoDiff._
+
+      f.derivative(-2.0D)
+    }
 }
