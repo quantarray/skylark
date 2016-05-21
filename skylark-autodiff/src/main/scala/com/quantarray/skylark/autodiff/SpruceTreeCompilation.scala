@@ -24,21 +24,21 @@ package com.quantarray.skylark.autodiff
   *
   * @author Araik Grigoryan
   */
-trait TreeCompilation extends Compilation
+trait SpruceTreeCompilation extends Compilation
 {
-  class Compiler(val tape: Seq[CompiledTree], val indexes: Map[Tree[_], Int])
+  class Compiler private(val tape: Seq[CompiledTree], val indexes: Map[SpruceTree[_], Int])
   {
-    def this(vals: Seq[Val]) = this(vals.map(`val` => compiled.Val(`val`.symbol)), vals.foldLeft(Map.empty[Tree[_], Int])((is, `val`) => is + (`val` -> is.size)))
+    def this(vals: Seq[Val]) = this(vals.map(`val` => compiled.Val(`val`.symbol)), vals.foldLeft(Map.empty[SpruceTree[_], Int])((is, `val`) => is + (`val` -> is.size)))
 
-    def compile[T <: Tree[T]](function: T): Compiler =
+    def compile[T <: SpruceTree[T]](function: T): Compiler =
     {
       val (_, tape, indexes) = visit(function, List.empty, Map.empty)
       new Compiler(tape.reverse, indexes)
     }
 
-    private def visit[T <: Tree[_]](term: T, tape: List[CompiledTree], indexes: Map[Tree[_], Int]): (Int, List[CompiledTree], Map[Tree[_], Int]) =
+    private def visit[T <: SpruceTree[_]](term: T, tape: List[CompiledTree], indexes: Map[SpruceTree[_], Int]): (Int, List[CompiledTree], Map[SpruceTree[_], Int]) =
     {
-      def compile(compiledTerm: CompiledTree, tape: List[CompiledTree], indexes: Map[Tree[_], Int]): (Int, List[CompiledTree], Map[Tree[_], Int]) =
+      def compile(compiledTerm: CompiledTree, tape: List[CompiledTree], indexes: Map[SpruceTree[_], Int]): (Int, List[CompiledTree], Map[SpruceTree[_], Int]) =
       {
         if (indexes.contains(term))
           (indexes(term), tape, indexes)
@@ -57,24 +57,24 @@ trait TreeCompilation extends Compilation
 
         case Constant(value) => compile(compiled.Constant(value), tape, indexes)
 
-        case Plus(t1: Tree[_], t2: Tree[_]) =>
+        case Plus(t1: SpruceTree[_], t2: SpruceTree[_]) =>
           val (i1, tape1, is1) = visit(t1, tape, indexes)
           val (i2, tape2, is2) = visit(t2, tape1, is1)
           compile(compiled.Plus(Edge(i1), Edge(i2)), tape2, is2)
 
-        case Times(t1: Tree[_], t2: Tree[_]) =>
+        case Times(t1: SpruceTree[_], t2: SpruceTree[_]) =>
           val (i1, tape1, is1) = visit(t1, tape, indexes)
           val (i2, tape2, is2) = visit(t2, tape1, is1)
           compile(compiled.Times(Edge(i1), Edge(i2)), tape2, is2)
 
-        case Exp(exponent: Tree[_]) =>
+        case Exp(exponent: SpruceTree[_]) =>
           val (i, t, is) = visit(exponent, tape, indexes)
           compile(compiled.Exp(Edge(i)), t, is)
       }
     }
   }
 
-  case class CompiledFunction1[T <: Tree[T]](function: T, `val`: Val) extends CompiledFunction[Double, CompiledFunction1[T]]
+  case class CompiledFunction1[T <: SpruceTree[T]](function: T, `val`: Val) extends CompiledFunction[Double, CompiledFunction1[T]]
   {
     private val compiler = new Compiler(Seq(`val`)).compile(function)
 
@@ -89,7 +89,7 @@ trait TreeCompilation extends Compilation
     override def apply(point: Double): Double = eval(Seq(point))
   }
 
-  case class CompiledFunction2[T <: Tree[T]](function: T, vals: (Val, Val)) extends CompiledFunction[(Double, Double), CompiledFunction2[T]] with ((Double, Double) => Double)
+  case class CompiledFunction2[T <: SpruceTree[T]](function: T, vals: (Val, Val)) extends CompiledFunction[(Double, Double), CompiledFunction2[T]] with ((Double, Double) => Double)
   {
     private val compiler = new Compiler(Seq(vals._1, vals._2)).compile(function)
 
@@ -109,15 +109,15 @@ trait TreeCompilation extends Compilation
 
 }
 
-object TreeCompilation extends TreeCompilation
+object SpruceTreeCompilation extends SpruceTreeCompilation
 {
 
   object Implicits
   {
 
-    implicit final class TermToCompiledFunction[T <: Tree[T]](private val function: T) extends AnyVal
+    implicit final class TermToCompiledFunction[T <: SpruceTree[T]](private val function: T) extends AnyVal
     {
-      // TODO: Is val parameter necessary for compilation?
+      // TODO: Is val parameter necessary for compilation? It only defines the shape of the function...
       def compile(`val`: Val): CompiledFunction1[T] = CompiledFunction1(function, `val`)
 
       def compile(vals: (Val, Val)): CompiledFunction2[T] = CompiledFunction2(function, vals)

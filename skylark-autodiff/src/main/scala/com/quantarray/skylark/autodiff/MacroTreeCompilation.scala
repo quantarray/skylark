@@ -27,7 +27,7 @@ import scala.reflect.macros.blackbox
   *
   * @author Araik Grigoryan
   */
-trait BlackboxTreeCompilation extends Compilation
+trait MacroTreeCompilation extends Compilation
 {
 
   class Compiler[T](c: blackbox.Context)

@@ -21,10 +21,10 @@ package com.quantarray.skylark.autodiff
 
 import org.scalatest.{FlatSpec, Matchers}
 
-class AutoDiffSpec extends FlatSpec with Matchers with TreeCompilation
+class AutoDiffSpec extends FlatSpec with Matchers with SpruceTreeCompilation
 {
 
-  import TreeCompilation.Implicits._
+  import SpruceTreeCompilation.Implicits._
 
   val tolerance = 0.0000000000001
 

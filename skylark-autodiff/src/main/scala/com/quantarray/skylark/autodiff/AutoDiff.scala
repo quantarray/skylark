@@ -27,7 +27,7 @@ import scala.reflect.macros.blackbox
   *
   * @author Araik Grigoryan
   */
-object AutoDiff extends BlackboxTreeCompilation
+object AutoDiff extends MacroTreeCompilation
 {
   // TODO: How to { val f = (x: Double) => x * x; derivative(f) }?
 
