@@ -21,12 +21,36 @@ package com.quantarray.skylark.autodiff
 
 import org.scalatest.{FlatSpec, Matchers}
 
-class AutoDiffSpec extends FlatSpec with Matchers with SpruceTreeCompilation
+class SpruceTreeAutoDiffSpec extends FlatSpec with Matchers with SpruceTreeCompilation
 {
 
   import SpruceTreeCompilation.Implicits._
 
   val tolerance = 0.0000000000001
+
+  "Constant" should "evaluate to itself and compute gradient of zero" in
+  {
+    val f = Constant(4)
+
+    val cf = f.compile()
+
+    cf() should equal(4)
+    cf.derivative() should equal(0.0)
+  }
+
+  "4 * x" should "evaluate function and gradient" in
+    {
+      val x = Val('x)
+
+      val f = Constant(4.0) * x
+
+      val point = -3.0
+
+      val cf = f.compile(x)
+
+      cf(point) should equal(-12.0 +- tolerance)
+      cf.derivative(point) should equal(4)
+    }
 
   "x^2" should "evaluate function and gradient" in
     {
@@ -60,10 +84,5 @@ class AutoDiffSpec extends FlatSpec with Matchers with SpruceTreeCompilation
       f(vals)(point) should equal(-20.085536923187668 +- tolerance)
     }
 
-  "" should "" in
-    {
-      import AutoDiff._
 
-      derivative((x: Double) => x * x, -3) should equal(-6)
-    }
 }

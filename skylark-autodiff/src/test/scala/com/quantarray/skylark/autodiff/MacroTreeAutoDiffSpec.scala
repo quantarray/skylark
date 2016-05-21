@@ -19,18 +19,23 @@
 
 package com.quantarray.skylark.autodiff
 
-/**
-  * Automatic differentiator for debugging using NSC.
-  *
-  * @author Araik Grigoryan
-  */
-object AutoDiffNSC
+import com.quantarray.skylark.autodiff.AutoDiff._
+import org.scalatest.{FlatSpec, Matchers}
+
+class MacroTreeAutoDiffSpec extends FlatSpec with Matchers
 {
+  "Constant" should "evaluate derivative" in
+    {
+      derivative((x: Double) => 4, -3) should equal(0)
+    }
 
-  import AutoDiff._
+  "4 * x" should "evaluate derivative" in
+    {
+      derivative((x: Double) => 4 * x, -3) should equal(4)
+    }
 
-  def main(args: Array[String]): Unit =
-  {
-    derivative((x: Double) => 4 * x, -3)
-  }
+  "x^2" should "evaluate derivative" in
+    {
+      derivative((x: Double) => x * x, -3) should equal(-6)
+    }
 }

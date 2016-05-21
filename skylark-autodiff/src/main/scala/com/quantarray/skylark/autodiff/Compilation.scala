@@ -26,6 +26,7 @@ package com.quantarray.skylark.autodiff
   */
 trait Compilation
 {
+
   case class Edge(index: Int, weight: Double = 0.0)
 
   trait CompiledTree
@@ -119,6 +120,27 @@ trait Compilation
       }
     }
 
+    case class Div(left: Edge, right: Edge, value: Double = 0) extends CompiledTree
+    {
+      val inputs = Seq(left, right)
+
+      /**
+        * Evaluate self given the current values in the tape.
+        */
+      override def apply(tape: Seq[CompiledTree]): Div = copy(value = tape(left.index).value * tape(right.index).value)
+
+      /**
+        * Evaluate derivative of self with respect to inputs.
+        */
+      override def gradient(tape: Seq[CompiledTree]): CompiledTree =
+      {
+        val lv = tape(left.index).value
+        val rv = tape(right.index).value
+
+        apply(tape).copy(left = left.copy(weight = rv), right = right.copy(weight = lv))
+      }
+    }
+
     case class Exp(input: Edge, value: Double = 0) extends CompiledTree
     {
       val inputs = Seq(input)
@@ -140,7 +162,7 @@ trait Compilation
 
   }
 
-  trait CompiledFunction[P, C <: CompiledFunction[P, C]] extends ((P) => Double)
+  trait CompiledFunction[P, C <: CompiledFunction[P, C]]
   {
     self: C =>
 
@@ -170,6 +192,8 @@ trait Compilation
       */
     def gradient(point: Seq[Double]): Seq[CompiledTree] =
     {
+      val arity = point.size
+
       def forwardSweep(tape: Seq[CompiledTree]): Seq[CompiledTree] =
       {
         // Traverse in the order of Vals up to top-most
@@ -200,7 +224,7 @@ trait Compilation
             case (x, i) =>
 
               if (i == 0)
-                x.adjoint = 1
+                x.adjoint = if (arity == 0) 0 else 1
 
               for (input <- x.inputs)
               {
@@ -219,4 +243,5 @@ trait Compilation
       reverseSweep(forwardSweep(tape))
     }
   }
+
 }

@@ -47,6 +47,8 @@ trait MacroTreeCompilation extends Compilation
       {
         case Function(vparams, body) =>
 
+          // Compile all Vals first to ensure that they are first on tape, in pre-order ordering
+          visitVals(body)
           visit(body)
 
           this
@@ -55,23 +57,21 @@ trait MacroTreeCompilation extends Compilation
       }
     }
 
-    private def visit(tree: c.Tree): Unit =
+    private def compile(tree: c.Tree, compiledTerm: CompiledTree): Int =
     {
-      import c.universe._
-
-      def compile(compiledTerm: CompiledTree): Int =
+      if (indexes.contains(tree))
+        indexes(tree)
+      else
       {
-        if (indexes.contains(tree))
-          indexes(tree)
-        else
-        {
-          val index = tape.size
-          tape += compiledTerm
-          indexes += (tree -> index)
-          index
-        }
+        val index = tape.size
+        tape += compiledTerm
+        indexes += (tree -> index)
+        index
       }
+    }
 
+    private def visitVals(tree: c.Tree): Unit =
+    {
       tree match
       {
         case Apply(fun, args) =>
@@ -82,30 +82,56 @@ trait MacroTreeCompilation extends Compilation
           {
             case Select(qual, name) =>
 
+              visitVals(qual)
+              args.foreach(arg => visitVals(arg))
+          }
+        case Ident(TermName(name)) =>
+
+          if (!vals.contains(name))
+          {
+            compile(tree, compiled.Val(name, 0.0))
+            vals += (name -> tree)
+          }
+
+        case _ =>
+      }
+    }
+
+    private def visit(tree: c.Tree): Unit =
+    {
+      import c.universe._
+
+      tree match
+      {
+        case Apply(fun, args) =>
+
+          fun match
+          {
+            case Select(qual, name) =>
+
               visit(qual)
               args.foreach(arg => visit(arg))
 
+              val qualIndex =
+                if (vals.contains(qual.toString))
+                  indexes(vals(qual.toString))
+                else if (indexes.contains(qual))
+                  indexes(qual)
+                else
+                  c.abort(c.enclosingPosition, s"Cannot compile $qual.")
+
+              val argIndex =
+                if (vals.contains(args.head.toString))
+                  indexes(vals(args.head.toString))
+                else if (indexes.contains(args.head))
+                  indexes(args.head)
+                else
+                  c.abort(c.enclosingPosition, s"Cannot compile $args.")
+
               name match
               {
-                case TermName("$times") =>
-
-                  val qualIndex =
-                    if (vals.contains(qual.toString))
-                      indexes(vals(qual.toString))
-                    else if (indexes.contains(qual))
-                      indexes(qual)
-                    else
-                      c.abort(c.enclosingPosition, s"Cannot compile $qual.")
-
-                  val argIndex =
-                    if(vals.contains(args.head.toString))
-                      indexes(vals(args.head.toString))
-                    else if(indexes.contains(args.head))
-                      indexes(args.head)
-                    else
-                      c.abort(c.enclosingPosition, s"Cannot compile $args.")
-
-                  compile(compiled.Times(Edge(qualIndex), Edge(argIndex)))
+                case TermName("$plus") => compile(tree, compiled.Plus(Edge(qualIndex), Edge(argIndex)))
+                case TermName("$times") => compile(tree, compiled.Times(Edge(qualIndex), Edge(argIndex)))
                 case _ => c.abort(c.enclosingPosition, s"Derivative/gradient function for '$name' is unknown.")
               }
             case _ =>
@@ -115,18 +141,20 @@ trait MacroTreeCompilation extends Compilation
 
           if (!vals.contains(name))
           {
-            compile(compiled.Val(name, 0.0))
+            compile(tree, compiled.Val(name, 0.0))
             vals += (name -> tree)
           }
 
-        case Literal(Constant(value)) => compile(compiled.Constant(value.asInstanceOf[Double]))
+        case Literal(Constant(value: Double)) => compile(tree, compiled.Constant(value))
+
+        case Literal(Constant(value: Int)) => compile(tree, compiled.Constant(value))
 
         case _ =>
       }
     }
   }
 
-  case class CompiledFunction1(tape: Seq[CompiledTree]) extends CompiledFunction[Double, CompiledFunction1]
+  case class CompiledFunction1(tape: Seq[CompiledTree]) extends CompiledFunction[Double, CompiledFunction1] with (Double => Double)
   {
     def derivative(point: Double): Double =
     {
