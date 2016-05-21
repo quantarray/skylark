@@ -50,7 +50,7 @@ trait Compilation
   object compiled
   {
 
-    case class Val(symbol: Symbol, value: Double = 0) extends CompiledTree
+    case class Val(symbol: String, value: Double) extends CompiledTree
     {
       final val inputs: Seq[Edge] = Seq.empty
 
@@ -63,6 +63,11 @@ trait Compilation
         * Evaluate derivative of self with respect to inputs.
         */
       override def gradient(tape: Seq[CompiledTree]): Val = this
+    }
+
+    object Val
+    {
+      def apply(symbol: Symbol, value: Double = 0.0): Val = new Val(symbol.toString, value)
     }
 
     case class Constant(value: Double, inputs: Seq[Edge] = Seq.empty) extends CompiledTree

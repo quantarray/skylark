@@ -39,6 +39,8 @@ trait BlackboxTreeCompilation extends Compilation
 
     private val indexes = mutable.Map[c.Tree, Int]()
 
+    private val vals = mutable.Map[String, c.Tree]()
+
     def compile(function: T): Compiler[T] =
     {
       function match
@@ -74,19 +76,34 @@ trait BlackboxTreeCompilation extends Compilation
       {
         case Apply(fun, args) =>
 
+          // TODO: Abort compilation if more than 1 arg
+
           fun match
           {
             case Select(qual, name) =>
 
-              args.foreach(arg => visit(arg))
               visit(qual)
+              args.foreach(arg => visit(arg))
 
               name match
               {
                 case TermName("$times") =>
 
-                  val qualIndex = indexes(qual)
-                  val argIndex = args.map(indexes).head
+                  val qualIndex =
+                    if (vals.contains(qual.toString))
+                      indexes(vals(qual.toString))
+                    else if (indexes.contains(qual))
+                      indexes(qual)
+                    else
+                      c.abort(c.enclosingPosition, s"Cannot compile $qual.")
+
+                  val argIndex =
+                    if(vals.contains(args.head.toString))
+                      indexes(vals(args.head.toString))
+                    else if(indexes.contains(args.head))
+                      indexes(args.head)
+                    else
+                      c.abort(c.enclosingPosition, s"Cannot compile $args.")
 
                   compile(compiled.Times(Edge(qualIndex), Edge(argIndex)))
                 case _ => c.abort(c.enclosingPosition, s"Derivative/gradient function for '$name' is unknown.")
@@ -94,7 +111,13 @@ trait BlackboxTreeCompilation extends Compilation
             case _ =>
           }
 
-        case Ident(TermName(name)) => compile(compiled.Val(Symbol(name)))
+        case Ident(TermName(name)) =>
+
+          if (!vals.contains(name))
+          {
+            compile(compiled.Val(name, 0.0))
+            vals += (name -> tree)
+          }
 
         case Literal(Constant(value)) => compile(compiled.Constant(value.asInstanceOf[Double]))
 

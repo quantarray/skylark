@@ -31,6 +31,6 @@ object AutoDiffNSC
 
   def main(args: Array[String]): Unit =
   {
-    //derivative((x: Double) => x * x, -3)
+    derivative((x: Double) => x * x, -3)
   }
 }

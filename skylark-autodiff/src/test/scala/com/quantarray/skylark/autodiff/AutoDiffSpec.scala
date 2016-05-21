@@ -23,6 +23,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class AutoDiffSpec extends FlatSpec with Matchers with TreeCompilation
 {
+
   import TreeCompilation.Implicits._
 
   val tolerance = 0.0000000000001
@@ -63,8 +64,6 @@ class AutoDiffSpec extends FlatSpec with Matchers with TreeCompilation
     {
       import AutoDiff._
 
-//      val foo = derivative((x: Double) => x * x, -3)
-//
-//      println(foo)
+      derivative((x: Double) => x * x, -3) should equal(-6)
     }
 }
