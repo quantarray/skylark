@@ -165,4 +165,17 @@ trait MacroTreeCompilation extends Compilation
     override def apply(point: Double): Double = eval(Seq(point))
   }
 
+  case class CompiledFunction2(tape: Seq[CompiledTree]) extends CompiledFunction[Double, CompiledFunction2] with ((Double, Double) => Double)
+  {
+    def derivative(point: (Double, Double)): Double =
+    {
+      val tape = gradient(Seq(point._1, point._2))
+      tape.head.adjoint
+    }
+
+    def apply(point: (Double, Double)): Double = eval(Seq(point._1, point._2))
+
+    override def apply(v1: Double, v2: Double): Double = apply((v1, v2))
+  }
+
 }

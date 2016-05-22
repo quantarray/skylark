@@ -38,4 +38,9 @@ class MacroTreeAutoDiffSpec extends FlatSpec with Matchers
     {
       derivative((x: Double) => x * x, -3) should equal(-6)
     }
+
+  "(x + y) * exp(x - y)" should "evaluate derivative" in
+    {
+      //gradient2((x: Double, y: Double) => (x + y) * math.exp(x - y), (1.0, -2.0)) should equal(-6)
+    }
 }
