@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.autodiff
 
+import scala.collection.mutable
+
 /**
   * Compilation using subtypes of Tree defined in this package.
   *
@@ -32,50 +34,59 @@ trait SpruceTreeCompilation extends Compilation
     *
     * Requires that Vals get compiled ahead of the function to ensure that they appear at the front of the tape.
     */
-  class Compiler private(val tape: Seq[CompiledTree], val indexes: Map[SpruceTree[_], Int])
+  class Compiler(vals: Seq[Val])
   {
-    def this(vals: Seq[Val]) = this(vals.map(`val` => compiled.Val(`val`.symbol)), vals.foldLeft(Map.empty[SpruceTree[_], Int])((is, `val`) => is + (`val` -> is.size)))
+    val tape = mutable.Buffer[CompiledTree]()
 
-    def compile[T <: SpruceTree[T]](function: T): Compiler =
+    private val indexes = mutable.Map[SpruceTree[_], Int]()
+
+    vals.foreach(`val` => compile(`val`))
+
+    def compile[T <: SpruceTree[T]](tree: T): Compiler =
     {
-      val (_, newTape, newIndexes) = visit(function, tape.toList, indexes)
-      new Compiler(newTape.reverse, newIndexes)
+      visit(tree)
+      this
     }
 
-    private def visit[T <: SpruceTree[_]](term: T, tape: List[CompiledTree], indexes: Map[SpruceTree[_], Int]): (Int, List[CompiledTree], Map[SpruceTree[_], Int]) =
+    private def visit[T <: SpruceTree[_]](term: T): Int =
     {
-      def compile(compiledTerm: CompiledTree, tape: List[CompiledTree], indexes: Map[SpruceTree[_], Int]): (Int, List[CompiledTree], Map[SpruceTree[_], Int]) =
+      def compile(compiledTerm: CompiledTree): Int =
       {
         if (indexes.contains(term))
-          (indexes(term), tape, indexes)
+          indexes(term)
         else
         {
           val index = tape.size
-          val newTape = compiledTerm :: tape
-          val newIndexes = indexes + (term -> index)
-          (index, newTape, newIndexes)
+          tape += compiledTerm
+          indexes += (term -> index)
+          index
         }
       }
 
       term match
       {
-        case Val(symbol) => compile(compiled.Val(symbol), tape, indexes)
+        case Val(symbol) => compile(compiled.Val(symbol))
 
-        case Constant(value) => compile(compiled.Constant(value), tape, indexes)
+        case Constant(value) => compile(compiled.Constant(value))
 
         case Plus(t1: SpruceTree[_], t2: SpruceTree[_]) =>
-          val (i1, tape1, is1) = visit(t1, tape, indexes)
-          val (i2, tape2, is2) = visit(t2, tape1, is1)
-          compile(compiled.Plus(Edge(i1), Edge(i2)), tape2, is2)
+          val i1 = visit(t1)
+          val i2 = visit(t2)
+          compile(compiled.Plus(Edge(i1), Edge(i2)))
+
+        case Minus(t1: SpruceTree[_], t2: SpruceTree[_]) =>
+          val i1 = visit(t1)
+          val i2 = visit(t2)
+          compile(compiled.Minus(Edge(i1), Edge(i2)))
 
         case Times(t1: SpruceTree[_], t2: SpruceTree[_]) =>
-          val (i1, tape1, is1) = visit(t1, tape, indexes)
-          val (i2, tape2, is2) = visit(t2, tape1, is1)
-          compile(compiled.Times(Edge(i1), Edge(i2)), tape2, is2)
+          val i1 = visit(t1)
+          val i2 = visit(t2)
+          compile(compiled.Times(Edge(i1), Edge(i2)))
 
-        case Exp(exponent: SpruceTree[_]) =>
-          val (i, t, is) = visit(exponent, tape, indexes)
-          compile(compiled.Exp(Edge(i)), t, is)
+        case Exp(exponent: SpruceTree[_]) => compile(compiled.Exp(Edge(visit(exponent))))
+
+        case Sin(t: SpruceTree[_]) => compile(compiled.Sin(Edge(visit(t))))
       }
     }
   }
@@ -85,6 +96,8 @@ trait SpruceTreeCompilation extends Compilation
     private val compiler = new Compiler(Seq.empty).compile(function)
 
     protected val tape = compiler.tape
+
+    protected val arity: Int = 0
 
     def derivative(): Double =
     {
@@ -101,6 +114,8 @@ trait SpruceTreeCompilation extends Compilation
 
     protected val tape = compiler.tape
 
+    protected val arity: Int = 1
+
     def derivative(point: Double): Double =
     {
       val tape = gradient(Seq(point))
@@ -111,11 +126,14 @@ trait SpruceTreeCompilation extends Compilation
       eval(Seq(point))
   }
 
-  case class CompiledFunction2[T <: SpruceTree[T]](function: T, vals: (Val, Val)) extends CompiledFunction[(Double, Double), CompiledFunction2[T]] with ((Double, Double) => Double)
+  case class CompiledFunction2[T <: SpruceTree[T]](function: T, vals: (Val, Val)) extends CompiledFunction[(Double, Double), CompiledFunction2[T]] with (
+    (Double, Double) => Double)
   {
     private val compiler = new Compiler(Seq(vals._1, vals._2)).compile(function)
 
     protected val tape = compiler.tape
+
+    protected val arity: Int = 2
 
     def gradient(point: (Double, Double)): (Double, Double) =
     {

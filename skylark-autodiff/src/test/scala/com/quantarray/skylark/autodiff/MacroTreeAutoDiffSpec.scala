@@ -39,8 +39,14 @@ class MacroTreeAutoDiffSpec extends FlatSpec with Matchers
       derivative((x: Double) => x * x, -3) should equal(-6)
     }
 
+  "x * sin(x)" should "evaluate derivative" in
+    {
+      val point = -3.0
+      derivative((x: Double) => x * math.sin(x), -3.0) should equal(point * math.cos(point) + math.sin(point))
+    }
+
   "(x + y) * exp(x - y)" should "evaluate derivative" in
     {
-      //gradient2((x: Double, y: Double) => (x + y) * math.exp(x - y), (1.0, -2.0)) should equal(-6)
+      gradient2((x: Double, y: Double) => (x + y) * math.exp(x - y), 1.0, -2.0) should equal((0.0,40.171073846375336))
     }
 }

@@ -29,14 +29,14 @@ class SpruceTreeAutoDiffSpec extends FlatSpec with Matchers with SpruceTreeCompi
   val tolerance = 0.0000000000001
 
   "Constant" should "evaluate to itself and compute gradient of zero" in
-  {
-    val f = Constant(4)
+    {
+      val f = Constant(4)
 
-    val cf = f.compile()
+      val cf = f.compile()
 
-    cf() should equal(4)
-    cf.derivative() should equal(0.0)
-  }
+      cf() should equal(4)
+      cf.derivative() should equal(0.0)
+    }
 
   "4 * x" should "evaluate function and gradient" in
     {
@@ -66,6 +66,20 @@ class SpruceTreeAutoDiffSpec extends FlatSpec with Matchers with SpruceTreeCompi
       cf.derivative(point) should equal(-6.0)
     }
 
+  "x * sin(x)" should "evaluate function and gradient" in
+    {
+      val x = Val('x)
+
+      val f = x * Sin(x)
+
+      val point = -3.0
+
+      val cf = f.compile(x)
+
+      cf(point) should equal(point * math.sin(point) +- tolerance)
+      cf.derivative(point) should equal(point * math.cos(point) + math.sin(point))
+    }
+
   "(x + y) * exp(x - y)" should "evaluate function and gradient" in
     {
       val x = Val('x)
@@ -83,6 +97,4 @@ class SpruceTreeAutoDiffSpec extends FlatSpec with Matchers with SpruceTreeCompi
 
       f(vals)(point) should equal(-20.085536923187668 +- tolerance)
     }
-
-
 }

@@ -99,6 +99,21 @@ trait Compilation
       override def gradient(tape: Seq[CompiledTree]): Plus = apply(tape).copy(left = left.copy(weight = 1), right = right.copy(weight = 1))
     }
 
+    case class Minus(left: Edge, right: Edge, value: Double = 0) extends CompiledTree
+    {
+      val inputs = Seq(left, right)
+
+      /**
+        * Evaluate self given the current values in the tape.
+        */
+      override def apply(tape: Seq[CompiledTree]): Minus = copy(value = tape(left.index).value - tape(right.index).value)
+
+      /**
+        * Evaluate derivative of self with respect to inputs.
+        */
+      override def gradient(tape: Seq[CompiledTree]): Minus = apply(tape).copy(left = left.copy(weight = 1), right = right.copy(weight = -1))
+    }
+
     case class Times(left: Edge, right: Edge, value: Double = 0) extends CompiledTree
     {
       val inputs = Seq(left, right)
@@ -160,11 +175,31 @@ trait Compilation
       }
     }
 
+    case class Sin(input: Edge, value: Double = 0) extends CompiledTree
+    {
+      val inputs = Seq(input)
+
+      /**
+        * Evaluate self given the current values in the tape.
+        */
+      override def apply(tape: Seq[CompiledTree]): Sin = copy(value = math.sin(tape(input.index).value))
+
+      /**
+        * Evaluate derivative of self with respect to inputs.
+        */
+      override def gradient(tape: Seq[CompiledTree]): Sin =
+      {
+        apply(tape).copy(input.copy(weight = math.cos(tape(input.index).value)))
+      }
+    }
+
   }
 
   trait CompiledFunction[P, C <: CompiledFunction[P, C]]
   {
     self: C =>
+
+    protected def arity: Int
 
     protected def tape: Seq[CompiledTree]
 
@@ -192,8 +227,6 @@ trait Compilation
       */
     def gradient(point: Seq[Double]): Seq[CompiledTree] =
     {
-      val arity = point.size
-
       def forwardSweep(tape: Seq[CompiledTree]): Seq[CompiledTree] =
       {
         // Traverse in the order of Vals up to top-most
@@ -223,12 +256,13 @@ trait Compilation
             case (v@compiled.Val(_, _), _) => v
             case (x, i) =>
 
-              if (i == 0)
-                x.adjoint = if (arity == 0) 0 else 1
+              if (i == 0 && x.inputs.nonEmpty)
+                x.adjoint = 1
 
               for (input <- x.inputs)
               {
-                forwardSweepTape(input.index).adjoint += x.adjoint * input.weight
+                if (x.adjoint != 0)
+                  forwardSweepTape(input.index).adjoint += x.adjoint * input.weight
               }
 
               x

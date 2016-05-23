@@ -46,19 +46,16 @@ object AutoDiff extends MacroTreeCompilation
 
   def derivative(function: Double => Double, point: Double): Double = macro gradient1Impl
 
-  def gradient2Impl(c: blackbox.Context)(function: c.Expr[(Double, Double) => Double], point: c.Expr[(Double, Double)]): c.Expr[Double] =
+  def gradient2Impl(c: blackbox.Context)(function: c.Expr[(Double, Double) => Double], point1: c.Expr[Double],
+                                         point2: c.Expr[Double]): c.Expr[(Double, Double)] =
   {
     import c.universe._
 
-    val compiler = new Compiler[c.Tree](c)
-
-    val tape = compiler.compile(function.tree).tape
-
-    val gradient = CompiledFunction2(tape).derivative(c.eval(point))
+    val gradient = CompiledFunction2[c.Tree](c, function.tree).gradient(c.eval(point1), c.eval(point2))
 
     c.Expr(q"$gradient")
   }
 
-  def gradient2(function: (Double, Double) => Double, point: (Double, Double)): Double = macro gradient2Impl
+  def gradient2(function: (Double, Double) => Double, point1: Double, point2: Double): (Double, Double) = macro gradient2Impl
 
 }

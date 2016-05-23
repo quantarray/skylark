@@ -117,8 +117,10 @@ trait MacroTreeCompilation extends Compilation
                   indexes(vals(qual.toString))
                 else if (indexes.contains(qual))
                   indexes(qual)
+                else if (qual.toString == "scala.math.`package`")
+                  -1 // TODO: Move qualIndex processing into cases that expect 2 arguments
                 else
-                  c.abort(c.enclosingPosition, s"Cannot compile $qual.")
+                  c.abort(c.enclosingPosition, s"Cannot compile qualifier $qual.")
 
               val argIndex =
                 if (vals.contains(args.head.toString))
@@ -126,12 +128,15 @@ trait MacroTreeCompilation extends Compilation
                 else if (indexes.contains(args.head))
                   indexes(args.head)
                 else
-                  c.abort(c.enclosingPosition, s"Cannot compile $args.")
+                  c.abort(c.enclosingPosition, s"Cannot compile argument $args.")
 
               name match
               {
                 case TermName("$plus") => compile(tree, compiled.Plus(Edge(qualIndex), Edge(argIndex)))
+                case TermName("$minus") => compile(tree, compiled.Minus(Edge(qualIndex), Edge(argIndex)))
                 case TermName("$times") => compile(tree, compiled.Times(Edge(qualIndex), Edge(argIndex)))
+                case TermName("exp") => compile(tree, compiled.Exp(Edge(argIndex)))
+                case TermName("sin") => compile(tree, compiled.Sin(Edge(argIndex)))
                 case _ => c.abort(c.enclosingPosition, s"Derivative/gradient function for '$name' is unknown.")
               }
             case _ =>
@@ -156,6 +161,8 @@ trait MacroTreeCompilation extends Compilation
 
   case class CompiledFunction1(tape: Seq[CompiledTree]) extends CompiledFunction[Double, CompiledFunction1] with (Double => Double)
   {
+    protected val arity: Int = 1
+
     def derivative(point: Double): Double =
     {
       val tape = gradient(Seq(point))
@@ -165,12 +172,18 @@ trait MacroTreeCompilation extends Compilation
     override def apply(point: Double): Double = eval(Seq(point))
   }
 
-  case class CompiledFunction2(tape: Seq[CompiledTree]) extends CompiledFunction[Double, CompiledFunction2] with ((Double, Double) => Double)
+  case class CompiledFunction2[T](c: blackbox.Context, function: T) extends CompiledFunction[Double, CompiledFunction2[T]] with ((Double, Double) => Double)
   {
-    def derivative(point: (Double, Double)): Double =
+    val compiler = new Compiler[T](c)
+
+    val tape = compiler.compile(function).tape
+
+    protected val arity: Int = 2
+
+    def gradient(point1: Double, point2: Double): (Double, Double) =
     {
-      val tape = gradient(Seq(point._1, point._2))
-      tape.head.adjoint
+      val tape = gradient(Seq(point1, point2))
+      (tape.head.adjoint, tape(1).adjoint)
     }
 
     def apply(point: (Double, Double)): Double = eval(Seq(point._1, point._2))

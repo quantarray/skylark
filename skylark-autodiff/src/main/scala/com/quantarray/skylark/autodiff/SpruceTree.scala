@@ -32,7 +32,9 @@ trait SpruceTree[Repr <: SpruceTree[Repr]]
 
   def *[T <: SpruceTree[T]](tree: T): Times[Repr, T] = Times(this, tree)
 
-  def -[T <: SpruceTree[T]](tree: T): Plus[Repr, Times[T, Constant]] = Plus(this, tree * Constant(-1))
+  //def -[T <: SpruceTree[T]](tree: T): Plus[Repr, Times[T, Constant]] = Plus(this, tree * Constant(-1))
+
+  def -[T <: SpruceTree[T]](tree: T): Minus[Repr, T] = Minus(this, tree)
 }
 
 case class Val(symbol: Symbol = '@) extends SpruceTree[Val]
@@ -41,6 +43,10 @@ case class Constant(value: Double) extends SpruceTree[Constant]
 
 case class Plus[T1 <: SpruceTree[T1], T2 <: SpruceTree[T2]](t1: T1, t2: T2) extends SpruceTree[Plus[T1, T2]]
 
+case class Minus[T1 <: SpruceTree[T1], T2 <: SpruceTree[T2]](t1: T1, t2: T2) extends SpruceTree[Minus[T1, T2]]
+
 case class Times[T1 <: SpruceTree[T1], T2 <: SpruceTree[T2]](t1: T1, t2: T2) extends SpruceTree[Times[T1, T2]]
 
 case class Exp[T <: SpruceTree[T]](exponent: T) extends SpruceTree[Exp[T]]
+
+case class Sin[T <: SpruceTree[T]](exponent: T) extends SpruceTree[Sin[T]]
