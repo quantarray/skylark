@@ -22,8 +22,6 @@ package com.quantarray.skylark
 package object measure
 {
 
-  implicit val doubleIsQuasiNumeric = DoubleQuasiNumeric
-
   case class NoDimension() extends Dimension[NoDimension]
   {
     override def toString: String = "1"
@@ -181,7 +179,7 @@ package object measure
 
   val Yi = new BinaryMultiple("Yi", 17)
 
-  final val UnitMeasure = DimensionlessMeasure("1", Universal())
+  final val Unit = DimensionlessMeasure("1", Universal())
 
   type ExponentialLength = ExponentialMeasure[LengthMeasure]
 
@@ -214,7 +212,7 @@ package object measure
 
     implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
     {
-      override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = UnitMeasure
+      override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = Unit
     }
 
   }
@@ -225,10 +223,10 @@ package object measure
   /**
     * Dimensionless.
     */
-  val percent = "%" := 0.01 * UnitMeasure
+  val percent = "%" := 0.01 * Unit
 
   // http://en.wikipedia.org/wiki/Basis_point
-  val bp = "bp" := 0.0001 * UnitMeasure
+  val bp = "bp" := 0.0001 * Unit
 
   // http://en.wikipedia.org/wiki/Radian
   val rad = DimensionlessMeasure("rad", Derived(SI), 1 / (2 * scala.math.Pi))

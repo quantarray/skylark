@@ -43,21 +43,26 @@ trait QuasiNumeric[@specialized(Double, Int) T]
   def pow(x: T, c: Double): T
 }
 
-object DoubleQuasiNumeric extends QuasiNumeric[Double]
+object QuasiNumeric
 {
-  override def negate(x: Double): Double = -x
 
-  override def plus(x: Double, y: Double): Double = x + y
+  implicit object DoubleQuasiNumeric extends QuasiNumeric[Double]
+  {
+    override def negate(x: Double): Double = -x
 
-  override def minus(x: Double, y: Double): Double = x - y
+    override def plus(x: Double, y: Double): Double = x + y
 
-  override def times(x: Double, y: Double): Double = x * y
+    override def minus(x: Double, y: Double): Double = x - y
 
-  override def divide(x: Double, y: Double): Double = x / y
+    override def times(x: Double, y: Double): Double = x * y
 
-  override def timesConstant(x: Double, c: Double): Double = x * c
+    override def divide(x: Double, y: Double): Double = x / y
 
-  override def divideByConstant(x: Double, c: Double): Double = x / c
+    override def timesConstant(x: Double, c: Double): Double = x * c
 
-  override def pow(x: Double, c: Double): Double = math.pow(x, c)
+    override def divideByConstant(x: Double, c: Double): Double = x / c
+
+    override def pow(x: Double, c: Double): Double = math.pow(x, c)
+  }
+
 }
