@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.measure.untyped
 
-import com.quantarray.skylark.measure.{Derived, Hybrid, SystemOfUnits}
+import com.quantarray.skylark.measure._
 
 import scala.language.dynamics
 
@@ -54,6 +54,14 @@ trait Measure extends Dynamic
 
   @inline
   def collect[B](pf: PartialFunction[Measure, B]): B = pf(this)
+
+  def ^(exponent: Double)(implicit ce: CanExponentiate[Measure, Measure]): Measure = ce.pow(this, exponent)
+
+  def *(measure: Measure)(implicit cm: CanMultiply[Measure, Measure, Measure]): Measure = cm.times(this, measure)
+
+  def /(measure: Measure)(implicit cm: CanDivide[Measure, Measure, Measure]): Measure = cm.divide(this, measure)
+
+  def simplify(implicit cs: CanSimplify[Measure, Measure]): Measure = cs.simplify(this)
 }
 
 trait ProductMeasure extends Measure
