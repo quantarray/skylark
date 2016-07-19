@@ -26,7 +26,7 @@ import scala.language.implicitConversions
   *
   * @author Araik Grigoryan
   */
-case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit qn: QuasiNumeric[N])
+case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit val qn: QuasiNumeric[N]) extends untyped.Quantity[N]
 {
   def unary_-() = Quantity(qn.negate(value), measure)
 
