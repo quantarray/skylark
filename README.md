@@ -10,7 +10,7 @@ Skylark is a set of libraries for quantitative and financial computation.
 their surface but in the end lack the richness and versatility necessary to use in real enterprise applications.
 
 ```scala
-libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.4.0"
+libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.5.0"
 ```
 
 Many units of measure are defined for you.
@@ -30,7 +30,7 @@ kg.dimension should be(Mass)
 kg.system should be(SI)
 kg.isStructuralAtom should be(right = true)
 kg.exponent should be(1.0)
-kg / lb should be(UnitMeasure)
+kg / lb should be(Unit)
 kg * s should be(ProductMeasure(kg, s))
 kg.inverse should be(ExponentialMeasure(kg, -1.0))
 kg to kg should be(Some(1))
