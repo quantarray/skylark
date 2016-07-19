@@ -29,5 +29,5 @@ import scala.annotation.implicitNotFound
 @implicitNotFound("Cannot find CanSimplify implementation that simplifies ${I} to ${D}.")
 trait CanSimplify[I, D]
 {
-  def simplify(inflated: I): Option[D]
+  def simplify(inflated: I): D
 }

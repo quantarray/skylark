@@ -45,7 +45,7 @@ trait Measure extends Dynamic
   /**
     * Determines if this measure can be decomposed into constituent measures.
     */
-  val isStructuralAtom: Boolean = true
+  def isStructuralAtom: Boolean = true
 
   /**
     * Gets exponent of this measure.

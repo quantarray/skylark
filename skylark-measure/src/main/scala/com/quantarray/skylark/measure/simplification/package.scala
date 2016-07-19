@@ -6,7 +6,7 @@ package object simplification
 
   object Implicits
   {
-    implicit object EnergyPriceTimesCurrencyPriceCanSimplify extends CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, EnergyPrice]
+    implicit object EnergyPriceTimesCurrencyPriceCanSimplify extends CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
     {
       override def simplify(inflated: EnergyPriceTimesCurrencyPriceMeasure): Option[EnergyPrice] =
       {

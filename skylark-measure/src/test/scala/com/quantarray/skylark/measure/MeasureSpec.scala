@@ -46,7 +46,7 @@ class MeasureSpec extends FlatSpec with Matchers
       kg to cg should be(Some(100000))
     }
 
-  "mi/h" should "be convertible to m/s" in
+  "mi / h" should "be convertible to m/s" in
     {
       (mi / h) to (m / s) should be(Some(0.4470388888888889))
     }
@@ -54,5 +54,11 @@ class MeasureSpec extends FlatSpec with Matchers
   it should "be collectible" in
     {
       (kg * m / (s ^ 2)).collect({ case untyped.RatioMeasure(untyped.ProductMeasure(x, _), _) => x }) should be(kg)
+    }
+
+  "(bbl ^ 2) / USD" should "be convertible to string" in
+    {
+      val measure = (bbl ^ 2) / USD
+      measure.toString should be("(bbl ^ 2.0) / USD")
     }
 }

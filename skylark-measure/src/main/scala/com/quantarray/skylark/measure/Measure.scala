@@ -41,12 +41,12 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   /**
     * Measure name.
     */
-  val name: String
+  def name: String
 
   /**
     * Gets structural name of this measure.
     */
-  final val structuralName = if (isStructuralAtom) name else s"($name)"
+  final def structuralName = if (isStructuralAtom) name else s"($name)"
 
   /**
     * Gets dimension of this measure.
@@ -104,7 +104,7 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   /**
     * Attempts to simplify to target type.
     */
-  def simplify[R <: Measure[R]](implicit cr: CanSimplify[Self, R]): Option[R] = cr.simplify(this)
+  def simplify[R <: Measure[R]](implicit cr: CanSimplify[Self, Option[R]]): Option[R] = cr.simplify(this)
 }
 
 object Measure
@@ -147,7 +147,7 @@ trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[Produ
 
   override lazy val dimension = ProductDimension(multiplicand.dimension, multiplier.dimension)
 
-  final override val isStructuralAtom = false
+  override val isStructuralAtom = false
 }
 
 object ProductMeasure
@@ -196,7 +196,7 @@ trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMe
 
   override lazy val dimension = RatioDimension(numerator.dimension, denominator.dimension)
 
-  final override val isStructuralAtom = false
+  override val isStructuralAtom = false
 
   /**
     * Converts to target measure.
@@ -262,7 +262,7 @@ trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]]
 
   override lazy val dimension = ExponentialDimension(expBase.dimension, exponent)
 
-  final override val isStructuralAtom = false
+  override val isStructuralAtom = false
 
   val lift: Option[B] = if (exponent == 1.0) Some(expBase) else None
 }
