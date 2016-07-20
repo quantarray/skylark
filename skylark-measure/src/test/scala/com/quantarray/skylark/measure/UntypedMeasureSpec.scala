@@ -30,21 +30,6 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
 
   private val numericTolerance = 0.00000000001
 
-  implicit object MeasureCanConvert extends CanConvert[untyped.Measure, untyped.Measure]
-  {
-
-    import com.quantarray.skylark.measure.conversion.default._
-
-    override def convert: Converter[untyped.Measure, untyped.Measure] = new Converter[untyped.Measure, untyped.Measure]
-    {
-      override def apply(from: untyped.Measure, to: untyped.Measure): Option[Double] = (from, to) match
-      {
-        case (source, target) if (source == mt * (USD / cbu)) && (target == USD) => mt.to(cbu)
-        case _ => super.apply(from, to)
-      }
-    }
-  }
-
   def pow(measure: untyped.Measure, exponent: Double): untyped.Measure =
   {
     import com.quantarray.skylark.measure.untyped.arithmetic.default._
@@ -75,6 +60,8 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
 
   def to(source: untyped.Measure, target: untyped.Measure): Option[Double] =
   {
+    import com.quantarray.skylark.measure.untyped.conversion.default._
+
     source.to(target)
   }
 

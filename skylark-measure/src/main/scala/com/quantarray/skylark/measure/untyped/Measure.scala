@@ -48,6 +48,11 @@ trait Measure extends Dynamic
   def system: SystemOfUnits
 
   /**
+    * Gets ultimate base.
+    */
+  def ultimateBase: Double
+
+  /**
     * Determines if this measure can be decomposed into constituent measures.
     */
   def isStructuralAtom: Boolean = true
@@ -103,6 +108,8 @@ object ProductMeasure
 
       override val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
 
+      override val ultimateBase: Double = 1.0
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: ProductMeasure => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
@@ -142,6 +149,8 @@ object RatioMeasure
       override val denominator: Measure = params._2
 
       val name = s"${numerator.structuralName} / ${denominator.structuralName}"
+
+      override val ultimateBase: Double = 1.0
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
@@ -186,6 +195,8 @@ object ExponentialMeasure
       override val exponent: Double = params._2
 
       override val name = baseName
+
+      override val ultimateBase: Double = 1.0
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
