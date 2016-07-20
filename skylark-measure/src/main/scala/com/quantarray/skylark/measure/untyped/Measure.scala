@@ -33,6 +33,11 @@ trait Measure extends Dynamic
   self =>
 
   /**
+    * Measure name.
+    */
+  def name: String
+
+  /**
     * Gets dimension of this measure.
     */
   def dimension: Dimension
@@ -46,6 +51,11 @@ trait Measure extends Dynamic
     * Determines if this measure can be decomposed into constituent measures.
     */
   def isStructuralAtom: Boolean = true
+
+  /**
+    * Gets structural name of this measure.
+    */
+  final def structuralName = if (isStructuralAtom) name else s"($name)"
 
   /**
     * Gets exponent of this measure.
@@ -91,6 +101,8 @@ object ProductMeasure
 
       override val multiplier: Measure = params._2
 
+      override val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: ProductMeasure => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
@@ -129,6 +141,8 @@ object RatioMeasure
 
       override val denominator: Measure = params._2
 
+      val name = s"${numerator.structuralName} / ${denominator.structuralName}"
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: RatioMeasure => this.numerator == that.numerator && this.denominator == that.denominator
@@ -146,11 +160,17 @@ object RatioMeasure
 
 trait ExponentialMeasure extends Measure
 {
-  val expBase: Measure
+  def expBase: Measure
 
   lazy val dimension: Dimension = ExponentialDimension(expBase.dimension, exponent)
 
   lazy val system = expBase.system
+
+  lazy val baseName = exponent match
+  {
+    case 1.0 => s"$expBase"
+    case _ => s"${expBase.structuralName} ^ $exponent"
+  }
 }
 
 object ExponentialMeasure
@@ -164,6 +184,8 @@ object ExponentialMeasure
       override val expBase: Measure = params._1
 
       override val exponent: Double = params._2
+
+      override val name = baseName
 
       override def equals(obj: scala.Any): Boolean = obj match
       {

@@ -39,16 +39,6 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   type D <: Dimension[D]
 
   /**
-    * Measure name.
-    */
-  def name: String
-
-  /**
-    * Gets structural name of this measure.
-    */
-  final def structuralName = if (isStructuralAtom) name else s"($name)"
-
-  /**
     * Gets dimension of this measure.
     */
   def dimension: D
@@ -258,12 +248,6 @@ trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]]
   val expBase: B
 
   type D = ExponentialDimension[expBase.D]
-
-  val baseName = exponent match
-  {
-    case 1.0 => s"$expBase"
-    case _ => s"${expBase.structuralName} ^ $exponent"
-  }
 
   override lazy val dimension = ExponentialDimension(expBase.dimension, exponent)
 
