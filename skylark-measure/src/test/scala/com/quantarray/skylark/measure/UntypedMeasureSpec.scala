@@ -33,7 +33,7 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
   implicit object MeasureCanConvert extends CanConvert[untyped.Measure, untyped.Measure]
   {
 
-    import com.quantarray.skylark.measure.conversion.Implicits._
+    import com.quantarray.skylark.measure.conversion.default._
 
     override def convert: Converter[untyped.Measure, untyped.Measure] = new Converter[untyped.Measure, untyped.Measure]
     {

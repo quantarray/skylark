@@ -47,7 +47,7 @@ package object conversion
     }
   }
 
-  object Implicits extends DimensionessImplicits
+  object default extends DimensionessImplicits
   {
 
     /**
@@ -84,6 +84,11 @@ package object conversion
       * Volume -> Length^3^.
       */
     implicit val volumeToExponentialLengthCanConvert = CanConvert(VolumeToExponentialLengthConverter())
+
+    /**
+      * Currency -> Currency.
+      */
+    implicit val currencyCanConvert: CanConvert[Currency, Currency] = CanConvert(FixedCurrencyConverter())
   }
 
 }

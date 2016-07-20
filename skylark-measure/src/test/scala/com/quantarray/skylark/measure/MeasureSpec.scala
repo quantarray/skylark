@@ -20,7 +20,7 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.Implicits._
-import com.quantarray.skylark.measure.conversion.Implicits._
+import com.quantarray.skylark.measure.conversion.default._
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
@@ -60,5 +60,10 @@ class MeasureSpec extends FlatSpec with Matchers
     {
       val measure = (bbl ^ 2) / USD
       measure.toString should be("(bbl ^ 2.0) / USD")
+    }
+
+  "USD" should "be convertible to USC" in
+    {
+      USD to USC should be(Some(100))
     }
 }

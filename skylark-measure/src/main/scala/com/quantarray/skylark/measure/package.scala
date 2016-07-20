@@ -762,4 +762,7 @@ package object measure
   val ZAR = Currency("ZAR")
   // Zambian kwacha
   val ZMW = Currency("ZMW")
+
+  // United States cent
+  val USC = "USC" := 0.01 * USD
 }

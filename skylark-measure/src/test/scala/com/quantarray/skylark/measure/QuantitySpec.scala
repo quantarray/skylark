@@ -20,7 +20,7 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.Implicits._
-import com.quantarray.skylark.measure.conversion.Implicits._
+import com.quantarray.skylark.measure.conversion.default._
 import com.quantarray.skylark.measure.conversion._
 import com.quantarray.skylark.measure.quantity._
 import com.quantarray.skylark.measure.simplification.Implicits._
