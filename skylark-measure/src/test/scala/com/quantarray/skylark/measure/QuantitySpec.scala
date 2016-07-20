@@ -36,6 +36,8 @@ import scala.language.postfixOps
   */
 class QuantitySpec extends FlatSpec with Matchers
 {
+  private val numericTolerance = 0.00000000001
+
   /**
     * EnergyPrice / () -> EnergyPrice / ().
     */
@@ -178,6 +180,14 @@ class QuantitySpec extends FlatSpec with Matchers
   it should "allow trivial empty definition" in
     {
       (5.bbl to bbl).value should equal(5.0 bbl)
+    }
+
+  "mt (metric ton)" should "be convertible to cbu (corn bushels)" in
+    {
+      import com.quantarray.skylark.measure.commodity.us.commercial.grains.corn.shelled.{bushel => cbu}
+
+      val container = 1 * mt
+      container.to(cbu).value.value should equal(39.36830357142857 +- numericTolerance)
     }
 
 }

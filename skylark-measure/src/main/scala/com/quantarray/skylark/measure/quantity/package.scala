@@ -52,6 +52,8 @@ package object quantity
 
     def lb = Quantity(toValue, measure.lb)
 
+    def mt = Quantity(toValue, measure.mt)
+
     def ton = Quantity(toValue, measure.ton)
 
     def gr = Quantity(toValue, measure.gr)

@@ -266,8 +266,9 @@ package object measure
 
   val oz = MassMeasure("oz", US)
   val lb = MassMeasure("lb", US)
-  // http://en.wikipedia.org/wiki/Short_ton
-  val ton = MassMeasure("ton", US)
+
+  val mt = "mt" := 2204.625 * lb
+  val ton = mt
 
   // http://en.wikipedia.org/wiki/Grain_(unit)
   val gr = MassMeasure("grain", Imperial())
