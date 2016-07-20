@@ -120,64 +120,64 @@ package object measure
   /**
     * SI prefixes.
     */
-  val Yotta = new DecadicMultiple("Y", 1E24)
+  val Yotta = DecadicMultiple("Y", 1E24)
 
-  val Zetta = new DecadicMultiple("Z", 1E21)
+  val Zetta = DecadicMultiple("Z", 1E21)
 
-  val Exa = new DecadicMultiple("E", 1E18)
+  val Exa = DecadicMultiple("E", 1E18)
 
-  val Peta = new DecadicMultiple("P", 1E15)
+  val Peta = DecadicMultiple("P", 1E15)
 
-  val Tera = new DecadicMultiple("T", 1E12)
+  val Tera = DecadicMultiple("T", 1E12)
 
-  val Giga = new DecadicMultiple("G", 1E9)
+  val Giga = DecadicMultiple("G", 1E9)
 
-  val Mega = new DecadicMultiple("M", 1E6)
+  val Mega = DecadicMultiple("M", 1E6)
 
-  val Kilo = new DecadicMultiple("k", 1000)
+  val Kilo = DecadicMultiple("k", 1000)
 
-  val Hecto = new DecadicMultiple("h", 100)
+  val Hecto = DecadicMultiple("h", 100)
 
-  val Deka = new DecadicMultiple("da", 10)
+  val Deka = DecadicMultiple("da", 10)
 
-  val Deci = new DecadicMultiple("d", 0.1)
+  val Deci = DecadicMultiple("d", 0.1)
 
-  val Centi = new DecadicMultiple("c", 0.01)
+  val Centi = DecadicMultiple("c", 0.01)
 
-  val Milli = new DecadicMultiple("m", 0.001)
+  val Milli = DecadicMultiple("m", 0.001)
 
-  val Micro = new DecadicMultiple("µ", 1E-6)
+  val Micro = DecadicMultiple("µ", 1E-6)
 
-  val Nano = new DecadicMultiple("n", 1E-9)
+  val Nano = DecadicMultiple("n", 1E-9)
 
-  val Pico = new DecadicMultiple("p", 1E-12)
+  val Pico = DecadicMultiple("p", 1E-12)
 
-  val Femto = new DecadicMultiple("f", 1E-15)
+  val Femto = DecadicMultiple("f", 1E-15)
 
-  val Atto = new DecadicMultiple("a", 1E-18)
+  val Atto = DecadicMultiple("a", 1E-18)
 
-  val Zepto = new DecadicMultiple("z", 1E-21)
+  val Zepto = DecadicMultiple("z", 1E-21)
 
-  val Yocto = new DecadicMultiple("y", 1E-24)
+  val Yocto = DecadicMultiple("y", 1E-24)
 
   /**
     * IEC (http://en.wikipedia.org/wiki/International_Electrotechnical_Commission) prefixes.
     */
-  val Ki = new BinaryMultiple("Ki", 10)
+  val Ki = BinaryMultiple("Ki", 10)
 
-  val Mi = new BinaryMultiple("Mi", 11)
+  val Mi = BinaryMultiple("Mi", 11)
 
-  val Gi = new BinaryMultiple("Gi", 12)
+  val Gi = BinaryMultiple("Gi", 12)
 
-  val Ti = new BinaryMultiple("Ti", 13)
+  val Ti = BinaryMultiple("Ti", 13)
 
-  val Pi = new BinaryMultiple("Pi", 14)
+  val Pi = BinaryMultiple("Pi", 14)
 
-  val Ei = new BinaryMultiple("Ei", 15)
+  val Ei = BinaryMultiple("Ei", 15)
 
-  val Zi = new BinaryMultiple("Zi", 16)
+  val Zi = BinaryMultiple("Zi", 16)
 
-  val Yi = new BinaryMultiple("Yi", 17)
+  val Yi = BinaryMultiple("Yi", 17)
 
   final val Unit = DimensionlessMeasure("1", Universal())
 

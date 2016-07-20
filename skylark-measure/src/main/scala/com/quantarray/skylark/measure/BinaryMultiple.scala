@@ -24,11 +24,11 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-class BinaryMultiple(val prefix: String, val powerOf2: Int)
+case class BinaryMultiple(prefix: String, powerOf2: Int)
 {
   val multiple = math.pow(2, powerOf2)
 
-  def ^(exponent: Int) = new BinaryMultiple(prefix * exponent, math.pow(multiple, exponent).toInt)
+  def ^(exponent: Int) = BinaryMultiple(prefix * exponent, math.pow(multiple, exponent).toInt)
 
   def *[M <: Measure[M]](measure: M): M = measure.composes(s"$prefix$measure", multiple)
 
