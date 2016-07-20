@@ -63,6 +63,8 @@ trait Measure extends Dynamic
 
   def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Double] = cc.convert(this, target)
 
+  def toOrElse(target: Measure, default: Double)(implicit cc: CanConvert[Measure, Measure]): Double = to(target).getOrElse(default)
+
   def simplify(implicit cs: CanSimplify[Measure, Measure]): Measure = cs.simplify(this)
 }
 

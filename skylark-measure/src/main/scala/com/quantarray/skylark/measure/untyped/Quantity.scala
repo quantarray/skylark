@@ -42,8 +42,9 @@ trait Quantity[N]
 
   def -(constant: N): Quantity[N]
 
-  def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] =
-    cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
+  def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] = cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
+
+  def toOrElse(target: Measure, default: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Quantity[N] = to(target).getOrElse(default)
 
   def simplify(implicit cs: CanSimplify[Measure, Measure]): Quantity[N] = Quantity(value, measure.simplify)
 }

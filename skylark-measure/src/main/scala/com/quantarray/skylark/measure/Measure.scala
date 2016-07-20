@@ -102,6 +102,11 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[Self, M2]): Option[Double] = cc.convert(this, target)
 
   /**
+    * Converts to target measure with default value.
+    */
+  def toOrElse[M2 <: Measure[M2]](target: M2, default: Double)(implicit cc: CanConvert[Self, M2]): Double = to(target).getOrElse(default)
+
+  /**
     * Attempts to simplify to target type.
     */
   def simplify[R <: Measure[R]](implicit cs: CanSimplify[Self, Option[R]]): Option[R] = cs.simplify(this)

@@ -56,6 +56,9 @@ case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit val qn: Q
   def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[M, M2]): Option[Quantity[N, M2]] =
     cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
 
+  def toOrElse[M2 <: Measure[M2]](target: M2, default: Quantity[N, M2])(implicit cc: CanConvert[M, M2]): Quantity[N, M2] =
+    to(target).getOrElse(default)
+
   def simplify[R <: Measure[R]](implicit cs: CanSimplify[M, Option[R]]): Option[Quantity[N, R]] = measure.simplify[R].map(Quantity(value, _))
 
   override def toString = s"$value $measure"
