@@ -112,7 +112,7 @@ class QuantitySpec extends FlatSpec with Matchers
       // Some general substance, like water
       (1.bbl to gal).value should equal(31.5.gal)
 
-      import commodity.Implicits._
+      import com.quantarray.skylark.measure.conversion.commodity.Implicits._
 
       // Specific petroleum substance, having a special conversion
       (1.bbl to gal).value should equal(42.gal)

@@ -338,17 +338,17 @@ package object measure
   val in3 = in ^ 3
 
   // Liquid
-  val pi_liquid = in3.composes("Pint", 28.875)
-  val qt_liquid = pi_liquid.composes("Quart", 2.0)
+  val pi_liquid = in3.composes("pint", 28.875)
+  val qt_liquid = pi_liquid.composes("quart", 2.0)
   val gal = qt_liquid.composes("gal", US, 4.0)
 
   val bbl = VolumeMeasure("bbl", Imperial())
 
   // Dry
-  val pi_dry = in3.composes("Pint", US, 33.6003125)
-  val qt_dry = pi_dry.composes("Quart", 2)
-  val peck = qt_dry.composes("Peck", 8)
-  val bushel = peck.composes("Bushel", 4)
+  val pi_dry = in3.composes("pint", US, 33.6003125)
+  val qt_dry = pi_dry.composes("quart", 2)
+  val peck = qt_dry.composes("peck", 8)
+  val bushel = peck.composes("bushel", 4)
 
   /**
     * Force.
