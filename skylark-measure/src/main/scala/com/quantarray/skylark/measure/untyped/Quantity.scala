@@ -69,6 +69,8 @@ object Quantity
       override def +(constant: N): Quantity[N] = Quantity(qn.plus(value, constant), measure)
 
       override def -(constant: N): Quantity[N] = Quantity(qn.minus(value, constant), measure)
+
+      override def toString: String = s"$value $measure"
     }
   }
 }
