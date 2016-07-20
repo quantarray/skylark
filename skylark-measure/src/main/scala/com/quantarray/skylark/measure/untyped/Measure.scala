@@ -111,7 +111,7 @@ object ProductMeasure
 
       override def hashCode(): Int = 41 * multiplicand.hashCode() + multiplier.hashCode()
 
-      override def toString = s"$multiplicand * $multiplier"
+      override def toString = name
     }
   }
 
@@ -151,7 +151,7 @@ object RatioMeasure
 
       override def hashCode(): Int = 41 * numerator.hashCode() + denominator.hashCode()
 
-      override def toString = s"$numerator / $denominator"
+      override def toString = name
     }
   }
 
@@ -195,7 +195,7 @@ object ExponentialMeasure
 
       override def hashCode(): Int = 41 * base.hashCode() + exponent.hashCode()
 
-      override def toString = s"$base ^ $exponent"
+      override def toString = name
     }
   }
 
