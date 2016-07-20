@@ -110,6 +110,8 @@ object ProductMeasure
 
       override val ultimateBase: Double = 1.0
 
+      override val isStructuralAtom: Boolean = false
+
       override def equals(obj: scala.Any): Boolean = obj match
       {
         case that: ProductMeasure => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
@@ -151,6 +153,8 @@ object RatioMeasure
       val name = s"${numerator.structuralName} / ${denominator.structuralName}"
 
       override val ultimateBase: Double = 1.0
+
+      override val isStructuralAtom: Boolean = false
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
@@ -197,6 +201,8 @@ object ExponentialMeasure
       override val name = baseName
 
       override val ultimateBase: Double = 1.0
+
+      override val isStructuralAtom: Boolean = false
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
