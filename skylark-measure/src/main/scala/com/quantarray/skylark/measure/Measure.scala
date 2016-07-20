@@ -104,7 +104,7 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   /**
     * Attempts to simplify to target type.
     */
-  def simplify[R <: Measure[R]](implicit cr: CanSimplify[Self, Option[R]]): Option[R] = cr.simplify(this)
+  def simplify[R <: Measure[R]](implicit cs: CanSimplify[Self, Option[R]]): Option[R] = cs.simplify(this)
 }
 
 object Measure

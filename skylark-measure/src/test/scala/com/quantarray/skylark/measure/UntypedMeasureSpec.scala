@@ -20,16 +20,29 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.Implicits._
+import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 
 class UntypedMeasureSpec extends FlatSpec with Matchers
 {
 
-  def simplify(measure: untyped.Measure): untyped.Measure =
-  {
-    import com.quantarray.skylark.measure.untyped.simplification.Implicits._
+  import com.quantarray.skylark.measure.commodity.us.commercial.grains.corn.shelled.{bushel => cbu}
 
-    measure.simplify
+  private val numericTolerance = 0.00000000001
+
+  implicit object MeasureCanConvert extends CanConvert[untyped.Measure, untyped.Measure]
+  {
+
+    import com.quantarray.skylark.measure.conversion.Implicits._
+
+    override def convert: Converter[untyped.Measure, untyped.Measure] = new Converter[untyped.Measure, untyped.Measure]
+    {
+      override def apply(from: untyped.Measure, to: untyped.Measure): Option[Double] = (from, to) match
+      {
+        case (source, target) if (source == mt * (USD / cbu)) && (target == USD) => mt.to(cbu)
+        case _ => super.apply(from, to)
+      }
+    }
   }
 
   def pow(measure: untyped.Measure, exponent: Double): untyped.Measure =
@@ -53,6 +66,18 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
     numerator / denominator
   }
 
+  def simplify(measure: untyped.Measure): untyped.Measure =
+  {
+    import com.quantarray.skylark.measure.untyped.simplification.Implicits._
+
+    measure.simplify
+  }
+
+  def to(source: untyped.Measure, target: untyped.Measure): Option[Double] =
+  {
+    source.to(target)
+  }
+
   "Untyped measure" should "exponentiate" in
     {
       pow(kg, 2) should be(kg ^ 2)
@@ -66,6 +91,11 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
   it should "divide" in
     {
       divide(m, s) should be(m / s)
+    }
+
+  it should "convert" in
+    {
+      to(mt * (USD / cbu), USD).value should equal(39.36830357142857 +- numericTolerance)
     }
 
   it should "simplify" in

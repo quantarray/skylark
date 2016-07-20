@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.measure.untyped
 
-import com.quantarray.skylark.measure.QuasiNumeric
+import com.quantarray.skylark.measure.{CanConvert, CanSimplify, QuasiNumeric}
 
 /**
   * Quantity.
@@ -41,6 +41,11 @@ trait Quantity[N]
   def +(constant: N): Quantity[N]
 
   def -(constant: N): Quantity[N]
+
+  def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] =
+    cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
+
+  def simplify(implicit cs: CanSimplify[Measure, Measure]): Quantity[N] = Quantity(value, measure.simplify)
 }
 
 object Quantity

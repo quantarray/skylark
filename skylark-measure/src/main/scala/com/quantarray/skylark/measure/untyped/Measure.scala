@@ -61,6 +61,8 @@ trait Measure extends Dynamic
 
   def /(measure: Measure)(implicit cm: CanDivide[Measure, Measure, Measure]): Measure = cm.divide(this, measure)
 
+  def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Double] = cc.convert(this, target)
+
   def simplify(implicit cs: CanSimplify[Measure, Measure]): Measure = cs.simplify(this)
 }
 
