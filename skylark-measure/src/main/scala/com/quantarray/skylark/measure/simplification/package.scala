@@ -4,7 +4,7 @@ package object simplification
 {
   type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, CurrencyPriceMeasure]
 
-  object Implicits
+  object default
   {
     implicit object EnergyPriceTimesCurrencyPriceCanSimplify extends CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
     {

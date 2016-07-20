@@ -13,6 +13,12 @@ their surface but in the end lack the richness and versatility necessary to use 
 libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.7.0"
 ```
 
+```scala
+import com.quantarray.skylark.measure._
+import com.quantarray.skylark.measure.conversion.default._
+import com.quantarray.skylark.measure.arithmetic.default._
+```
+
 Many units of measure are defined for you.
 
 ```scala
@@ -36,19 +42,21 @@ kg.inverse should be(ExponentialMeasure(kg, -1.0))
 kg to kg should be(Some(1))
 kg to lb should be(Some(2.204625))
 kg to g should be(Some(1000))
+kg to cg should be(Some(100000))
 ```
 
 You can take existing units and compose more complex ones by multiplying, dividing, and exponentiating.
 
 ```scala
-kg * m / sec ^ 2
+val N = kg * m / sec ^ 2
 ```
 
-You can find our the conversion factor from one `to` another.  No conversion factor may exist.
+You can find our the conversion factor from one `to` another. No conversion factor may exist.
 
 ```scala
 (kg to lb).value should be(2.204625)
 ```
+
 Many systems omit units of measure when storing or presenting numerical quantities. Now you can store units of measure along with a numeric value as a plain string.
 With `MeasureParsers` you can turn that string back into a measure.
  
@@ -79,7 +87,7 @@ You can perform the expected arithmetic operations on quantities.
 ```
 
 Quantity conversions are also supported via the same `to` operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
-are defined by converters and require their own CanConvert instances of their components' conversions.
+are defined by converters and require their own `CanConvert` instances of their components' conversions.
 
 ```scala
 (1.ft to in) should equal(12.0 in)

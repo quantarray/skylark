@@ -19,7 +19,7 @@ package object commodity
     }
   }
 
-  object Implicits
+  object default
   {
 
     implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLength]

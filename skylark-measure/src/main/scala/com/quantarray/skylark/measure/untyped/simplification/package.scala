@@ -11,7 +11,7 @@ import com.quantarray.skylark.measure.CanSimplify
  */
 package object simplification
 {
-  object Implicits
+  object default
   {
     implicit object DefaultCanSimplify extends CanSimplify[Measure, Measure]
     {

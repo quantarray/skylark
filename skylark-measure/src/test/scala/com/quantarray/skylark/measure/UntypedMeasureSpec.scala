@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.Implicits._
+import com.quantarray.skylark.measure.arithmetic.default._
 import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -47,28 +47,28 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
 
   def pow(measure: untyped.Measure, exponent: Double): untyped.Measure =
   {
-    import com.quantarray.skylark.measure.untyped.Implicits._
+    import com.quantarray.skylark.measure.untyped.arithmetic.default._
 
     measure ^ exponent
   }
 
   def times(multiplicand: untyped.Measure, multiplier: untyped.Measure): untyped.Measure =
   {
-    import com.quantarray.skylark.measure.untyped.Implicits._
+    import com.quantarray.skylark.measure.untyped.arithmetic.default._
 
     multiplicand * multiplier
   }
 
   def divide(numerator: untyped.Measure, denominator: untyped.Measure): untyped.Measure =
   {
-    import com.quantarray.skylark.measure.untyped.Implicits._
+    import com.quantarray.skylark.measure.untyped.arithmetic.default._
 
     numerator / denominator
   }
 
   def simplify(measure: untyped.Measure): untyped.Measure =
   {
-    import com.quantarray.skylark.measure.untyped.simplification.Implicits._
+    import com.quantarray.skylark.measure.untyped.simplification.default._
 
     measure.simplify
   }
