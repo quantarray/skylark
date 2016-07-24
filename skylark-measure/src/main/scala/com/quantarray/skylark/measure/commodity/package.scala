@@ -11,7 +11,7 @@ package object commodity
   object us
   {
 
-    import Measure.Composition._
+    import composition._
 
     object commercial
     {
