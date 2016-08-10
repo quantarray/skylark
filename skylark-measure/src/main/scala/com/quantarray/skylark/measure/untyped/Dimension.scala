@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure.untyped
  *
  * @author Araik Grigoryan
  */
-trait Dimension
+trait Dimension extends Serializable
 
 trait ProductDimension extends Dimension
 {

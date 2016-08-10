@@ -19,6 +19,8 @@ import com.quantarray.skylark.measure.conversion.default._
 import com.quantarray.skylark.measure.arithmetic.default._
 ```
 
+### Simple usage
+
 Many units of measure are defined for you.
 
 ```scala
@@ -93,4 +95,10 @@ are defined by converters and require their own `CanConvert` instances of their 
 (1.ft to in) should equal(12.0 in)
 (12.in to ft) should equal(1.0 ft)
 ```
+
+### Overriding default behavior
+
+**skylark-measure** relies on the presence of an `implicit` type classes to 
+
+#### Arithmetic
 

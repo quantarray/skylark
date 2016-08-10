@@ -26,7 +26,7 @@ import com.quantarray.skylark.measure.{CanConvert, CanSimplify, QuasiNumeric}
   *
   * @author Araik Grigoryan
   */
-trait Quantity[N]
+abstract class Quantity[N] extends Serializable
 {
   implicit val qn: QuasiNumeric[N]
 

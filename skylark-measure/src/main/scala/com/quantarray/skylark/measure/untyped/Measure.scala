@@ -28,7 +28,7 @@ import scala.language.dynamics
   *
   * @author Araik Grigoryan
   */
-trait Measure extends Dynamic
+trait Measure extends Dynamic with Serializable
 {
   self =>
 

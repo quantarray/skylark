@@ -46,7 +46,7 @@ trait QuasiNumeric[@specialized(Double, Int) T]
 object QuasiNumeric
 {
 
-  implicit object DoubleQuasiNumeric extends QuasiNumeric[Double]
+  implicit object DoubleQuasiNumeric extends QuasiNumeric[Double] with Serializable
   {
     override def negate(x: Double): Double = -x
 
