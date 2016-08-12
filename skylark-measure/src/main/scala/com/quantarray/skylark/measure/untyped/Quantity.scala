@@ -26,7 +26,7 @@ import com.quantarray.skylark.measure.{CanConvert, CanSimplify, QuasiNumeric}
   *
   * @author Araik Grigoryan
   */
-abstract class Quantity[N] extends Serializable
+abstract class Quantity[N] extends Product with Serializable
 {
   implicit val qn: QuasiNumeric[N]
 
@@ -70,6 +70,14 @@ object Quantity
       override def +(constant: N): Quantity[N] = Quantity(qn.plus(value, constant), measure)
 
       override def -(constant: N): Quantity[N] = Quantity(qn.minus(value, constant), measure)
+
+      private val productElements = Seq(value, measure)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[Quantity[_]]
 
       override def toString: String = s"$value $measure"
     }

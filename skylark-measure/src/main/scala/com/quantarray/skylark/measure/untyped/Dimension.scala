@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure.untyped
  *
  * @author Araik Grigoryan
  */
-trait Dimension extends Serializable
+trait Dimension extends Product with Serializable
 
 trait ProductDimension extends Dimension
 {
@@ -44,6 +44,14 @@ object ProductDimension
       val multiplicand: Dimension = params._1
 
       val multiplier: Dimension = params._2
+
+      private val productElements = Seq(multiplicand, multiplier)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[ProductDimension]
 
       override def toString: String = s"$multiplicand * $multiplier"
     }
@@ -69,6 +77,14 @@ object RatioDimension
 
       val denominator: Dimension = params._2
 
+      private val productElements = Seq(numerator, denominator)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[RatioDimension]
+
       override def toString: String = s"$numerator / $denominator"
     }
   }
@@ -92,6 +108,14 @@ object ExponentialDimension
       val base: Dimension = params._1
 
       val exponent: Double = params._2
+
+      private val productElements = Seq(base, exponent)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[ExponentialDimension]
 
       override def toString: String = s"$base ^ $exponent"
     }

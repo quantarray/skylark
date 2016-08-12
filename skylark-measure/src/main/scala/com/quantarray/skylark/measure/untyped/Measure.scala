@@ -28,7 +28,7 @@ import scala.language.dynamics
   *
   * @author Araik Grigoryan
   */
-trait Measure extends Dynamic with Serializable
+trait Measure extends Product with Serializable with Dynamic
 {
   self =>
 
@@ -120,6 +120,14 @@ object ProductMeasure
 
       override def hashCode(): Int = 41 * multiplicand.hashCode() + multiplier.hashCode()
 
+      private val productElements = Seq(multiplicand, multiplier)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[ProductMeasure]
+
       override def toString = name
     }
   }
@@ -163,6 +171,14 @@ object RatioMeasure
       }
 
       override def hashCode(): Int = 41 * numerator.hashCode() + denominator.hashCode()
+
+      private val productElements = Seq(numerator, denominator)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[RatioMeasure]
 
       override def toString = name
     }
@@ -211,6 +227,14 @@ object ExponentialMeasure
       }
 
       override def hashCode(): Int = 41 * base.hashCode() + exponent.hashCode()
+
+      private val productElements = Seq(base, exponent)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[ExponentialMeasure]
 
       override def toString = name
     }

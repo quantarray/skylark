@@ -144,6 +144,14 @@ object ProductMeasure
 
       override def hashCode(): Int = 41 * multiplicand.hashCode() + multiplier.hashCode()
 
+      private val productElements = Seq(multiplicand, multiplier)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[ProductMeasure[_, _]]
+
       override def toString = name
     }
   }
@@ -206,6 +214,14 @@ object RatioMeasure
 
       override def hashCode(): Int = 41 * numerator.hashCode() + denominator.hashCode()
 
+      private val productElements = Seq(numerator, denominator)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[RatioMeasure[_, _]]
+
       override def toString = name
     }
   }
@@ -254,6 +270,14 @@ object ExponentialMeasure
       }
 
       override def hashCode(): Int = 41 * base.hashCode() + exponent.hashCode()
+
+      private val productElements = Seq(base, exponent)
+
+      override def productElement(n: Int): Any = productElements(n)
+
+      val productArity: Int = productElements.size
+
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[ExponentialMeasure[_]]
 
       override def toString = name
     }
