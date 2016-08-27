@@ -47,19 +47,19 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
 
   lazy val immediateBase = base.map(_._2).getOrElse(1.0)
 
-  lazy val ultimateBase: Double =
+  lazy val ultimateBase: Option[(Self, Double)] =
   {
     @tailrec
-    def descend(measure: Option[Self], multiple: Double): Double =
+    def descend(measure: Option[Self], parent: Option[Self], multiple: Double): Option[(Self, Double)] =
     {
       measure match
       {
-        case None => multiple
-        case Some(x) => descend(x.base.map(_._1), x.base.map(_._2).getOrElse(1.0) * multiple)
+        case None => parent.map((_, multiple))
+        case Some(x) => descend(x.base.map(_._1), measure, x.base.map(_._2).getOrElse(1.0) * multiple)
       }
     }
 
-    descend(Some(this), 1.0)
+    descend(Some(this), None, 1.0)
   }
 
   def composes(name: String, system: SystemOfUnits, multiple: Double): Self

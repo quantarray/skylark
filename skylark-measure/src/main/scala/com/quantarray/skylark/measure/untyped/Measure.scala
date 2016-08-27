@@ -50,7 +50,7 @@ trait Measure extends Product with Serializable with Dynamic
   /**
     * Gets ultimate base.
     */
-  def ultimateBase: Double
+  def ultimateBase: Option[(Measure, Double)]
 
   /**
     * Determines if this measure can be decomposed into constituent measures.
@@ -108,7 +108,7 @@ object ProductMeasure
 
       override val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
 
-      override val ultimateBase: Double = 1.0
+      override val ultimateBase = None
 
       override val isStructuralAtom: Boolean = false
 
@@ -160,7 +160,7 @@ object RatioMeasure
 
       val name = s"${numerator.structuralName} / ${denominator.structuralName}"
 
-      override val ultimateBase: Double = 1.0
+      override val ultimateBase = None
 
       override val isStructuralAtom: Boolean = false
 
@@ -216,7 +216,7 @@ object ExponentialMeasure
 
       override val name = baseName
 
-      override val ultimateBase: Double = 1.0
+      override val ultimateBase = None
 
       override val isStructuralAtom: Boolean = false
 

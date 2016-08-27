@@ -31,7 +31,11 @@ trait MeasureConverter extends SameTypeConverter[Measure]
 {
   protected override def convert(from: Measure, to: Measure): Option[Double] =
   {
-    if (from.system == to.system) Some(from.ultimateBase / to.ultimateBase) else super.convert(from, to)
+    (from.ultimateBase, to.ultimateBase) match
+    {
+      case (Some(f), Some(t)) if from.system == to.system && f._1 == t._1 => Some(f._2 / t._2)
+      case _ => super.convert(from, to)
+    }
   }
 }
 

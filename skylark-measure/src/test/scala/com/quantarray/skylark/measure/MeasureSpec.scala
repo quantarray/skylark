@@ -44,6 +44,7 @@ class MeasureSpec extends FlatSpec with Matchers
       kg to lb should be(Some(2.204625))
       kg to g should be(Some(1000))
       kg to cg should be(Some(100000))
+      kg to oz_metric should be(None) // Default conversion is not guaranteed to exist
     }
 
   "mi / h" should "be convertible to m/s" in
