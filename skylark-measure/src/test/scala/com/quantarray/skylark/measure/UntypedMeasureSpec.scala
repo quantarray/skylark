@@ -20,6 +20,8 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.arithmetic.default._
+import com.quantarray.skylark.measure.quantity._
+import com.quantarray.skylark.measure.untyped.conversion.MeasureConverter
 import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -65,6 +67,8 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
     source.to(target)
   }
 
+  def plus(q1: untyped.Quantity[Double], q2: untyped.Quantity[Double])(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): Option[untyped.Quantity[Double]] = q1 + q2
+
   "Untyped measure" should "exponentiate" in
     {
       pow(kg, 2) should be(kg ^ 2)
@@ -88,5 +92,24 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
   it should "simplify" in
     {
       simplify(kg * Unit) should be(kg)
+    }
+
+  it should "plus" in
+    {
+      implicit object MeasureCanConvert extends CanConvert[untyped.Measure, untyped.Measure]
+      {
+        override def convert: Converter[untyped.Measure, untyped.Measure] = new MeasureConverter
+        {
+          protected override def convert(from: untyped.Measure, to: untyped.Measure): Option[Double] = (from, to) match
+          {
+            case (`bbl`, `gal`) => Some(42)
+            case (`gal`, `bbl`) => apply(to, from).map(1.0 / _)
+            case _ => super.apply(from, to)
+          }
+        }
+      }
+
+      plus(3.bbl, 42.gal).value should equal(4.bbl)
+      plus(42.gal, 1.bbl).value should equal(84.gal)
     }
 }

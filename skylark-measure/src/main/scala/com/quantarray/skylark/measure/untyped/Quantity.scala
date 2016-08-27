@@ -40,6 +40,9 @@ abstract class Quantity[N] extends Product with Serializable
 
   def +(constant: N): Quantity[N]
 
+  def +(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] =
+    cc.convert(quantity.measure, measure).map(cf => Quantity(qn.plus(value, qn.timesConstant(quantity.value, cf)), measure))
+
   def -(constant: N): Quantity[N]
 
   def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] = cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
@@ -78,6 +81,14 @@ object Quantity
       val productArity: Int = productElements.size
 
       override def canEqual(that: Any): Boolean = that.isInstanceOf[Quantity[_]]
+
+      override def equals(obj: scala.Any): Boolean = obj match
+      {
+        case that: Quantity[_] => canEqual(that) && this.value == that.value & this.measure == that.measure
+        case _ => false
+      }
+
+      override def hashCode(): Int = 41 * value.hashCode() + measure.hashCode()
 
       override def toString: String = s"$value $measure"
     }

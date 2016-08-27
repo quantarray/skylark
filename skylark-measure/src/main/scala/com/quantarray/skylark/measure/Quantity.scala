@@ -61,6 +61,16 @@ case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit val qn: Q
 
   def simplify[R <: Measure[R]](implicit cs: CanSimplify[M, Option[R]]): Option[Quantity[N, R]] = measure.simplify[R].map(Quantity(value, _))
 
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[untyped.Quantity[_]]
+
+  override def equals(obj: scala.Any): Boolean = obj match
+  {
+    case that: untyped.Quantity[_] => canEqual(that) && this.value == that.value & this.measure == that.measure
+    case _ => false
+  }
+
+  override def hashCode(): Int = 41 * value.hashCode() + measure.hashCode()
+
   override def toString = s"$value $measure"
 }
 
