@@ -69,6 +69,8 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
 
   def plus(q1: untyped.Quantity[Double], q2: untyped.Quantity[Double])(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): Option[untyped.Quantity[Double]] = q1 + q2
 
+  def minus(q1: untyped.Quantity[Double], q2: untyped.Quantity[Double])(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): Option[untyped.Quantity[Double]] = q1 - q2
+
   "Untyped measure" should "exponentiate" in
     {
       pow(kg, 2) should be(kg ^ 2)
@@ -94,7 +96,7 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
       simplify(kg * Unit) should be(kg)
     }
 
-  it should "plus" in
+  it should "plus and minus" in
     {
       implicit object MeasureCanConvert extends CanConvert[untyped.Measure, untyped.Measure]
       {
@@ -111,5 +113,8 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
 
       plus(3.bbl, 42.gal).value should equal(4.bbl)
       plus(42.gal, 1.bbl).value should equal(84.gal)
+
+      minus(3.bbl, 42.gal).value should equal(2.bbl)
+      minus(40.gal, 1.bbl).value should equal(-2.gal)
     }
 }
