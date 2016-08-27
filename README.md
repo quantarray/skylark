@@ -98,7 +98,30 @@ are defined by converters and require their own `CanConvert` instances of their 
 
 ### Overriding default behavior
 
-**skylark-measure** relies on the presence of an `implicit` type classes to 
-
 #### Arithmetic
 
+**skylark-measure** relies on the presence of `implicit` type classes `CanMultiply`, `CanDivide`, and `CanExponentiate` to perform arithmetic operations. 
+
+By default 
+
+* `m1 * m2` returns `ProductMeasure(m1, m2)`;
+* `m1 / m2` returns `RatioMeasure(m1, m2)`;
+* `m ^ n` return `ExponentialMeasure(m, n`.
+
+One can, however, override the return type by proving a custom implicit object or class that derives from one of the three `Can*` traits.
+
+For example, say when one does `b / s` (bits per second), one wants to work with a custom `BitRateMeasure` instead of the default `RatioMeasure(bit, s)`.
+  
+One would then need to define the custom object like `InformationTimeCanDivide`:
+
+```scala
+object custom extends com.quantarray.skylark.measure.arithmetic.DefaultImplicits
+{
+
+  implicit object InformationTimeCanDivide extends CanDivide[InformationMeasure, TimeMeasure, BitRateMeasure]
+  {
+    override def divide(numerator: InformationMeasure, denominator: TimeMeasure): BitRateMeasure = BitRateMeasure(numerator, denominator)
+  }
+
+}
+```
