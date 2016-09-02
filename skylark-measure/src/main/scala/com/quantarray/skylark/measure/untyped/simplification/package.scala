@@ -1,7 +1,8 @@
 package com.quantarray.skylark.measure.untyped
 
 import com.quantarray.skylark.measure._
-import com.quantarray.skylark.measure.CanSimplify
+import com.quantarray.skylark.measure.untyped.morphing.ToProductOfExponentialsMorphism
+import com.quantarray.skylark.measure.untyped.reduction.DefaultReducer
 
 /*
  * Skylark
@@ -11,20 +12,20 @@ import com.quantarray.skylark.measure.CanSimplify
  */
 package object simplification
 {
+
   object default
   {
+
     implicit object DefaultCanSimplify extends CanSimplify[Measure, Measure]
     {
-      override def simplify(inflated: Measure): Measure = inflated match
+      override def simplify(inflated: Measure): Measure =
       {
-        case ProductMeasure(md, mr) if md == Unit && mr == Unit => Unit
-        case ProductMeasure(md, mr) if md == Unit => mr.simplify
-        case ProductMeasure(md, mr) if mr == Unit => md.simplify
-        case ProductMeasure(md, mr@RatioMeasure(nr, dr)) if md == dr => nr.simplify
-        case ProductMeasure(md@RatioMeasure(nr, dr), mr) if dr == mr => nr.simplify
-        case ExponentialMeasure(base, exponent) if exponent == 1.0 => base.simplify
-        case _ => inflated
+        val productOfExponentials = ToProductOfExponentialsMorphism(inflated)
+
+        DefaultReducer(productOfExponentials)
       }
     }
+
   }
+
 }
