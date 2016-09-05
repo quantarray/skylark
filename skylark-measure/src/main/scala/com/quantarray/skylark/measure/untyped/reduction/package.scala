@@ -2,6 +2,8 @@ package com.quantarray.skylark.measure.untyped
 
 import com.quantarray.skylark.measure._
 
+import scala.collection.immutable.SortedMap
+
 /*
  * Skylark
  *
@@ -13,11 +15,19 @@ package object reduction
 
   case object DefaultReducer extends Reducer[Measure, Measure]
   {
-    type ExponentMap = Map[Measure, Double]
+
+    implicit val measureOrdering = Ordering.by
+    {
+      measure: Measure => measure.name
+    }
+
+    type ExponentMap = SortedMap[Measure, Double]
+
+    val ExponentMap = SortedMap
 
     override def apply(from: Measure): Measure =
     {
-      val es = exponentials(deflate(from), 1.0, Map.empty)
+      val es = exponentials(deflate(from), 1.0, ExponentMap.empty[Measure, Double])
 
       val productOfExponentials = es.groupBy(_._1).values.map(x => x.reduce((x, y) => (x._1, x._2 + y._2))).filter(_._2 != 0).toList
 
@@ -72,7 +82,7 @@ package object reduction
 
     private def exponential(measure: (Measure, Double)): Measure = measure match
     {
-      case (m, 1.0) => m
+      case (x, 1.0) => x
       case _ => ExponentialMeasure(measure._1, measure._2)
     }
   }
