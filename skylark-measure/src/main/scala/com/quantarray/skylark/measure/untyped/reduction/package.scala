@@ -54,6 +54,7 @@ package object reduction
         case ProductMeasure(md, mr) if mr == Unit => deflate(md)
         case ProductMeasure(md, mr@RatioMeasure(nr, dr)) if md == dr => deflate(nr)
         case ProductMeasure(md@RatioMeasure(nr, dr), mr) if dr == mr => deflate(nr)
+        case RatioMeasure(nr, Unit) => deflate(nr)
         case ExponentialMeasure(Unit, _) => Unit
         case ExponentialMeasure(base, exponent) if exponent == 1.0 => deflate(base)
       }
