@@ -1,8 +1,17 @@
+<!--
+  Title: Skylark
+  Description: Collection of libraries for quantitative and financial computation.
+  Author: Araik Grigoryan
+  Copyright: 2012-2016 Quantarray, LLC
+-->
+  
+<meta name='keywords' content='scala, unit of measure, skylark'>
+
 [![Build Status](https://travis-ci.org/quantarray/skylark.svg?branch=master)](https://travis-ci.org/quantarray/skylark)
 
 # Skylark
 
-Skylark is a set of libraries for quantitative and financial computation.
+Skylark is a collection of libraries for quantitative and financial computation.
 
 ## skylark-measure
 
