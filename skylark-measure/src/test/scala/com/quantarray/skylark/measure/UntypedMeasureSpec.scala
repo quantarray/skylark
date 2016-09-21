@@ -95,6 +95,7 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
     {
       simplify(kg * Unit) should be(kg)
       simplify(((bbl ^ 2) / Unit) * ((USD / bbl) ^ 2)) should be(USD ^ 2)
+      simplify((USD / bp) * bp * (USD ^ -1.0)) should be(Unit)
     }
 
   it should "plus and minus" in

@@ -33,6 +33,7 @@ package object reduction
 
       val reduced = productOfExponentials.size match
       {
+        case 0 => Unit
         case 1 => exponential(productOfExponentials.head)
         case 2 => ProductMeasure(exponential(productOfExponentials.head), exponential(productOfExponentials(1)))
         case _ =>
