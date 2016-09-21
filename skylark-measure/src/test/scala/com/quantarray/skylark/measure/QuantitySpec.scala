@@ -190,4 +190,20 @@ class QuantitySpec extends FlatSpec with Matchers
       container.to(cbu).value.value should equal(39.36830357142857 +- numericTolerance)
     }
 
+  type VelocityMeasure = RatioMeasure[LengthMeasure, TimeMeasure]
+
+  type MomentumMeasure = ProductMeasure[MassMeasure, VelocityMeasure]
+
+  type Mass = Quantity[Double, MassMeasure]
+
+  type Velocity = Quantity[Double, VelocityMeasure]
+
+  type Momentum = Quantity[Double, MomentumMeasure]
+
+  def momentum(mass: Mass, velocity: Velocity): Momentum = mass * velocity
+
+  "Mass and velocity quantities" should "be strongly typed" in
+    {
+      momentum(5.kg, 4 * (m / s)) should be(20 * (kg * (m / s)))
+    }
 }

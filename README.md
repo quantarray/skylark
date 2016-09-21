@@ -106,6 +106,33 @@ are defined by converters and require their own `CanConvert` instances of their 
 (12.in to ft) should equal(1.0 ft)
 ```
 
+### Strongly-typed and untyped measures and quantities
+
+**skylark-measure** gives you the freedom and flexibility of working with strongly-typed measures (e.g. `MassMeasure`) or looser-typed `untyped.Measure`. 
+The choice of which to work with depends on the individual API you would like to expose and enforce.
+
+In the situation where you know you must receive a `MassMeasure`, you would encode exactly as natural logic or physics would dictate. There is, hence, no chance
+someone can pass a quantity in units of `LuminousFluxMeasure`, for example, where a quantity in units of `MassMeasure` is expected (unless one finds compiler errors
+aesthetically pleasing).
+
+```scala
+type VelocityMeasure = RatioMeasure[LengthMeasure, TimeMeasure]
+
+type MomentumMeasure = ProductMeasure[MassMeasure, VelocityMeasure]
+
+type Mass = Quantity[Double, MassMeasure]
+
+type Velocity = Quantity[Double, VelocityMeasure]
+
+type Momentum = Quantity[Double, MomentumMeasure]
+
+def momentum(mass: Mass, velocity: Velocity): Momentum = mass * velocity
+```
+
+In other situations, where knowledge of a type of measure is uncertain, one would rely on an amorphous `untyped.Measure`, in package 
+`com.quantarray.skylark.measure.untyped`. Operations on `untyped.Measure` yields another `untyped.Measure`. You can always `match` on an 
+`untyped.Measure` to check or assert a certain shape.
+
 ### Overriding default behavior
 
 #### Arithmetic
