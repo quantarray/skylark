@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.measure.untyped
 
-import com.quantarray.skylark.measure.{CanConvert, CanSimplify, QuasiNumeric}
+import com.quantarray.skylark.measure._
 
 /**
   * Quantity.
@@ -36,7 +36,13 @@ abstract class Quantity[N] extends Product with Serializable
 
   def *(constant: Double): Quantity[N]
 
+  def *(quantity: Quantity[N])(implicit cm: CanMultiply[Measure, Measure, Measure]): Quantity[N] =
+    Quantity(qn.times(value, quantity.value), measure * quantity.measure)
+
   def /(constant: Double): Quantity[N]
+
+  def /(quantity: Quantity[N])(implicit cd: CanDivide[Measure, Measure, Measure]): Quantity[N] =
+    Quantity(qn.divide(value, quantity.value), measure / quantity.measure)
 
   def +(constant: N): Quantity[N]
 
