@@ -5,7 +5,7 @@ object Build
 {
   val organization = "com.quantarray"
 
-  val version = "0.11.3"
+  val version = "0.12.0"
 
   val scalaVersion = "2.11.8"
 
