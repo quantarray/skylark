@@ -78,7 +78,7 @@ trait Measure extends Product with Serializable with Dynamic
 
   def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Double] = cc.convert(this, target)
 
-  def toOrElse(target: Measure, default: Double)(implicit cc: CanConvert[Measure, Measure]): Double = to(target).getOrElse(default)
+  def toOrElse[B >: Double](target: Measure, default: B)(implicit cc: CanConvert[Measure, Measure]): B = to(target).getOrElse(default)
 
   def simplify(implicit cs: CanSimplify[Measure, Measure]): Measure = cs.simplify(this)
 }

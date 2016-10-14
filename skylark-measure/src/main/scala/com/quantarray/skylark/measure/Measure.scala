@@ -94,7 +94,7 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   /**
     * Converts to target measure with default value.
     */
-  def toOrElse[M2 <: Measure[M2]](target: M2, default: Double)(implicit cc: CanConvert[Self, M2]): Double = to(target).getOrElse(default)
+  def toOrElse[M2 <: Measure[M2], B >: Double](target: M2, default: B)(implicit cc: CanConvert[Self, M2]): B = to(target).getOrElse(default)
 
   /**
     * Attempts to simplify to target type.

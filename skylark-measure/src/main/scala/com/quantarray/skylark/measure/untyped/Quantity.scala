@@ -62,7 +62,7 @@ abstract class Quantity[N] extends Product with Serializable
 
   def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] = cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
 
-  def toOrElse(target: Measure, default: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Quantity[N] = to(target).getOrElse(default)
+  def toOrElse[B >: Quantity[N]](target: Measure, default: B)(implicit cc: CanConvert[Measure, Measure]): B = to(target).getOrElse(default)
 
   def simplify(implicit cs: CanSimplify[Measure, Measure]): Quantity[N] = Quantity(value, measure.simplify)
 }
