@@ -49,10 +49,16 @@ abstract class Quantity[N] extends Product with Serializable
   def +(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] =
     cc.convert(quantity.measure, measure).map(cf => Quantity(qn.plus(value, qn.timesConstant(quantity.value, cf)), measure))
 
+  def +!(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Quantity[N] =
+    this.+(quantity).getOrElse(throw ConvertException(s"Cannot convert from $measure to ${quantity.measure}."))
+
   def -(constant: N): Quantity[N]
 
   def -(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] =
     cc.convert(quantity.measure, measure).map(cf => Quantity(qn.minus(value, qn.timesConstant(quantity.value, cf)), measure))
+
+  def -!(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Quantity[N] =
+    this.-(quantity).getOrElse(throw ConvertException(s"Cannot convert from $measure to ${quantity.measure}."))
 
   def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] = cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
 

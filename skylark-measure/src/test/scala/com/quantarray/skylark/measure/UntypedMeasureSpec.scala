@@ -108,7 +108,7 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
           {
             case (`bbl`, `gal`) => Some(42)
             case (`gal`, `bbl`) => apply(to, from).map(1.0 / _)
-            case _ => super.apply(from, to)
+            case _ => super.convert(from, to)
           }
         }
       }
@@ -118,5 +118,13 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
 
       minus(3.bbl, 42.gal).value should equal(2.bbl)
       minus(40.gal, 1.bbl).value should equal(-2.gal)
+
+      (3.bbl +! 3.bbl) should equal(6.bbl)
+      (12.gal -! 4.gal) should equal(8.gal)
+
+      intercept[ConvertException]
+        {
+          3.bbl +! 42.kg
+        }
     }
 }
