@@ -8,4 +8,7 @@ package com.quantarray.skylark.measure
  */
 package object untyped
 {
+  val * = untyped.ProductMeasure
+  val / = untyped.RatioMeasure
+  val ^ = untyped.ExponentialMeasure
 }
