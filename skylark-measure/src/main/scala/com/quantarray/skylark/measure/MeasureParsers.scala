@@ -22,10 +22,10 @@ package com.quantarray.skylark.measure
 import scala.util.parsing.combinator.JavaTokenParsers
 
 /**
- * Measure parsers.
- *
- * @author Araik Grigoryan
- */
+  * Measure parsers.
+  *
+  * @author Araik Grigoryan
+  */
 trait MeasureParsers extends JavaTokenParsers
 {
   val measureProvider: MeasureProvider
@@ -36,17 +36,17 @@ trait MeasureParsers extends JavaTokenParsers
 
   def productMeasureFactor: Parser[untyped.Measure] = measureFactor ~ "*" ~ measureTerm ^^
     {
-      case multiplicand ~ _ ~ multiplier => untyped.ProductMeasure(multiplicand, multiplier)
+      case multiplicand ~ _ ~ multiplier => untyped.*(multiplicand, multiplier)
     }
 
   def ratioMeasureFactor: Parser[untyped.Measure] = measureFactor ~ "/" ~ measureTerm ^^
     {
-      case numerator ~ _ ~ denominator => untyped.RatioMeasure(numerator, denominator)
+      case numerator ~ _ ~ denominator => untyped./(numerator, denominator)
     }
 
   def exponentialMeasureFactor: Parser[untyped.Measure] = measureFactor ~ "^" ~ floatingPointNumber ^^
     {
-      case base ~ _ ~ exponent => untyped.ExponentialMeasure(base, exponent.toDouble)
+      case base ~ _ ~ exponent => untyped.^(base, exponent.toDouble)
     }
 
   def measureFactor: Parser[untyped.Measure] = measureMatter | measureParenthesizedExpression

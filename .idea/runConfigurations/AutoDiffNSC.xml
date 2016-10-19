@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="AutoDiffNSC" type="Application" factoryName="Application" singleton="true">
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="scala.tools.nsc.Main" />
     <option name="VM_PARAMETERS" value="-Dscala.usejavacp=true" />
     <option name="PROGRAM_PARAMETERS" value="skylark-autodiff/src/test/scala/com/quantarray/skylark/autodiff/AutoDiffNSC.scala" />
