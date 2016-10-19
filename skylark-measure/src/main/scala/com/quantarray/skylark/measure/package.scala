@@ -45,7 +45,7 @@ package object measure
 
   case class NoDimension() extends Dimension[NoDimension]
   {
-    override def toString: String = "1"
+    override def toString: String = "\uD835\uDFD9"
   }
 
   val Dimensionless = NoDimension()
@@ -200,7 +200,7 @@ package object measure
 
   val Yi = BinaryMultiple("Yi", 17)
 
-  final val Unit = DimensionlessMeasure("1", Universal())
+  final val Unit = DimensionlessMeasure("\uD835\uDFD9", Universal())
 
   type ExponentialLength = ExponentialMeasure[LengthMeasure]
 
