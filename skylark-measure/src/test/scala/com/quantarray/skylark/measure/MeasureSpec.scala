@@ -54,7 +54,9 @@ class MeasureSpec extends FlatSpec with Matchers
 
   it should "be collectible" in
     {
-      (kg * m / (s ^ 2)).collect({ case untyped.RatioMeasure(untyped.ProductMeasure(x, _), _) => x }) should be(kg)
+      import untyped._
+
+      (kg * m / (s ^ 2)).collect({ case (x * _) / _ => x }) should be(kg)
     }
 
   "(bbl ^ 2) / USD" should "be convertible to string" in
