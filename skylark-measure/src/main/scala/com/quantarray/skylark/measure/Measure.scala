@@ -67,17 +67,27 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   def composes(name: String, multiple: Double): Self = composes(name, system, multiple)
 
   /**
-    * Turns this measure into a general RatioMeasure.
+    * Adds another measure. CanAdd instance allows addition of apples and oranges to obtain bananas.
+    */
+  def +[M2 <: Measure[M2], R](addend: M2)(implicit ca: CanAdd.Aux[Self, M2, R]): ca.R = ca.plus(this, addend)
+
+  /**
+    * Subtracts another measure.
+    */
+  def -[M2 <: Measure[M2], R](subtrahend: M2)(implicit ca: CanAdd.Aux[Self, M2, R]): ca.R = ca.plus(this, subtrahend)
+
+  /**
+    * Divides by another measure.
     */
   def /[M2 <: Measure[M2], R](denominator: M2)(implicit cd: CanDivide[Self, M2, R]): R = cd.divide(this, denominator)
 
   /**
-    * Turns this measure into a general ProductMeasure.
+    * Multiplies by another measure.
     */
   def *[M2 <: Measure[M2], R](multiplier: M2)(implicit cm: CanMultiply[Self, M2, R]): R = cm.times(this, multiplier)
 
   /**
-    * Turns this measure into a general ExponentialMeasure.
+    * Exponentiates this measure.
     */
   def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[Self, R]): R = ce.pow(this, exponent)
 

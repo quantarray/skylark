@@ -38,11 +38,19 @@ case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit val qn: Q
 
   def -(constant: N) = Quantity(qn.minus(value, constant), measure)
 
-  def +[M2 <: Measure[M2]](quantity: Quantity[N, M2])(implicit cc: CanConvert[M2, M]): Option[Quantity[N, M]] =
-    cc.convert(quantity.measure, measure).map(cf => Quantity(qn.plus(value, qn.timesConstant(quantity.value, cf)), measure))
+  /**
+    * Adds another quantity. CanAdd instance allows addition of apples and oranges to obtain bananas.
+    */
+  def +[M2 <: Measure[M2], R](quantity: Quantity[N, M2])
+                             (implicit caq: CanAddQuantity.Aux[N, M, Quantity[N, M], M2, Quantity[N, M2], M, R],
+                              cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.R = caq.plus(this, quantity)
 
-  def -[M2 <: Measure[M2]](quantity: Quantity[N, M2])(implicit cc: CanConvert[M2, M]): Option[Quantity[N, M]] =
-    cc.convert(quantity.measure, measure).map(cf => Quantity(qn.minus(value, qn.timesConstant(quantity.value, cf)), measure))
+  /**
+    * Subtracts another quantity. CanAdd instance allows addition of apples and oranges to obtain bananas.
+    */
+  def -[M2 <: Measure[M2], R](quantity: Quantity[N, M2])
+                             (implicit caq: CanAddQuantity.Aux[N, M, Quantity[N, M], M2, Quantity[N, M2], M, R],
+                              cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.R = caq.plus(this, -quantity)
 
   def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[N, M2])(implicit cd: CanDivide[M, M2, R]): Quantity[N, R] =
     Quantity(qn.divide(value, quantity.value), measure / quantity.measure)

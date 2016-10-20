@@ -19,14 +19,25 @@
 
 package com.quantarray.skylark.measure
 
+import scala.annotation.implicitNotFound
+
 /**
-  * Convert exception.
+  * Can add type class.
   *
   * @author Araik Grigoryan
   */
-case class ConvertException(message: String) extends Exception(message)
-
-object ConvertException
+@implicitNotFound("Cannot find CanAdd implementation that adds ${A1} and ${A2}, resulting in {R}.")
+trait CanAdd[A1, A2]
 {
-  def apply(from: Any, to: Any): ConvertException = ConvertException(s"Cannot convert from $from to $to.")
+  type R
+
+  def plus(addend1: A1, addend2: A2): R
+}
+
+object CanAdd
+{
+  type Aux[A1, A2, R0] = CanAdd[A1, A2]
+    {
+      type R = R0
+    }
 }

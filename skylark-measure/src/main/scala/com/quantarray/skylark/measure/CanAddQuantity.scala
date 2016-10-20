@@ -20,13 +20,21 @@
 package com.quantarray.skylark.measure
 
 /**
-  * Convert exception.
+  * Can add quantity type class.
   *
   * @author Araik Grigoryan
   */
-case class ConvertException(message: String) extends Exception(message)
-
-object ConvertException
+trait CanAddQuantity[N, M1 <: Measure[M1], A1 <: Quantity[N, M1], M2 <: Measure[M2], A2 <: Quantity[N, M2], RM <: Measure[RM]]
 {
-  def apply(from: Any, to: Any): ConvertException = ConvertException(s"Cannot convert from $from to $to.")
+  type R
+
+  def plus(addend1: A1, addend2: A2)(implicit cc1: CanConvert[M1, RM], cc2: CanConvert[M2, RM]): R
+}
+
+object CanAddQuantity
+{
+  type Aux[N, M1 <: Measure[M1], A1 <: Quantity[N, M1], M2 <: Measure[M2], A2 <: Quantity[N, M2], RM <: Measure[RM], R0] = CanAddQuantity[N, M1, A1, M2, A2, RM]
+    {
+      type R = R0
+    }
 }

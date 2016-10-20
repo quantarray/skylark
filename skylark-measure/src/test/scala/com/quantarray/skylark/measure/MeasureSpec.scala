@@ -47,6 +47,15 @@ class MeasureSpec extends FlatSpec with Matchers
       kg to oz_metric should be(None) // Default conversion is not guaranteed to exist
     }
 
+  it should "add and subtract" in
+  {
+    kg + g should be(kg)
+    g + kg should be(g)
+
+    kg - g should be(kg)
+    g - kg should be(g)
+  }
+
   "mi / h" should "be convertible to m/s" in
     {
       (mi / h) to (m / s) should be(Some(0.4470388888888889))
