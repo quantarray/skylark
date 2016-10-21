@@ -50,37 +50,29 @@ package object arithmetic
   }
 
   object default extends DefaultImplicits
-  {
-
-    implicit object MassCanDivide extends CanDivide[MassMeasure, MassMeasure, DimensionlessMeasure]
-    {
-      override def divide(numerator: MassMeasure, denominator: MassMeasure): DimensionlessMeasure = Unit
-    }
-  }
 
   object unsafe extends DefaultImplicits
   {
-    implicit def lhsCanAddQuantityUnsafe[M <: Measure[M], A1 <: Quantity[Double, M], A2 <: Quantity[Double, M]] =
-      new CanAddQuantity[Double, M, A1, M, A2, M]
+    implicit def lhsCanAddQuantityUnsafe[M <: Measure[M], A1 <: Quantity[Double, M], A2 <: Quantity[Double, M]] = new CanAddQuantity[Double, M, A1, M, A2, M]
+    {
+      type R = Quantity[Double, M]
+
+      override def plus(addend1: A1, addend2: A2)(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): R =
       {
-        type R = Quantity[Double, M]
+        val targetMeasure = addend1.measure
 
-        override def plus(addend1: A1, addend2: A2)(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): R =
+        val a1 = cc1.convert(addend1.measure, targetMeasure).map(_ * addend1.value)
+        val a2 = cc2.convert(addend2.measure, targetMeasure).map(_ * addend2.value)
+
+        (a1, a2) match
         {
-          val targetMeasure = addend1.measure
-
-          val a1 = cc1.convert(addend1.measure, targetMeasure).map(_ * addend1.value)
-          val a2 = cc2.convert(addend2.measure, targetMeasure).map(_ * addend2.value)
-
-          (a1, a2) match
-          {
-            case (Some(aa1), Some(aa2)) => Quantity(aa1 + aa2, targetMeasure)
-            case (Some(_), _) => throw ConvertException(addend2.measure, targetMeasure)
-            case (_, Some(_)) => throw ConvertException(addend1.measure, targetMeasure)
-            case _ => throw ConvertException(s"Cannot convert to $targetMeasure.")
-          }
+          case (Some(aa1), Some(aa2)) => Quantity(aa1 + aa2, targetMeasure)
+          case (Some(_), _) => throw ConvertException(addend2.measure, targetMeasure)
+          case (_, Some(_)) => throw ConvertException(addend1.measure, targetMeasure)
+          case _ => throw ConvertException(s"Cannot convert to $targetMeasure.")
         }
       }
+    }
   }
 
 }
