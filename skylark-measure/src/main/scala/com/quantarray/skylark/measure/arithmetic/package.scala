@@ -35,11 +35,15 @@ package object arithmetic
 
     implicit def lhsCanAddQuantity[M <: Measure[M], A1 <: Quantity[Double, M], A2 <: Quantity[Double, M]] = new CanAddQuantity[Double, M, A1, M, A2, M]
     {
-      type R = Option[Quantity[Double, M]]
+      type R = M
 
-      override def plus(addend1: A1, addend2: A2)(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): R =
+      type QR = Option[Quantity[Double, M]]
+
+      override def plus(addend1: M, addend2: M): M = addend1
+
+      override def plus(addend1: A1, addend2: A2)(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): QR =
       {
-        val targetMeasure = addend1.measure
+        val targetMeasure = plus(addend1.measure, addend2.measure)
 
         val a1 = cc1.convert(addend1.measure, targetMeasure).map(_ * addend1.value)
         val a2 = cc2.convert(addend2.measure, targetMeasure).map(_ * addend2.value)
@@ -55,11 +59,15 @@ package object arithmetic
   {
     implicit def lhsCanAddQuantityUnsafe[M <: Measure[M], A1 <: Quantity[Double, M], A2 <: Quantity[Double, M]] = new CanAddQuantity[Double, M, A1, M, A2, M]
     {
-      type R = Quantity[Double, M]
+      type R = M
 
-      override def plus(addend1: A1, addend2: A2)(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): R =
+      type QR = Quantity[Double, M]
+
+      override def plus(addend1: M, addend2: M): M = addend1
+
+      override def plus(addend1: A1, addend2: A2)(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): QR =
       {
-        val targetMeasure = addend1.measure
+        val targetMeasure = plus(addend1.measure, addend2.measure)
 
         val a1 = cc1.convert(addend1.measure, targetMeasure).map(_ * addend1.value)
         val a2 = cc2.convert(addend2.measure, targetMeasure).map(_ * addend2.value)
