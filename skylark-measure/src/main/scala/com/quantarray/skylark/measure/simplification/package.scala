@@ -2,7 +2,7 @@ package com.quantarray.skylark.measure
 
 package object simplification
 {
-  type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, CurrencyPriceMeasure]
+  type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, CurrencyPrice]
 
   object default
   {

@@ -72,28 +72,46 @@ package object measure
   val Mass = MassDimension()
 
   case class TemperatureDimension() extends Dimension[TemperatureDimension]
+  {
+    override def toString: String = "Temperature"
+  }
 
   val Temperature = TemperatureDimension()
 
   case class AmountDimension() extends Dimension[AmountDimension]
+  {
+    override def toString: String = "Amount"
+  }
 
   val Amount = AmountDimension()
 
   case class ElectricCurrentDimension() extends Dimension[ElectricCurrentDimension]
+  {
+    override def toString: String = "Electric Current"
+  }
 
   val ElectricCurrent = ElectricCurrentDimension()
 
   case class LuminousIntensityDimension() extends Dimension[LuminousIntensityDimension]
+  {
+    override def toString: String = "Luminous Intensity"
+  }
 
   val LuminousIntensity = LuminousIntensityDimension()
 
   // E.g. digital information, such as bit
   case class InformationDimension() extends Dimension[InformationDimension]
+  {
+    override def toString: String = "Information"
+  }
 
   val Information = InformationDimension()
 
   // E.g. Currency, such as USD
   case class MoneyDimension() extends Dimension[MoneyDimension]
+  {
+    override def toString: String = "Money"
+  }
 
   val Money = MoneyDimension()
 
@@ -208,7 +226,7 @@ package object measure
 
   type EnergyPrice = RatioMeasure[Currency, EnergyMeasure]
 
-  type CurrencyPriceMeasure = RatioMeasure[Currency, Currency]
+  type CurrencyPrice = RatioMeasure[Currency, Currency]
 
   import arithmetic.default._
   import composition._
