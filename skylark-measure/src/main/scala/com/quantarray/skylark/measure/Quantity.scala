@@ -69,8 +69,6 @@ case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit val qn: Q
 
   def simplify[R <: Measure[R]](implicit cs: CanSimplify[M, Option[R]]): Option[Quantity[N, R]] = measure.simplify[R].map(Quantity(value, _))
 
-  override def hashCode(): Int = 41 * value.hashCode() + measure.hashCode()
-
   override def toString = s"$value $measure"
 }
 
