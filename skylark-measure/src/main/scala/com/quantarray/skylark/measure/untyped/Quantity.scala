@@ -99,7 +99,7 @@ object Quantity
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
-        case that: Quantity[_] => canEqual(that) && this.value == that.value & this.measure == that.measure
+        case that: Quantity[_] => canEqual(that) && this.value == that.value && this.measure == that.measure
         case _ => false
       }
 
