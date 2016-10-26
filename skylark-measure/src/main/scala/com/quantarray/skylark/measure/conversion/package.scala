@@ -11,7 +11,7 @@ package object conversion
 
   trait DefaultImplicits
   {
-    implicit def defaultCanConvert[M <: Measure[M]] = CanConvert(SameTypeConverter.one[M])
+    implicit def defaultCanConvert[M <: Measure[M]] = CanConvert(SameTypeConverter[M])
   }
 
   trait DimensionessImplicits extends DefaultImplicits

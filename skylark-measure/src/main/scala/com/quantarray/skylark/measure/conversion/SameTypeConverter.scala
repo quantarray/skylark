@@ -28,17 +28,12 @@ import com.quantarray.skylark.measure.Converter
   */
 trait SameTypeConverter[T] extends Converter[T, T]
 {
-  override def apply(from: T, to: T): Option[Double] = convert(from, to).orElse(convert(to, from).map(1 / _))
+  override final def apply(from: T, to: T): Option[Double] = convert(from, to).orElse(convert(to, from).map(1 / _))
 
-  protected def convert(from: T, to: T): Option[Double] = None
+  protected def convert(from: T, to: T): Option[Double] = if (from == to) Some(1.0) else None
 }
 
 object SameTypeConverter
 {
-  def one[T]: SameTypeConverter[T] = new SameTypeConverter[T]
-  {
-    override protected def convert(from: T, to: T): Option[Double] = if (from == to) Some(1.0) else None
-
-    override def toString: String = "SameTypeConverter.one"
-  }
+  def apply[T]: SameTypeConverter[T] = new SameTypeConverter[T] {}
 }

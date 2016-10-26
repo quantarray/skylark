@@ -19,10 +19,10 @@ package object conversion
 
       override def convert: Converter[Measure, Measure] = new MeasureConverter
       {
-        override def apply(from: Measure, to: Measure): Option[Double] = (from, to) match
+        override def convert(from: Measure, to: Measure): Option[Double] = (from, to) match
         {
           case (ProductMeasure(diff1, RatioMeasure(same1, diff2)), same2) if same1 == same2 => diff1.to(diff2)
-          case _ => super.apply(from, to)
+          case _ => super.convert(from, to)
         }
       }
     }
