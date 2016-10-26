@@ -9,120 +9,119 @@ package object quantity
   {
     implicit def qn: QuasiNumeric[N]
 
-    def toValue: N
+    def value: N
 
     /**
       * Dimensionless.
       */
-    def unit = Quantity(toValue, measure.Unit)
+    def unit = Quantity(value, measure.Unit)
 
     def units = unit
 
-    def percent = Quantity(toValue, measure.percent)
+    def percent = Quantity(value, measure.percent)
 
-    def bp = Quantity(toValue, measure.bp)
+    def bp = Quantity(value, measure.bp)
 
-    def rad = Quantity(toValue, measure.rad)
+    def rad = Quantity(value, measure.rad)
 
-    def sr = Quantity(toValue, measure.sr)
+    def sr = Quantity(value, measure.sr)
 
     /**
       * Time.
       */
-    def day = Quantity(toValue, measure.day)
+    def day = Quantity(value, measure.day)
 
     def days = day
 
     /**
       * Mass.
       */
-    def g = Quantity(toValue, measure.g)
+    def g = Quantity(value, measure.g)
 
-    def kg = Quantity(toValue, measure.kg)
+    def kg = Quantity(value, measure.kg)
 
-    def cg = Quantity(toValue, measure.cg)
+    def cg = Quantity(value, measure.cg)
 
-    def mg = Quantity(toValue, measure.mg)
+    def mg = Quantity(value, measure.mg)
 
-    def t = Quantity(toValue, measure.t)
+    def t = Quantity(value, measure.t)
 
-    def oz_metric = Quantity(toValue, measure.oz_metric)
+    def oz_metric = Quantity(value, measure.oz_metric)
 
-    def oz = Quantity(toValue, measure.oz)
+    def oz = Quantity(value, measure.oz)
 
-    def lb = Quantity(toValue, measure.lb)
+    def lb = Quantity(value, measure.lb)
 
-    def mt = Quantity(toValue, measure.mt)
+    def mt = Quantity(value, measure.mt)
 
-    def ton = Quantity(toValue, measure.ton)
+    def ton = Quantity(value, measure.ton)
 
-    def gr = Quantity(toValue, measure.gr)
+    def gr = Quantity(value, measure.gr)
 
-    def dwt = Quantity(toValue, measure.dwt)
+    def dwt = Quantity(value, measure.dwt)
 
-    def lb_troy = Quantity(toValue, measure.lb_troy)
+    def lb_troy = Quantity(value, measure.lb_troy)
 
-    def oz_troy = Quantity(toValue, measure.oz_troy)
+    def oz_troy = Quantity(value, measure.oz_troy)
 
     /**
       * Length.
       */
-    def m = Quantity(toValue, measure.m)
+    def m = Quantity(value, measure.m)
 
-    def in = Quantity(toValue, measure.in)
+    def in = Quantity(value, measure.in)
 
-    def ft = Quantity(toValue, measure.ft)
+    def ft = Quantity(value, measure.ft)
 
-    def yd = Quantity(toValue, measure.yd)
+    def yd = Quantity(value, measure.yd)
 
     /**
       * Area.
       */
-    def km2 = Quantity(toValue, measure.km2)
+    def km2 = Quantity(value, measure.km2)
 
-    def ha = Quantity(toValue, measure.ha)
+    def ha = Quantity(value, measure.ha)
 
     /**
       * Volume.
       */
-    def in3 = Quantity(toValue, measure.in3)
+    def in3 = Quantity(value, measure.in3)
 
-    def gal = Quantity(toValue, measure.gal)
+    def gal = Quantity(value, measure.gal)
 
-    def bbl = Quantity(toValue, measure.bbl)
+    def bbl = Quantity(value, measure.bbl)
 
     /**
       * Energy.
       */
-    def MMBtu = Quantity(toValue, measure.MMBtu)
+    def MMBtu = Quantity(value, measure.MMBtu)
 
     /**
       * Currency.
       */
-    def USD = Quantity(toValue, measure.USD)
+    def USD = Quantity(value, measure.USD)
+
+    /**
+      * Composes a quantity of supplied measure.
+      */
+    def apply[M <: Measure[M]](measure: M): Quantity[N, M] = Quantity(value, measure)
+
+    /**
+      * Composes a quantity of supplied measure.
+      */
+    def *[M <: Measure[M]](measure: M): Quantity[N, M] = apply(measure)
   }
 
+  implicit final class DoubleQuantity(val value: Double) extends AnyVal with Units[Double]
+  {
+    implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
+  }
 
-  implicit final class DoubleQuantity(private val value: Double) extends AnyVal with Units[Double]
+  implicit final class IntQuantity(private val intValue: Int) extends AnyVal with Units[Double]
   {
     implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
 
-    override def toValue: Double = value
-
-    def *[M <: Measure[M]](measure: M): Quantity[Double, M] = Quantity(toValue, measure)
-
-    def apply[M <: Measure[M]](measure: M): Quantity[Double, M] = Quantity(toValue, measure)
-  }
-
-  implicit final class IntQuantity(private val value: Int) extends AnyVal with Units[Double]
-  {
-    implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
-
-    override def toValue: Double = value
-
-    def *[M <: Measure[M]](measure: M): Quantity[Double, M] = Quantity(toValue, measure)
-
-    def apply[M <: Measure[M]](measure: M): Quantity[Double, M] = Quantity(toValue, measure)
+    override def value: Double = intValue
   }
 
 }
