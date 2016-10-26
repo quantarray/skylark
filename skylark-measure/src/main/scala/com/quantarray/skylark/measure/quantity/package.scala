@@ -5,7 +5,7 @@ import com.quantarray.skylark.measure
 package object quantity
 {
 
-  trait Units[N] extends Any
+  trait Units[@specialized(Double, Int) N] extends Any
   {
     implicit def qn: QuasiNumeric[N]
 
