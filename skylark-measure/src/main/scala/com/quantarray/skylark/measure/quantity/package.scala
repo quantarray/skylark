@@ -12,96 +12,6 @@ package object quantity
     def value: N
 
     /**
-      * Dimensionless.
-      */
-    def unit = Quantity(value, measure.Unit)
-
-    def units = unit
-
-    def percent = Quantity(value, measure.percent)
-
-    def bp = Quantity(value, measure.bp)
-
-    def rad = Quantity(value, measure.rad)
-
-    def sr = Quantity(value, measure.sr)
-
-    /**
-      * Time.
-      */
-    def day = Quantity(value, measure.day)
-
-    def days = day
-
-    /**
-      * Mass.
-      */
-    def g = Quantity(value, measure.g)
-
-    def kg = Quantity(value, measure.kg)
-
-    def cg = Quantity(value, measure.cg)
-
-    def mg = Quantity(value, measure.mg)
-
-    def t = Quantity(value, measure.t)
-
-    def oz_metric = Quantity(value, measure.oz_metric)
-
-    def oz = Quantity(value, measure.oz)
-
-    def lb = Quantity(value, measure.lb)
-
-    def mt = Quantity(value, measure.mt)
-
-    def ton = Quantity(value, measure.ton)
-
-    def gr = Quantity(value, measure.gr)
-
-    def dwt = Quantity(value, measure.dwt)
-
-    def lb_troy = Quantity(value, measure.lb_troy)
-
-    def oz_troy = Quantity(value, measure.oz_troy)
-
-    /**
-      * Length.
-      */
-    def m = Quantity(value, measure.m)
-
-    def in = Quantity(value, measure.in)
-
-    def ft = Quantity(value, measure.ft)
-
-    def yd = Quantity(value, measure.yd)
-
-    /**
-      * Area.
-      */
-    def km2 = Quantity(value, measure.km2)
-
-    def ha = Quantity(value, measure.ha)
-
-    /**
-      * Volume.
-      */
-    def in3 = Quantity(value, measure.in3)
-
-    def gal = Quantity(value, measure.gal)
-
-    def bbl = Quantity(value, measure.bbl)
-
-    /**
-      * Energy.
-      */
-    def MMBtu = Quantity(value, measure.MMBtu)
-
-    /**
-      * Currency.
-      */
-    def USD = Quantity(value, measure.USD)
-
-    /**
       * Composes a quantity of supplied measure.
       */
     def apply[M <: Measure[M]](measure: M): Quantity[N, M] = Quantity(value, measure)
@@ -110,6 +20,96 @@ package object quantity
       * Composes a quantity of supplied measure.
       */
     def *[M <: Measure[M]](measure: M): Quantity[N, M] = apply(measure)
+
+    /**
+      * Dimensionless.
+      */
+    def unit = apply(measure.Unit)
+
+    def units = unit
+
+    def percent = apply(measure.percent)
+
+    def bp = apply(measure.bp)
+
+    def rad = apply(measure.rad)
+
+    def sr = apply(measure.sr)
+
+    /**
+      * Time.
+      */
+    def day = apply(measure.day)
+
+    def days = day
+
+    /**
+      * Mass.
+      */
+    def g = apply(measure.g)
+
+    def kg = apply(measure.kg)
+
+    def cg = apply(measure.cg)
+
+    def mg = apply(measure.mg)
+
+    def t = apply(measure.t)
+
+    def oz_metric = apply(measure.oz_metric)
+
+    def oz = apply(measure.oz)
+
+    def lb = apply(measure.lb)
+
+    def mt = apply(measure.mt)
+
+    def ton = apply(measure.ton)
+
+    def gr = apply(measure.gr)
+
+    def dwt = apply(measure.dwt)
+
+    def lb_troy = apply(measure.lb_troy)
+
+    def oz_troy = apply(measure.oz_troy)
+
+    /**
+      * Length.
+      */
+    def m = apply(measure.m)
+
+    def in = apply(measure.in)
+
+    def ft = apply(measure.ft)
+
+    def yd = apply(measure.yd)
+
+    /**
+      * Area.
+      */
+    def km2 = apply(measure.km2)
+
+    def ha = apply(measure.ha)
+
+    /**
+      * Volume.
+      */
+    def in3 = apply(measure.in3)
+
+    def gal = apply(measure.gal)
+
+    def bbl = apply(measure.bbl)
+
+    /**
+      * Energy.
+      */
+    def MMBtu = apply(measure.MMBtu)
+
+    /**
+      * Currency.
+      */
+    def USD = apply(measure.USD)
   }
 
   implicit final class DoubleQuantity(val value: Double) extends AnyVal with Units[Double]
