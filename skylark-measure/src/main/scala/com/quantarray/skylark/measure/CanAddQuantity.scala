@@ -35,6 +35,6 @@ object CanAddQuantity
 {
   type Aux[N, M1 <: Measure[M1], A1 <: Quantity[N, M1], M2 <: Measure[M2], A2 <: Quantity[N, M2], RM <: Measure[RM], QR0] = CanAddQuantity[N, M1, A1, M2, A2, RM]
     {
-      type R = QR0
+      type QR = QR0
     }
 }
