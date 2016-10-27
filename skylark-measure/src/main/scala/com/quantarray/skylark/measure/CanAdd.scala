@@ -26,7 +26,7 @@ import scala.annotation.implicitNotFound
   *
   * @author Araik Grigoryan
   */
-@implicitNotFound("Cannot find CanAdd implementation that adds ${A1} and ${A2}, resulting in {R}.")
+@implicitNotFound("Cannot find CanAdd implementation that adds ${A1} and ${A2}.")
 trait CanAdd[A1, A2]
 {
   type R

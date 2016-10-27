@@ -19,11 +19,14 @@
 
 package com.quantarray.skylark.measure
 
+import scala.annotation.implicitNotFound
+
 /**
   * Can add quantity type class.
   *
   * @author Araik Grigoryan
   */
+@implicitNotFound("Cannot find CanAddQuantity implementation that adds ${A1} and ${A2}.")
 trait CanAddQuantity[N, M1 <: Measure[M1], A1 <: Quantity[N, M1], M2 <: Measure[M2], A2 <: Quantity[N, M2], RM <: Measure[RM]] extends CanAdd[M1, M2]
 {
   type QR
