@@ -1,12 +1,14 @@
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.untyped.arithmetic.SafeArithmeticImplicits
+
 /*
  * Skylark
  *
  * © 2012-2016, Quantarray
  * http://skylark.io
  */
-package object untyped
+package object untyped extends SafeArithmeticImplicits
 {
   val * = untyped.ProductMeasure
   val / = untyped.RatioMeasure

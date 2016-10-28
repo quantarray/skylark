@@ -20,7 +20,6 @@
 package com.quantarray.skylark.measure.untyped
 
 import com.quantarray.skylark.measure._
-import com.quantarray.skylark.measure.untyped.arithmetic.default._
 import com.quantarray.skylark.measure.untyped.conversion.MeasureConverter
 import com.quantarray.skylark.measure.untyped.conversion.default._
 import com.quantarray.skylark.measure.untyped.quantity._

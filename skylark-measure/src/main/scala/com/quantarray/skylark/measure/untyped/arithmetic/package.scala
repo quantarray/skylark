@@ -12,7 +12,7 @@ import com.quantarray.skylark.measure._
 package object arithmetic
 {
 
-  trait DefaultImplicits
+  trait SafeArithmeticImplicits
   {
     implicit def exponentialCanExponentiate = new CanExponentiate[untyped.Measure, untyped.Measure]
     {
@@ -49,11 +49,11 @@ package object arithmetic
     }
   }
 
-  object default extends DefaultImplicits
+  object safe extends SafeArithmeticImplicits
   {
   }
 
-  object unsafe extends DefaultImplicits
+  object unsafe extends SafeArithmeticImplicits
   {
     implicit def lhsCanAddQuantityUnsafe[A1 <: Quantity[Double], A2 <: Quantity[Double]] = new CanAddQuantity[Double, A1, A2]
     {
