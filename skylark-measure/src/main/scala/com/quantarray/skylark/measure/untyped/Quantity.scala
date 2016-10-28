@@ -34,6 +34,8 @@ abstract class Quantity[N] extends Product with Serializable
 
   def measure: Measure
 
+  def unary_-() = Quantity(qn.negate(value), measure)
+
   def *(constant: Double): Quantity[N]
 
   def *(quantity: Quantity[N])(implicit cm: CanMultiply[Measure, Measure, Measure]): Quantity[N] =
@@ -46,19 +48,13 @@ abstract class Quantity[N] extends Product with Serializable
 
   def +(constant: N): Quantity[N]
 
-  def +(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] =
-    cc.convert(quantity.measure, measure).map(cf => Quantity(qn.plus(value, qn.timesConstant(quantity.value, cf)), measure))
-
-  def +!(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Quantity[N] =
-    this.+(quantity).getOrElse(throw ConvertException(s"Cannot convert from $measure to ${quantity.measure}."))
+  def +[QR](quantity: Quantity[N])(implicit caq: CanAddQuantity[N, Quantity[N], Quantity[N]],
+                                   cc: CanConvert[Measure, Measure]): caq.QR = caq.plus(this, quantity)
 
   def -(constant: N): Quantity[N]
 
-  def -(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] =
-    cc.convert(quantity.measure, measure).map(cf => Quantity(qn.minus(value, qn.timesConstant(quantity.value, cf)), measure))
-
-  def -!(quantity: Quantity[N])(implicit cc: CanConvert[Measure, Measure]): Quantity[N] =
-    this.-(quantity).getOrElse(throw ConvertException(s"Cannot convert from $measure to ${quantity.measure}."))
+  def -[QR](quantity: Quantity[N])(implicit caq: CanAddQuantity[N, Quantity[N], Quantity[N]],
+                                   cc: CanConvert[Measure, Measure]): caq.QR = caq.plus(this, -quantity)
 
   def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] = cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
 

@@ -47,7 +47,7 @@ package object conversion
     }
   }
 
-  object default extends DimensionessImplicits
+  trait SameTypeImplicits extends DimensionessImplicits
   {
 
     /**
@@ -91,4 +91,5 @@ package object conversion
     implicit val currencyCanConvert: CanConvert[Currency, Currency] = CanConvert(FixedCurrencyConverter())
   }
 
+  object default extends SameTypeImplicits
 }

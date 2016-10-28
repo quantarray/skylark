@@ -1,6 +1,7 @@
 package com.quantarray.skylark.measure.untyped
 
-import com.quantarray.skylark.measure.{CanConvert, Converter}
+import com.quantarray.skylark.measure.conversion.SameTypeImplicits
+import com.quantarray.skylark.measure.{CanConvert, Converter, MassMeasure}
 
 /*
  * Skylark
@@ -11,7 +12,7 @@ import com.quantarray.skylark.measure.{CanConvert, Converter}
 package object conversion
 {
 
-  object default
+  object default extends SameTypeImplicits
   {
 
     implicit object MeasureCanConvert extends CanConvert[Measure, Measure]
@@ -22,6 +23,7 @@ package object conversion
         override def convert(from: Measure, to: Measure): Option[Double] = (from, to) match
         {
           case (ProductMeasure(diff1, RatioMeasure(same1, diff2)), same2) if same1 == same2 => diff1.to(diff2)
+          case (mm1: MassMeasure, mm2: MassMeasure) => massCanConvert.convert(mm1, mm2)
           case _ => super.convert(from, to)
         }
       }
