@@ -13,4 +13,8 @@ package object untyped extends SafeArithmeticImplicits
   val * = untyped.ProductMeasure
   val / = untyped.RatioMeasure
   val ^ = untyped.ExponentialMeasure
+
+  type >=>[From, To] = Conversion[From, To]
+
+  val >=> = Conversion
 }

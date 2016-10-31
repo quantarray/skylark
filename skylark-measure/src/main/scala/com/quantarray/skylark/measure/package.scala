@@ -21,6 +21,10 @@ package com.quantarray.skylark
 
 package object measure
 {
+  type >=>[From, To] = Conversion[From, To]
+
+  val >=> = Conversion
+
   object composition
   {
 

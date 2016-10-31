@@ -17,26 +17,14 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 /**
-  * Currency converter with fixed FX rate.
+  * Conversion.
   *
   * @author Araik Grigoryan
   */
-trait FixedCurrencyConverter extends SameMeasureConverter[Currency]
+case class Conversion[From, To](from: From, to: To)
 {
-  protected override def convert(from: Currency, to: Currency): Option[Double] = Conversion(from, to) match
-  {
-    case USD >=> USC => Some(100)
-    case USC >=> USD => Some(1 / 100)
-    case _ => super.convert(from, to)
-  }
-}
-
-object FixedCurrencyConverter
-{
-  def apply(): FixedCurrencyConverter = new FixedCurrencyConverter {}
+  override def toString: String = s"$from to $to"
 }
