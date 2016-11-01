@@ -68,8 +68,8 @@ class UntypedQuantitySpec extends FlatSpec with Matchers
         {
           protected override def convert(from: untyped.Measure, to: untyped.Measure): Option[Double] = Conversion(from, to) match
           {
-            case `bbl` >=> `gal` => Some(42)
-            case `gal` >=> `bbl` => apply(to, from).map(1.0 / _)
+            case `bbl` ⤇ `gal` => Some(42)
+            case `gal` ⤇ `bbl` => apply(to, from).map(1.0 / _)
             case _ => super.convert(from, to)
           }
         }

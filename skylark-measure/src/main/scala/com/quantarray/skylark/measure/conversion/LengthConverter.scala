@@ -30,7 +30,7 @@ trait LengthConverter extends SameMeasureConverter[LengthMeasure]
 {
   override protected def convert(from: LengthMeasure, to: LengthMeasure): Option[Double] = Conversion(from, to) match
   {
-    case `mi` >=> `m` => Some(1609.34)
+    case `mi` ⤇ `m` => Some(1609.34)
     case _ => super.convert(from, to)
   }
 }

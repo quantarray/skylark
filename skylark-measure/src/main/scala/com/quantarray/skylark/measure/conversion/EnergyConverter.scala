@@ -30,7 +30,7 @@ trait EnergyConverter extends SameTypeConverter[EnergyMeasure]
 {
   override protected def convert(from: EnergyMeasure, to: EnergyMeasure): Option[Double] = Conversion(from, to) match
   {
-    case MMBtu >=> GJ => Some(1.055056)
+    case MMBtu ⤇ GJ => Some(1.055056)
   }
 }
 

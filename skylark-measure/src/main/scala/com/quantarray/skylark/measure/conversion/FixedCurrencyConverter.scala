@@ -30,8 +30,8 @@ trait FixedCurrencyConverter extends SameMeasureConverter[Currency]
 {
   protected override def convert(from: Currency, to: Currency): Option[Double] = Conversion(from, to) match
   {
-    case USD >=> USC => Some(100)
-    case USC >=> USD => Some(1 / 100)
+    case USD ⤇ USC => Some(100)
+    case USC ⤇ USD => Some(1 / 100)
     case _ => super.convert(from, to)
   }
 }

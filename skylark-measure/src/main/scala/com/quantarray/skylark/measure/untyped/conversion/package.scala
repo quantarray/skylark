@@ -22,9 +22,9 @@ package object conversion
       {
         override def convert(from: Measure, to: Measure): Option[Double] = Conversion(from, to) match
         {
-          case (dm1: DimensionlessMeasure) >=> (dm2: DimensionlessMeasure) => dimensionlessCanConvert.convert(dm1, dm2)
-          case (diff1 * (same1 / diff2)) >=> same2 if same1 == same2 => diff1.to(diff2)
-          case (mm1: MassMeasure) >=> (mm2: MassMeasure) => massCanConvert.convert(mm1, mm2)
+          case (dm1: DimensionlessMeasure) ⤇ (dm2: DimensionlessMeasure) => dimensionlessCanConvert.convert(dm1, dm2)
+          case (diff1 * (same1 / diff2)) ⤇ same2 if same1 == same2 => diff1.to(diff2)
+          case (mm1: MassMeasure) ⤇ (mm2: MassMeasure) => massCanConvert.convert(mm1, mm2)
           case _ => super.convert(from, to)
         }
       }

@@ -15,7 +15,7 @@ package object commodity
   {
     override def apply(from: VolumeMeasure, to: ExponentialLength): Option[Double] = Conversion(from, to) match
     {
-      case `bbl` >=> `gal` => Some(42.0)
+      case `bbl` ⤇ `gal` => Some(42.0)
     }
   }
 
