@@ -20,7 +20,7 @@
 package com.quantarray.skylark.measure.untyped
 
 import com.quantarray.skylark.measure._
-import com.quantarray.skylark.measure.arithmetic.default._
+import com.quantarray.skylark.measure.implicits._
 import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 

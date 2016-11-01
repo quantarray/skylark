@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.arithmetic.default._
+import com.quantarray.skylark.measure.implicits._
 import org.scalatest.{FlatSpec, Matchers}
 
 class MeasureParsersSpec extends FlatSpec with Matchers with MeasureParsers
