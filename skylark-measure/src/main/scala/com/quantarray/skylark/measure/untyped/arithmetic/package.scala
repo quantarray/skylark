@@ -29,7 +29,7 @@ package object arithmetic
       override def divide(numerator: untyped.Measure, denominator: untyped.Measure): untyped.Measure = RatioMeasure(numerator, denominator)
     }
 
-    implicit def lhsCanAddQuantity[A1 <: Quantity[Double], A2 <: Quantity[Double]] = new CanAddQuantity[Double, A1, A2]
+    implicit def lhsCanAddQuantity = new CanAddQuantity[Double, Quantity[Double], Quantity[Double]]
     {
       type R = untyped.Measure
 
@@ -37,7 +37,7 @@ package object arithmetic
 
       override def plus(addend1: Measure, addend2: Measure): Measure = addend1
 
-      override def plus(addend1: A1, addend2: A2)(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): QR =
+      override def plus(addend1: Quantity[Double], addend2: Quantity[Double])(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): QR =
       {
         val targetMeasure = plus(addend1.measure, addend2.measure)
 
@@ -55,7 +55,7 @@ package object arithmetic
 
   object unsafe extends SafeArithmeticImplicits
   {
-    implicit def lhsCanAddQuantityUnsafe[A1 <: Quantity[Double], A2 <: Quantity[Double]] = new CanAddQuantity[Double, A1, A2]
+    implicit def lhsCanAddQuantityUnsafe = new CanAddQuantity[Double, Quantity[Double], Quantity[Double]]
     {
       type R = untyped.Measure
 
@@ -63,7 +63,7 @@ package object arithmetic
 
       override def plus(addend1: Measure, addend2: Measure): Measure = addend1
 
-      override def plus(addend1: A1, addend2: A2)(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): QR =
+      override def plus(addend1: Quantity[Double], addend2: Quantity[Double])(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): QR =
       {
         val targetMeasure = plus(addend1.measure, addend2.measure)
 

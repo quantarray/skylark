@@ -8,7 +8,7 @@ import com.quantarray.skylark.measure.untyped.arithmetic.SafeArithmeticImplicits
  * © 2012-2016, Quantarray
  * http://skylark.io
  */
-package object untyped extends SafeArithmeticImplicits
+package object untyped
 {
   val * = untyped.ProductMeasure
   val / = untyped.RatioMeasure
@@ -17,4 +17,6 @@ package object untyped extends SafeArithmeticImplicits
   type ⤇[From, To] = Conversion[From, To]
 
   val ⤇ = Conversion
+
+  object implicits extends SafeArithmeticImplicits
 }
