@@ -23,7 +23,6 @@ import com.quantarray.skylark.measure.implicits._
 import com.quantarray.skylark.measure.conversion.default._
 import com.quantarray.skylark.measure.conversion._
 import com.quantarray.skylark.measure.quantity._
-import com.quantarray.skylark.measure.simplification.default._
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.OptionValues._
 

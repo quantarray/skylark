@@ -126,7 +126,32 @@ package object measure
 
   }
 
-  object implicits extends AnyRef with arithmetic.SafeArithmeticImplicits
+  object simplification
+  {
+    type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, CurrencyPrice]
+
+    trait DefaultSimplification
+    {
+      implicit object EnergyPriceTimesCurrencyPriceCanSimplify extends CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
+      {
+        override def simplify(inflated: EnergyPriceTimesCurrencyPriceMeasure): Option[EnergyPrice] =
+        {
+          if (inflated.multiplicand.numerator == inflated.multiplier.denominator)
+          {
+            Some(RatioMeasure(inflated.multiplier.numerator, inflated.multiplicand.denominator))
+          }
+          else
+          {
+            None
+          }
+        }
+      }
+    }
+
+    object default extends AnyRef with DefaultSimplification
+  }
+
+  object implicits extends AnyRef with arithmetic.SafeArithmeticImplicits with simplification.DefaultSimplification
 
   case class NoDimension() extends Dimension[NoDimension]
   {
