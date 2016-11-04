@@ -1,6 +1,6 @@
 package com.quantarray.skylark.measure.untyped
 
-import com.quantarray.skylark.measure.conversion.SameTypeImplicits
+import com.quantarray.skylark.measure.conversion.DefaultConversionImplicits
 import com.quantarray.skylark.measure._
 
 /*
@@ -12,7 +12,7 @@ import com.quantarray.skylark.measure._
 package object conversion
 {
 
-  object default extends SameTypeImplicits
+  object default extends DefaultConversionImplicits
   {
 
     implicit object MeasureCanConvert extends CanConvert[Measure, Measure]

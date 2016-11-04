@@ -9,12 +9,12 @@ package com.quantarray.skylark.measure
 package object conversion
 {
 
-  trait DefaultImplicits
+  trait BaseConversionImplicits
   {
     implicit def defaultCanConvert[M <: Measure[M]] = CanConvert(SameTypeConverter[M])
   }
 
-  trait DimensionessImplicits extends DefaultImplicits
+  trait DimensionessConversionImplicits extends BaseConversionImplicits
   {
     type P_[M <: Measure[M]] = ProductMeasure[M, DimensionlessMeasure]
 
@@ -47,7 +47,7 @@ package object conversion
     }
   }
 
-  trait SameTypeImplicits extends DimensionessImplicits
+  trait DefaultConversionImplicits extends DimensionessConversionImplicits
   {
 
     /**
@@ -91,5 +91,5 @@ package object conversion
     implicit val currencyCanConvert: CanConvert[Currency, Currency] = CanConvert(FixedCurrencyConverter())
   }
 
-  object default extends SameTypeImplicits
+  object default extends DefaultConversionImplicits
 }
