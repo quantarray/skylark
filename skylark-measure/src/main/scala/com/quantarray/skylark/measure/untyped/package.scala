@@ -1,7 +1,5 @@
 package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.untyped.arithmetic.SafeArithmeticImplicits
-
 /*
  * Skylark
  *
@@ -92,5 +90,5 @@ package object untyped
 
   }
 
-  object implicits extends AnyRef with SafeArithmeticImplicits
+  object implicits extends AnyRef with arithmetic.SafeArithmeticImplicits
 }
