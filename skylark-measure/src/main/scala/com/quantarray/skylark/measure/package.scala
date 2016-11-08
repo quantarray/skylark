@@ -886,4 +886,28 @@ package object measure
 
   // United States cent
   val USC = "USC" := 0.01 * USD
+
+  object commodity
+  {
+    object us
+    {
+
+      import composition._
+
+      object commercial
+      {
+        object grains
+        {
+          object corn
+          {
+            object shelled
+            {
+              val bushel = "bushel" := 56 * lb
+            }
+          }
+
+        }
+      }
+    }
+  }
 }
