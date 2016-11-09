@@ -19,7 +19,7 @@
 
 package com.quantarray.skylark.measure.untyped.conversion
 
-import com.quantarray.skylark.measure.conversion.SameTypeConverter
+import com.quantarray.skylark.measure.SameTypeConverter
 import com.quantarray.skylark.measure.untyped.Measure
 
 /**

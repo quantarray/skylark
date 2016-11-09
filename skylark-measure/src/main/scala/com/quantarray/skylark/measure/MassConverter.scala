@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 /**
   * Mass converter.
@@ -28,7 +26,7 @@ import com.quantarray.skylark.measure._
   */
 trait MassConverter extends SameMeasureConverter[MassMeasure]
 {
-  protected override def convert(from: MassMeasure, to: MassMeasure): Option[Double] = Conversion(from, to) match
+  protected override def convert(from: MassMeasure, to: MassMeasure): Option[Double] = ⤇(from, to) match
   {
     case `kg` ⤇ `lb` => Some(2.204625)
     case _ => super.convert(from, to)

@@ -17,25 +17,11 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 /**
-  * Length converter.
+  * Dimensionless converter.
   *
   * @author Araik Grigoryan
   */
-trait LengthConverter extends SameMeasureConverter[LengthMeasure]
-{
-  override protected def convert(from: LengthMeasure, to: LengthMeasure): Option[Double] = Conversion(from, to) match
-  {
-    case `mi` ⤇ `m` => Some(1609.34)
-    case _ => super.convert(from, to)
-  }
-}
-
-object LengthConverter
-{
-  def apply(): LengthConverter = new LengthConverter {}
-}
+case object DimensionlessConverter extends SameMeasureConverter[DimensionlessMeasure]

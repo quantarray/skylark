@@ -17,13 +17,16 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure.DimensionlessMeasure
+package com.quantarray.skylark.measure
 
 /**
-  * Dimensionless converter.
+  * Time converter.
   *
   * @author Araik Grigoryan
   */
-case object DimensionlessConverter extends SameMeasureConverter[DimensionlessMeasure]
+trait TimeConverter extends SameMeasureConverter[TimeMeasure]
+
+object TimeConverter
+{
+  def apply(): TimeConverter = new TimeConverter {}
+}

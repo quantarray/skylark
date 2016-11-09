@@ -17,23 +17,22 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure.Measure
+package com.quantarray.skylark.measure
 
 /**
-  * Same measure converter.
+  * Volume to Length^n^ converter.
   *
   * @author Araik Grigoryan
   */
-trait SameMeasureConverter[T <: Measure[T]] extends SameTypeConverter[T]
+trait VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLength]
 {
-  protected override def convert(from: T, to: T): Option[Double] =
+  override def apply(from: VolumeMeasure, to: ExponentialLength): Option[Double] = ⤇(from, to) match
   {
-    (from.ultimateBase, to.ultimateBase) match
-    {
-      case (Some(f), Some(t)) if from.system == to.system && f._1 == t._1 => Some(f._2 / t._2)
-      case _ => super.convert(from, to)
-    }
+    case`bbl` ⤇ `gal` => Some(31.5)
   }
+}
+
+object VolumeToExponentialLengthConverter
+{
+  def apply(): VolumeToExponentialLengthConverter = new VolumeToExponentialLengthConverter {}
 }

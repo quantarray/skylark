@@ -17,23 +17,22 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure.Converter
+package com.quantarray.skylark.measure
 
 /**
-  * Same type converter.
+  * Energy converter.
   *
   * @author Araik Grigoryan
   */
-trait SameTypeConverter[T] extends Converter[T, T]
+trait EnergyConverter extends SameTypeConverter[EnergyMeasure]
 {
-  override final def apply(from: T, to: T): Option[Double] = convert(from, to).orElse(convert(to, from).map(1 / _))
-
-  protected def convert(from: T, to: T): Option[Double] = if (from == to) Some(1.0) else None
+  override protected def convert(from: EnergyMeasure, to: EnergyMeasure): Option[Double] = ⤇(from, to) match
+  {
+    case MMBtu ⤇ GJ => Some(1.055056)
+  }
 }
 
-object SameTypeConverter
+object EnergyConverter
 {
-  def apply[T]: SameTypeConverter[T] = new SameTypeConverter[T] {}
+  def apply(): EnergyConverter = new EnergyConverter {}
 }

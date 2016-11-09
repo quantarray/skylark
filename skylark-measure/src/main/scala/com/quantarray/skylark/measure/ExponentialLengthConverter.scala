@@ -17,18 +17,23 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 /**
-  * Time converter.
+  * Length ^n^ converter.
   *
   * @author Araik Grigoryan
   */
-trait TimeConverter extends SameMeasureConverter[TimeMeasure]
-
-object TimeConverter
+trait ExponentialLengthConverter extends SameTypeConverter[ExponentialLength]
 {
-  def apply(): TimeConverter = new TimeConverter {}
+  override protected def convert(from: ExponentialLength, to: ExponentialLength): Option[Double] = ⤇(from, to) match
+  {
+    case `gal` ⤇ `in3` => Some(231)
+    case `ha` ⤇ `km2` => Some(0.01)
+  }
+}
+
+object ExponentialLengthConverter
+{
+  def apply(): ExponentialLengthConverter = new ExponentialLengthConverter {}
 }

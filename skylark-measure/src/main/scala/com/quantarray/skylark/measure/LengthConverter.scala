@@ -17,26 +17,23 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 /**
-  * Currency converter with fixed FX rate.
+  * Length converter.
   *
   * @author Araik Grigoryan
   */
-trait FixedCurrencyConverter extends SameMeasureConverter[Currency]
+trait LengthConverter extends SameMeasureConverter[LengthMeasure]
 {
-  protected override def convert(from: Currency, to: Currency): Option[Double] = Conversion(from, to) match
+  override protected def convert(from: LengthMeasure, to: LengthMeasure): Option[Double] = ⤇(from, to) match
   {
-    case USD ⤇ USC => Some(100)
-    case USC ⤇ USD => Some(1 / 100)
+    case `mi` ⤇ `m` => Some(1609.34)
     case _ => super.convert(from, to)
   }
 }
 
-object FixedCurrencyConverter
+object LengthConverter
 {
-  def apply(): FixedCurrencyConverter = new FixedCurrencyConverter {}
+  def apply(): LengthConverter = new LengthConverter {}
 }

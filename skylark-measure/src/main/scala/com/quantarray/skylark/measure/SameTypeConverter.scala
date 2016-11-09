@@ -17,25 +17,21 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 /**
-  * Length ^n^ converter.
+  * Same type converter.
   *
   * @author Araik Grigoryan
   */
-trait ExponentialLengthConverter extends SameTypeConverter[ExponentialLength]
+trait SameTypeConverter[T] extends Converter[T, T]
 {
-  override protected def convert(from: ExponentialLength, to: ExponentialLength): Option[Double] = Conversion(from, to) match
-  {
-    case `gal` ⤇ `in3` => Some(231)
-    case `ha` ⤇ `km2` => Some(0.01)
-  }
+  override final def apply(from: T, to: T): Option[Double] = convert(from, to).orElse(convert(to, from).map(1 / _))
+
+  protected def convert(from: T, to: T): Option[Double] = if (from == to) Some(1.0) else None
 }
 
-object ExponentialLengthConverter
+object SameTypeConverter
 {
-  def apply(): ExponentialLengthConverter = new ExponentialLengthConverter {}
+  def apply[T]: SameTypeConverter[T] = new SameTypeConverter[T] {}
 }

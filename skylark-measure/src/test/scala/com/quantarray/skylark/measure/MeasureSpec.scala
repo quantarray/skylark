@@ -19,7 +19,6 @@
 
 package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.conversion.default._
 import com.quantarray.skylark.measure.implicits._
 import org.scalatest.{FlatSpec, Matchers}
 

@@ -17,24 +17,24 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.conversion
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 /**
-  * Volume to Length^n^ converter.
+  * Currency converter with fixed FX rate.
   *
   * @author Araik Grigoryan
   */
-trait VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLength]
+trait FixedCurrencyConverter extends SameMeasureConverter[Currency]
 {
-  override def apply(from: VolumeMeasure, to: ExponentialLength): Option[Double] = (from, to) match
+  protected override def convert(from: Currency, to: Currency): Option[Double] = ⤇(from, to) match
   {
-    case (`bbl`, `gal`) => Some(31.5)
+    case USD ⤇ USC => Some(100)
+    case USC ⤇ USD => Some(1 / 100)
+    case _ => super.convert(from, to)
   }
 }
 
-object VolumeToExponentialLengthConverter
+object FixedCurrencyConverter
 {
-  def apply(): VolumeToExponentialLengthConverter = new VolumeToExponentialLengthConverter {}
+  def apply(): FixedCurrencyConverter = new FixedCurrencyConverter {}
 }
