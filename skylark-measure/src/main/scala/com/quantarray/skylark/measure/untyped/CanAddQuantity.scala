@@ -19,8 +19,6 @@
 
 package com.quantarray.skylark.measure.untyped
 
-import com.quantarray.skylark.measure.{CanAdd, CanConvert}
-
 import scala.annotation.implicitNotFound
 
 /**

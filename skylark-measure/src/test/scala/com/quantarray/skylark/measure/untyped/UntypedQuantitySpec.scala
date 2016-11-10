@@ -19,7 +19,6 @@
 
 package com.quantarray.skylark.measure.untyped
 
-import com.quantarray.skylark.measure._
 import com.quantarray.skylark.measure.untyped.implicits._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -60,11 +59,11 @@ class UntypedQuantitySpec extends FlatSpec with Matchers
 
   it should "add/subtract with a custom CanConvert" in
     {
-      implicit object MeasureCanConvert extends CanConvert[untyped.Measure, untyped.Measure]
+      implicit object MeasureCanConvert extends CanConvert[Measure, Measure]
       {
-        override def convert: Converter[untyped.Measure, untyped.Measure] = new MeasureConverter
+        override def convert: Converter[Measure, Measure] = new MeasureConverter
         {
-          protected override def convert(from: untyped.Measure, to: untyped.Measure): Option[Double] = Conversion(from, to) match
+          protected override def convert(from: Measure, to: Measure): Option[Double] = ⤇(from, to) match
           {
             case `bbl` ⤇ `gal` => Some(42)
             case `gal` ⤇ `bbl` => apply(to, from).map(1.0 / _)

@@ -12,9 +12,21 @@ package object untyped
   val / = untyped.RatioMeasure
   val ^ = untyped.ExponentialMeasure
 
+  type Conversion[From, To] = com.quantarray.skylark.measure.Conversion[From, To]
+
+  val Conversion = com.quantarray.skylark.measure.Conversion
+
   type ⤇[From, To] = Conversion[From, To]
 
   val ⤇ = Conversion
+
+  type ConvertException = com.quantarray.skylark.measure.ConvertException
+
+  type CanAdd[A1, A2] = com.quantarray.skylark.measure.CanAdd[A1, A2]
+
+  type CanConvert[From, To] = com.quantarray.skylark.measure.CanConvert[From, To]
+
+  type Converter[From, To] = com.quantarray.skylark.measure.Converter[From, To]
 
   // TODO: Generate via macro
 
@@ -41,6 +53,8 @@ package object untyped
     * Volume.
     */
   val bbl: untyped.Measure = com.quantarray.skylark.measure.bbl
+
+  val gal: untyped.Measure = com.quantarray.skylark.measure.gal
 
   /**
     * Length.
