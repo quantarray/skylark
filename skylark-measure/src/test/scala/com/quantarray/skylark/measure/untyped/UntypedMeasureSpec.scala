@@ -19,8 +19,7 @@
 
 package com.quantarray.skylark.measure.untyped
 
-import com.quantarray.skylark.measure._
-import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.untyped.implicits._
 import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -30,20 +29,6 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
   import com.quantarray.skylark.measure.commodity.us.commercial.grains.corn.shelled.{bushel => cbu}
 
   private val numericTolerance = 0.00000000001
-
-  def to(source: untyped.Measure, target: untyped.Measure): Option[Double] =
-  {
-    import com.quantarray.skylark.measure.untyped.conversion.default._
-
-    source.to(target)
-  }
-
-  def simplify(measure: untyped.Measure): untyped.Measure =
-  {
-    import com.quantarray.skylark.measure.untyped.simplification.default._
-
-    measure.simplify
-  }
 
   "Untyped measure" should "exponentiate" in
     {
@@ -62,13 +47,13 @@ class UntypedMeasureSpec extends FlatSpec with Matchers
 
   it should "convert" in
     {
-      to(mt * (USD / cbu), USD).value should equal(39.36830357142857 +- numericTolerance)
+      (mt * (USD / cbu)).to(USD).value should equal(39.36830357142857 +- numericTolerance)
     }
 
   it should "simplify" in
     {
-      simplify(kg * Unit) should be(kg)
-      simplify(((bbl ^ 2) / Unit) * ((USD / bbl) ^ 2)) should be(USD ^ 2)
-      simplify((USD / bp) * bp * (USD ^ -1.0)) should be(Unit)
+      (kg * Unit).simplify should be(kg)
+      (((bbl ^ 2) / Unit) * ((USD / bbl) ^ 2)).simplify should be(USD ^ 2)
+      ((USD / bp) * bp * (USD ^ -1.0)).simplify should be(Unit)
     }
 }

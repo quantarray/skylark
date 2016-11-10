@@ -16,6 +16,42 @@ package object untyped
 
   val ⤇ = Conversion
 
+  // TODO: Generate via macro
+
+  /**
+    * Dimensionless.
+    */
+  final val Unit: untyped.Measure = com.quantarray.skylark.measure.Unit
+
+  val bp: untyped.Measure = com.quantarray.skylark.measure.bp
+
+  /**
+    * Time.
+    */
+  val s: untyped.Measure = com.quantarray.skylark.measure.s
+
+  /**
+    * Mass.
+    */
+  val kg: untyped.Measure = com.quantarray.skylark.measure.kg
+
+  val mt: untyped.Measure = com.quantarray.skylark.measure.mt
+
+  /**
+    * Volume.
+    */
+  val bbl: untyped.Measure = com.quantarray.skylark.measure.bbl
+
+  /**
+    * Length.
+    */
+  val m: untyped.Measure = com.quantarray.skylark.measure.m
+
+  /**
+    * Currency.
+    */
+  val USD: untyped.Measure = com.quantarray.skylark.measure.USD
+
   object arithmetic
   {
 
@@ -121,8 +157,123 @@ package object untyped
 
   }
 
+  object simplification
+  {
+
+    import scala.collection.immutable.SortedMap
+
+    case object DefaultReducer extends Reducer[untyped.Measure, untyped.Measure]
+    {
+
+      implicit val measureOrdering = Ordering.by
+      {
+        measure: untyped.Measure => measure.name
+      }
+
+      type ExponentMap = SortedMap[untyped.Measure, Double]
+
+      val ExponentMap = SortedMap
+
+      override def apply(from: untyped.Measure): untyped.Measure =
+      {
+        val es = exponentials(deflate(from), 1.0, ExponentMap.empty[untyped.Measure, Double])
+
+        val productOfExponentials = es.groupBy(_._1).values.map(x => x.reduce((x, y) => (x._1, x._2 + y._2))).filter(_._2 != 0).toList
+
+        val reduced = productOfExponentials.size match
+        {
+          case 0 => Unit
+          case 1 => exponential(productOfExponentials.head)
+          case 2 => untyped.ProductMeasure(exponential(productOfExponentials.head), exponential(productOfExponentials(1)))
+          case _ =>
+            val z = untyped.ProductMeasure(exponential(productOfExponentials.head), exponential(productOfExponentials(1)))
+            productOfExponentials.takeRight(productOfExponentials.size - 2).foldLeft(z)((r, p) => ProductMeasure(exponential(p), r))
+        }
+
+        reduced
+      }
+
+      private def deflate(inflated: untyped.Measure): untyped.Measure =
+      {
+        def deflateProduct(inflated: untyped.ProductMeasure): untyped.Measure = deflateNonRecompose.orElse(giveUp)(inflated)
+
+        def deflateNonRecompose: PartialFunction[untyped.Measure, untyped.Measure] =
+        {
+          case untyped.ProductMeasure(md, mr) if md == Unit && mr == Unit => Unit
+          case untyped.ProductMeasure(md, mr) if md == Unit => deflate(mr)
+          case untyped.ProductMeasure(md, mr) if mr == Unit => deflate(md)
+          case untyped.ProductMeasure(md, mr@untyped.RatioMeasure(nr, dr)) if md == dr => deflate(nr)
+          case untyped.ProductMeasure(md@untyped.RatioMeasure(nr, dr), mr) if dr == mr => deflate(nr)
+          case untyped.RatioMeasure(nr, Unit) => deflate(nr)
+          case untyped.ExponentialMeasure(Unit, _) => Unit
+          case untyped.ExponentialMeasure(base, exponent) if exponent == 1.0 => deflate(base)
+        }
+
+        def deflateRecompose: PartialFunction[untyped.Measure, untyped.Measure] =
+        {
+          case untyped.ProductMeasure(md, mr) => deflateProduct(ProductMeasure(deflate(md), deflate(mr)))
+          case untyped.ExponentialMeasure(base, exponent) => ExponentialMeasure(deflate(base), exponent)
+        }
+
+        def giveUp: PartialFunction[untyped.Measure, untyped.Measure] =
+        {
+          case measure => measure
+        }
+
+        deflateNonRecompose.orElse(deflateRecompose).orElse(giveUp)(inflated)
+      }
+
+      private def exponentials(measure: untyped.Measure, outerExponent: Double, map: ExponentMap): ExponentMap = measure match
+      {
+        case untyped.ProductMeasure(md, mr) => exponentials(md, outerExponent, exponentials(mr, outerExponent, map))
+        case untyped.RatioMeasure(nr, dr) => exponentials(nr, outerExponent, exponentials(dr, -outerExponent, map))
+        case untyped.ExponentialMeasure(base, exponent) => exponentials(base, exponent * outerExponent, map)
+        case _ => map + (measure -> (map.getOrElse(measure, 0.0) + measure.exponent * outerExponent))
+      }
+
+      private def exponential(measure: (untyped.Measure, Double)): untyped.Measure = measure match
+      {
+        case (x, 1.0) => x
+        case _ => untyped.ExponentialMeasure(measure._1, measure._2)
+      }
+    }
+
+    trait DefaultSimplificationImplicits
+    {
+
+      case object ProductOfExponentials
+      {
+        def apply(from: untyped.Measure): untyped.ProductMeasure = product(from, 1)
+
+        private def product(from: untyped.Measure, outerExponent: Double): untyped.ProductMeasure = from match
+        {
+          case untyped.ProductMeasure(md, mr) => ProductMeasure(product(md, outerExponent), product(mr, outerExponent))
+          case untyped.RatioMeasure(nr, dr) => ProductMeasure(product(nr, outerExponent), product(dr, -outerExponent))
+          case untyped.ExponentialMeasure(base, exponent) => ProductMeasure(product(base, exponent * outerExponent), Unit)
+          case _ if outerExponent == 1.0 => ProductMeasure(from, Unit)
+          case _ => ProductMeasure(ExponentialMeasure(from, outerExponent), Unit)
+        }
+      }
+
+      implicit object DefaultCanSimplify extends CanSimplify[untyped.Measure, untyped.Measure]
+      {
+        override def simplify(inflated: untyped.Measure): untyped.Measure =
+        {
+          val productOfExponentials = ProductOfExponentials(inflated)
+
+          DefaultReducer(productOfExponentials)
+        }
+      }
+
+    }
+
+    object default extends DefaultSimplificationImplicits
+
+  }
+
   object implicits extends AnyRef
                            with arithmetic.SafeArithmeticImplicits
                            with conversion.DefaultConversionImplicits
+                           with simplification.DefaultSimplificationImplicits
 
 }

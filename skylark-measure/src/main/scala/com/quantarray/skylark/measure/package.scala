@@ -21,6 +21,10 @@ package com.quantarray.skylark
 
 package object measure
 {
+  val * = ProductMeasure
+  val / = RatioMeasure
+  val ^ = ExponentialMeasure
+
   type ⤇[From, To] = Conversion[From, To]
 
   val ⤇ = Conversion
@@ -329,8 +333,6 @@ package object measure
 
   val Yi = BinaryMultiple("Yi", 17)
 
-  final val Unit = DimensionlessMeasure("\uD835\uDFD9", Universal())
-
   type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]
 
   type Price[M <: Measure[M], N <: Measure[N]] = RatioMeasure[M, N]
@@ -345,6 +347,8 @@ package object measure
   /**
     * Dimensionless.
     */
+  final val Unit = DimensionlessMeasure("\uD835\uDFD9", Universal())
+
   val percent = "%" := 0.01 * Unit
 
   // http://en.wikipedia.org/wiki/Basis_point

@@ -46,13 +46,13 @@ class MeasureSpec extends FlatSpec with Matchers
     }
 
   it should "add and subtract" in
-  {
-    kg + g should be(kg)
-    g + kg should be(g)
+    {
+      kg + g should be(kg)
+      g + kg should be(g)
 
-    kg - g should be(kg)
-    g - kg should be(g)
-  }
+      kg - g should be(kg)
+      g - kg should be(g)
+    }
 
   "mi / h" should "be convertible to m/s" in
     {
@@ -61,9 +61,7 @@ class MeasureSpec extends FlatSpec with Matchers
 
   it should "be collectible" in
     {
-      import untyped._
-
-      (kg * m / (s ^ 2)).collect({ case (x * _) / _ => x }) should be(kg)
+      (kg * m / (s ^ 2)).collect({ case untyped.RatioMeasure(untyped.ProductMeasure(x, _), _) => x }) should be(kg)
     }
 
   "(bbl ^ 2) / USD" should "be convertible to string" in
