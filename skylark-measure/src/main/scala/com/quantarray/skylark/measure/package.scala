@@ -331,7 +331,7 @@ package object measure
 
   final val Unit = DimensionlessMeasure("\uD835\uDFD9", Universal())
 
-  type ExponentialLength = ExponentialMeasure[LengthMeasure]
+  type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]
 
   type Price[M <: Measure[M], N <: Measure[N]] = RatioMeasure[M, N]
 
@@ -1010,9 +1010,9 @@ package object measure
     object commodity
     {
 
-      object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLength]
+      object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLengthMeasure]
       {
-        override def apply(from: VolumeMeasure, to: ExponentialLength): Option[Double] = Conversion(from, to) match
+        override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = Conversion(from, to) match
         {
           case `bbl` ⤇ `gal` => Some(42.0)
         }
@@ -1021,9 +1021,9 @@ package object measure
       trait BaseCommodityConversionImplicits
       {
 
-        implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLength]
+        implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLengthMeasure]
         {
-          override def convert: Converter[VolumeMeasure, ExponentialLength] = VolumeToExponentialLengthConverter
+          override def convert: Converter[VolumeMeasure, ExponentialLengthMeasure] = VolumeToExponentialLengthConverter
         }
 
       }

@@ -24,9 +24,9 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-trait ExponentialLengthConverter extends SameTypeConverter[ExponentialLength]
+trait ExponentialLengthConverter extends SameTypeConverter[ExponentialLengthMeasure]
 {
-  override protected def convert(from: ExponentialLength, to: ExponentialLength): Option[Double] = ⤇(from, to) match
+  override protected def convert(from: ExponentialLengthMeasure, to: ExponentialLengthMeasure): Option[Double] = ⤇(from, to) match
   {
     case `gal` ⤇ `in3` => Some(231)
     case `ha` ⤇ `km2` => Some(0.01)
