@@ -151,7 +151,7 @@ For example, say when one does `b / s` (bits per second), one wants to work with
 One would then need to define the custom object like `InformationTimeCanDivide`:
 
 ```scala
-object custom extends com.quantarray.skylark.measure.arithmetic.DefaultImplicits
+object custom extends com.quantarray.skylark.measure.arithmetic.SafeArithmeticImplicits
 {
 
   implicit object InformationTimeCanDivide extends CanDivide[InformationMeasure, TimeMeasure, BitRateMeasure]
