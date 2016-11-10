@@ -21,7 +21,6 @@ package com.quantarray.skylark.measure.untyped
 
 import com.quantarray.skylark.measure._
 import com.quantarray.skylark.measure.untyped.implicits._
-import com.quantarray.skylark.measure.untyped.quantity._
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.language.postfixOps

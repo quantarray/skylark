@@ -271,9 +271,129 @@ package object untyped
 
   }
 
+  trait Units[@specialized(Double, Int) N] extends Any
+  {
+    implicit def qn: QuasiNumeric[N]
+
+    def value: N
+
+    /**
+      * Composes a quantity of supplied measure.
+      */
+    def apply(measure: untyped.Measure) = untyped.Quantity(value, measure)
+
+    /**
+      * Composes a quantity of supplied measure.
+      */
+    def *(measure: untyped.Measure): untyped.Quantity[N] = apply(measure)
+
+    /**
+      * Dimensionless.
+      */
+    def unit = apply(com.quantarray.skylark.measure.Unit)
+
+    def units = unit
+
+    def percent = apply(com.quantarray.skylark.measure.percent)
+
+    def bp = apply(com.quantarray.skylark.measure.bp)
+
+    def rad = apply(com.quantarray.skylark.measure.rad)
+
+    def sr = apply(com.quantarray.skylark.measure.sr)
+
+    /**
+      * Time.
+      */
+    def day = apply(com.quantarray.skylark.measure.day)
+
+    def days = day
+
+    /**
+      * Mass.
+      */
+    def g = apply(com.quantarray.skylark.measure.g)
+
+    def kg = apply(com.quantarray.skylark.measure.kg)
+
+    def cg = apply(com.quantarray.skylark.measure.cg)
+
+    def mg = apply(com.quantarray.skylark.measure.mg)
+
+    def t = apply(com.quantarray.skylark.measure.t)
+
+    def oz_metric = apply(com.quantarray.skylark.measure.oz_metric)
+
+    def oz = apply(com.quantarray.skylark.measure.oz)
+
+    def lb = apply(com.quantarray.skylark.measure.lb)
+
+    def mt = apply(com.quantarray.skylark.measure.mt)
+
+    def ton = apply(com.quantarray.skylark.measure.ton)
+
+    def gr = apply(com.quantarray.skylark.measure.gr)
+
+    def dwt = apply(com.quantarray.skylark.measure.dwt)
+
+    def lb_troy = apply(com.quantarray.skylark.measure.lb_troy)
+
+    def oz_troy = apply(com.quantarray.skylark.measure.oz_troy)
+
+    /**
+      * Length.
+      */
+    def m = apply(com.quantarray.skylark.measure.m)
+
+    def in = apply(com.quantarray.skylark.measure.in)
+
+    def ft = apply(com.quantarray.skylark.measure.ft)
+
+    def yd = apply(com.quantarray.skylark.measure.yd)
+
+    /**
+      * Area.
+      */
+    def km2 = apply(com.quantarray.skylark.measure.km2)
+
+    def ha = apply(com.quantarray.skylark.measure.ha)
+
+    /**
+      * Volume.
+      */
+    def in3 = apply(com.quantarray.skylark.measure.in3)
+
+    def gal = apply(com.quantarray.skylark.measure.gal)
+
+    def bbl = apply(com.quantarray.skylark.measure.bbl)
+
+    /**
+      * Energy.
+      */
+    def MMBtu = apply(com.quantarray.skylark.measure.MMBtu)
+
+    /**
+      * Currency.
+      */
+    def USD = apply(com.quantarray.skylark.measure.USD)
+  }
+
   object implicits extends AnyRef
                            with arithmetic.SafeArithmeticImplicits
                            with conversion.DefaultConversionImplicits
                            with simplification.DefaultSimplificationImplicits
+  {
+    implicit final class DoubleQuantity(val value: Double) extends AnyVal with Units[Double]
+    {
+      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
+    }
+
+    implicit final class IntQuantity(private val intValue: Int) extends AnyVal with Units[Double]
+    {
+      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
+
+      override def value: Double = intValue
+    }
+  }
 
 }
