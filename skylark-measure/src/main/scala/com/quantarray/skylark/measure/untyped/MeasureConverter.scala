@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.untyped.conversion
+package com.quantarray.skylark.measure.untyped
 
 import com.quantarray.skylark.measure.SameTypeConverter
-import com.quantarray.skylark.measure.untyped.Measure
 
 /**
   * Measure converter.
