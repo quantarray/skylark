@@ -143,7 +143,7 @@ By default
 * `m1 / m2` returns `RatioMeasure(m1, m2)`;
 * `m ^ n` return `ExponentialMeasure(m, n`).
 
-One can, however, override the return type by proving a custom implicit object or class that derives from one of the three `Can*` traits.
+One can, however, override the return type by proving a custom implicit class that derives from one of the three `Can*` traits.
 
 For example, say when one does `b / s` (bits per second), one wants to work with a custom `BitRateMeasure` instead of the default `RatioMeasure(bit, s)`.
   

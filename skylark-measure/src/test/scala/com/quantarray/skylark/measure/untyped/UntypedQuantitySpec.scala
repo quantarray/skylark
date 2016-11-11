@@ -59,7 +59,7 @@ class UntypedQuantitySpec extends FlatSpec with Matchers
 
   it should "add/subtract with a custom CanConvert" in
     {
-      implicit object MeasureCanConvert extends CanConvert[Measure, Measure]
+      implicit val measureCanConvert = new CanConvert[Measure, Measure]
       {
         override def convert: Converter[Measure, Measure] = new MeasureConverter
         {

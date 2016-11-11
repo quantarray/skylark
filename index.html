@@ -159,7 +159,7 @@ aesthetically pleasing).</p>
 <code>m ^ n</code> return <code>ExponentialMeasure(m, n</code>).</li>
 </ul>
 
-<p>One can, however, override the return type by proving a custom implicit object or class that derives from one of the three <code>Can*</code> traits.</p>
+<p>One can, however, override the return type by proving a custom implicit class that derives from one of the three <code>Can*</code> traits.</p>
 
 <p>For example, say when one does <code>b / s</code> (bits per second), one wants to work with a custom <code>BitRateMeasure</code> instead of the default <code>RatioMeasure(bit, s)</code>.</p>
 

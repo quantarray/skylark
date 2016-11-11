@@ -137,7 +137,7 @@ package object measure
     trait DefaultSimplification
     {
 
-      implicit object EnergyPriceTimesCurrencyPriceCanSimplify extends CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
+      implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
       {
         override def simplify(inflated: EnergyPriceTimesCurrencyPriceMeasure): Option[EnergyPrice] =
         {
@@ -1025,7 +1025,7 @@ package object measure
       trait BaseCommodityConversionImplicits
       {
 
-        implicit object VolumeToExponentialLengthCanConvert extends CanConvert[VolumeMeasure, ExponentialLengthMeasure]
+        implicit val volumeToExponentialLengthCanConvert = new CanConvert[VolumeMeasure, ExponentialLengthMeasure]
         {
           override def convert: Converter[VolumeMeasure, ExponentialLengthMeasure] = VolumeToExponentialLengthConverter
         }
@@ -1153,12 +1153,12 @@ package object measure
 
     implicit final class DoubleQuantity(val value: Double) extends AnyVal with Measures[Double]
     {
-      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
+      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
     }
 
     implicit final class IntQuantity(private val intValue: Int) extends AnyVal with Measures[Double]
     {
-      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
+      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
 
       override def value: Double = intValue
     }

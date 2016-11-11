@@ -146,8 +146,10 @@ package object untyped
     trait DefaultConversionImplicits extends com.quantarray.skylark.measure.conversion.DefaultConversionImplicits
     {
 
-      implicit object MeasureCanConvert extends CanConvert[untyped.Measure, untyped.Measure]
+      implicit val measureCanConvert = new CanConvert[untyped.Measure, untyped.Measure]
       {
+
+        implicit val canConvert: CanConvert[untyped.Measure, untyped.Measure] = implicitly(this)
 
         override def convert: Converter[untyped.Measure, untyped.Measure] = new MeasureConverter
         {
@@ -269,7 +271,7 @@ package object untyped
         }
       }
 
-      implicit object DefaultCanSimplify extends CanSimplify[untyped.Measure, untyped.Measure]
+      implicit val defaultCanSimplify = new CanSimplify[untyped.Measure, untyped.Measure]
       {
         override def simplify(inflated: untyped.Measure): untyped.Measure =
         {
@@ -397,17 +399,19 @@ package object untyped
                            with conversion.DefaultConversionImplicits
                            with simplification.DefaultSimplificationImplicits
   {
+
     implicit final class DoubleQuantity(val value: Double) extends AnyVal with Units[Double]
     {
-      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
+      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
     }
 
     implicit final class IntQuantity(private val intValue: Int) extends AnyVal with Units[Double]
     {
-      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.DoubleQuasiNumeric)
+      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
 
       override def value: Double = intValue
     }
+
   }
 
 }
