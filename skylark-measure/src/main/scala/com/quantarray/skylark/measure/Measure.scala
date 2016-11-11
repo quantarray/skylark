@@ -69,12 +69,12 @@ trait Measure[Self <: Measure[Self]] extends untyped.Measure
   /**
     * Adds another measure. CanAdd instance allows addition of apples and oranges to obtain bananas.
     */
-  def +[M2 <: Measure[M2], R](addend: M2)(implicit ca: CanAdd.Aux[Self, M2, R]): ca.R = ca.plus(this, addend)
+  def +[M2 <: Measure[M2]](addend: M2)(implicit ca: CanAdd[Self, M2]): ca.R = ca.plus(this, addend)
 
   /**
     * Subtracts another measure.
     */
-  def -[M2 <: Measure[M2], R](subtrahend: M2)(implicit ca: CanAdd.Aux[Self, M2, R]): ca.R = ca.plus(this, subtrahend)
+  def -[M2 <: Measure[M2]](subtrahend: M2)(implicit ca: CanAdd[Self, M2]): ca.R = ca.plus(this, subtrahend)
 
   /**
     * Divides by another measure.

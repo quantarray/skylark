@@ -52,8 +52,6 @@ class QuantitySpec extends FlatSpec with Matchers
       10.kg / 2.m should equal(5.0 * (kg / m))
       (10.USD / 2.percent).to(USD).value should equal(500 USD)
 
-      10.kg - 3 should equal(7 kg)
-
       (10.kg + 3.kg) should equal(Some(13 kg))
       (10.kg - 3.kg) should equal(Some(7 kg))
       (10.kg + 3.lb) should equal(Some(11.360775642116007 kg))
