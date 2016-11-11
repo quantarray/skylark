@@ -45,6 +45,8 @@ package object untyped
   /**
     * Mass.
     */
+  val g: untyped.Measure = com.quantarray.skylark.measure.g
+
   val kg: untyped.Measure = com.quantarray.skylark.measure.kg
 
   val mt: untyped.Measure = com.quantarray.skylark.measure.mt

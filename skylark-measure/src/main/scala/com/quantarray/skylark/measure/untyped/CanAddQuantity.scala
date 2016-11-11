@@ -33,11 +33,3 @@ trait CanAddQuantity[N, A1 <: Quantity[N], A2 <: Quantity[N]] extends CanAdd[Mea
 
   def plus(addend1: A1, addend2: A2)(implicit cc: CanConvert[Measure, Measure]): QR
 }
-
-object CanAddQuantity
-{
-  type Aux[N, A1 <: Quantity[N], A2 <: Quantity[N], QR0] = CanAddQuantity[N, A1, A2]
-    {
-      type QR = QR0
-    }
-}

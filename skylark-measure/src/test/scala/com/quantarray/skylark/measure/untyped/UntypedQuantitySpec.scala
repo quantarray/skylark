@@ -78,4 +78,22 @@ class UntypedQuantitySpec extends FlatSpec with Matchers
       3.bbl - 42.gal should equal(Some(2.bbl))
       40.gal - 1.bbl should equal(Some(-2.gal))
     }
+
+  it should "reduce unsafely" in
+  {
+
+    def targetSum(quantities: Seq[Quantity[Double]], target: Measure): Quantity[Double] =
+    {
+      quantities.reduce[Quantity[Double]]
+      {
+        (a, b) =>
+
+          import com.quantarray.skylark.measure.untyped.arithmetic.unsafe._
+
+          a.to(target).get + b
+      }
+    }
+
+    targetSum(List(3.kg, 4.kg), g) should equal(7000.g)
+  }
 }

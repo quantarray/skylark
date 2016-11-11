@@ -46,15 +46,11 @@ abstract class Quantity[N] extends Product with Serializable
   def /(quantity: Quantity[N])(implicit cd: CanDivide[Measure, Measure, Measure]): Quantity[N] =
     Quantity(qn.divide(value, quantity.value), measure / quantity.measure)
 
-  def +(constant: N): Quantity[N]
+  def +(quantity: Quantity[N])(implicit caq: CanAddQuantity[N, Quantity[N], Quantity[N]],
+                               cc: CanConvert[Measure, Measure]): caq.QR = caq.plus(this, quantity)
 
-  def +[QR](quantity: Quantity[N])(implicit caq: CanAddQuantity[N, Quantity[N], Quantity[N]],
-                                   cc: CanConvert[Measure, Measure]): caq.QR = caq.plus(this, quantity)
-
-  def -(constant: N): Quantity[N]
-
-  def -[QR](quantity: Quantity[N])(implicit caq: CanAddQuantity[N, Quantity[N], Quantity[N]],
-                                   cc: CanConvert[Measure, Measure]): caq.QR = caq.plus(this, -quantity)
+  def -(quantity: Quantity[N])(implicit caq: CanAddQuantity[N, Quantity[N], Quantity[N]],
+                               cc: CanConvert[Measure, Measure]): caq.QR = caq.plus(this, -quantity)
 
   def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Quantity[N]] = cc.convert(measure, target).map(cf => Quantity(qn.timesConstant(value, cf), target))
 
@@ -80,10 +76,6 @@ object Quantity
       override def *(constant: Double): Quantity[N] = Quantity(qn.timesConstant(value, constant), measure)
 
       override def /(constant: Double): Quantity[N] = Quantity(qn.divideByConstant(value, constant), measure)
-
-      override def +(constant: N): Quantity[N] = Quantity(qn.plus(value, constant), measure)
-
-      override def -(constant: N): Quantity[N] = Quantity(qn.minus(value, constant), measure)
 
       private val productElements = Seq(value, measure)
 
