@@ -1,7 +1,7 @@
 Publication Steps:
 ==================
 
-* Update version in Build.sbt
+* Update version in build.sbt
 * Update version in README.md
 * At sbt prompt, type 'skylark-measure/publishSigned'
 * Go to https://oss.sonatype.org and log in

@@ -1,29 +1,108 @@
-name := "skylark"
+import sbt.Keys._
+import sbt._
 
-organization := Build.organization
+val projectVersion = "0.13.1"
 
-scalaVersion := Build.scalaVersion
+val compilerVersion = "2.11.8"
 
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
+val scalaParserCombinatorsVersion = "1.0.2"
+val scalaReflectVersion = compilerVersion
+val scalaMacrosParadiseVersion = "2.1.0"
+val scalaXmlVersion = "1.0.2"
 
-lazy val `skylark-time` = project
+val jodaConvertVersion = "1.5"
+val jodaTimeVersion = "2.3"
+val logbackClassicVersion = "1.0.13"
+val scalaCsvVersion = "1.2.1"
+val scalacticVersion = "2.2.1"
+val scalameterVersion = "0.6"
+val scalaMockScalaTestSupportVersion = "3.2"
+val scalatestVersion = "2.2.1"
+val slf4jApiVersion = "1.7.5"
 
-lazy val `skylark-natural-language` = project
+lazy val commonSettings = Seq(
+  organization := "com.bns",
 
-lazy val `skylark-db` = project
+  version := projectVersion,
 
-lazy val `skylark-timeseries` = project.dependsOn(`skylark-time`)
+  scalaVersion := compilerVersion,
 
-lazy val `skylark-timeseries-cassandra` = project.dependsOn(`skylark-time`, `skylark-timeseries`, `skylark-db`)
+  scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-feature"),
 
-lazy val `skylark-autodiff` = project
+  // Due to this flag value "true" test cases fail in sbt, need to find alternative way.
+  packageOptions in(Compile, packageBin) += Package.ManifestAttributes(java.util.jar.Attributes.Name.SEALED -> "false"),
 
-lazy val `skylark-measure` = project
+  unmanagedBase := baseDirectory.value / ".." / "lib",
 
-lazy val `skylark-learning` = project
+  updateOptions := updateOptions.value.withCachedResolution(true),
 
-lazy val `skylark-learning-neural` = project.dependsOn(`skylark-learning`)
+  logBuffered := false,
 
-lazy val skylark = project.in(file(".")).aggregate(`skylark-time`, `skylark-natural-language`, `skylark-db`, `skylark-timeseries`, `skylark-timeseries-cassandra`, `skylark-autodiff`, `skylark-measure`, `skylark-learning`, `skylark-learning-neural`)
+  parallelExecution in Test := false,
 
-fork in run := true
+  resolvers += Resolver.bintrayRepo("jetbrains", "teamcity-rest-client")
+)
+
+lazy val `skylark-measure` = (project in file("skylark-measure")).
+  settings(commonSettings: _*).
+  settings(
+    name := "skylark-measure",
+    libraryDependencies ++= Seq(
+      "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
+      "joda-time" % "joda-time" % jodaTimeVersion,
+      "org.joda" % "joda-convert" % jodaConvertVersion,
+      "org.slf4j" % "slf4j-api" % slf4jApiVersion,
+      "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
+      "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
+    ),
+
+    useGpg := true,
+
+	usePgpKeyHex("389FB928"),
+
+	credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+
+	publishTo <<= version
+	{ v: String =>
+	  val nexus = "https://oss.sonatype.org/"
+	  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
+	  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+	},
+
+	publishMavenStyle := true,
+
+	publishArtifact in Test := false,
+
+	pomIncludeRepository :=
+	  { x => false },
+
+	pomExtra := <url>http://skylark.io/</url>
+	  <licenses>
+	    <license>
+	      <name>Apache License, Version 2.0</name>
+	      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+	      <distribution>repo</distribution>
+	    </license>
+	  </licenses>
+	  <scm>
+	    <url>git@github.com:quantarray/skylark.git</url>
+	    <connection>scm:git:git@github.com:quantarray/skylark.git</connection>
+	  </scm>
+	  <developers>
+	    <developer>
+	      <id>araik</id>
+	      <name>Araik Grigoryan</name>
+	      <url>http://www.quantarray.com</url>
+	    </developer>
+	  </developers>
+
+  )
+
+lazy val skylark = (project in file(".")).
+  settings(commonSettings: _*).
+  settings(
+    name := "skylark",
+    testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-skylark")).
+  aggregate(
+    `skylark-measure`
+  )
