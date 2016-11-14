@@ -289,7 +289,7 @@ package object untyped
 
   }
 
-  trait Units[@specialized(Double, Int) N] extends Any
+  trait Measures[@specialized(Double, Int) N] extends Any
   {
     implicit def qn: QuasiNumeric[N]
 
@@ -402,12 +402,12 @@ package object untyped
                            with simplification.DefaultSimplificationImplicits
   {
 
-    implicit final class DoubleQuantity(val value: Double) extends AnyVal with Units[Double]
+    implicit final class DoubleQuantity(val value: Double) extends AnyVal with Measures[Double]
     {
       implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
     }
 
-    implicit final class IntQuantity(private val intValue: Int) extends AnyVal with Units[Double]
+    implicit final class IntQuantity(private val intValue: Int) extends AnyVal with Measures[Double]
     {
       implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
 
