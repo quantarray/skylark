@@ -19,7 +19,7 @@ Skylark is a collection of libraries for quantitative and financial computation.
 their surface but in the end lack the richness and versatility necessary to use in real enterprise applications.
 
 ```scala
-libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.13.1"
+libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.13.2"
 ```
 
 ```scala
@@ -67,7 +67,7 @@ You can find our the conversion factor from one `to` another. No conversion fact
 (kg to lb).value should be(2.204625)
 ```
 
-Many systems omit units of measure when storing or presenting numerical quantities. Now you can store units of measure along with a numeric value as a plain string.
+When dealing with marshalling/serialization, ou can store units of measure along with a numeric value as a plain string. 
 With `MeasureParsers` you can turn that string back into a measure.
  
 ```scala
