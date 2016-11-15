@@ -33,7 +33,11 @@ package object untyped
   /**
     * Dimensionless.
     */
+  type DimensionlessMeasure = com.quantarray.skylark.measure.DimensionlessMeasure
+
   final val Unit: untyped.Measure = com.quantarray.skylark.measure.Unit
+
+  val percent: untyped.Measure = com.quantarray.skylark.measure.percent
 
   val bp: untyped.Measure = com.quantarray.skylark.measure.bp
 
@@ -41,6 +45,14 @@ package object untyped
     * Time.
     */
   val s: untyped.Measure = com.quantarray.skylark.measure.s
+  val min: untyped.Measure = com.quantarray.skylark.measure.min
+  val mins: untyped.Measure = com.quantarray.skylark.measure.mins
+  val h: untyped.Measure = com.quantarray.skylark.measure.h
+  val hour: untyped.Measure = com.quantarray.skylark.measure.hour
+  val day: untyped.Measure = com.quantarray.skylark.measure.day
+  val days: untyped.Measure = com.quantarray.skylark.measure.days
+  val year365: untyped.Measure = com.quantarray.skylark.measure.year365
+  val years: untyped.Measure = com.quantarray.skylark.measure.years
 
   /**
     * Mass.
@@ -59,6 +71,16 @@ package object untyped
   val gal: untyped.Measure = com.quantarray.skylark.measure.gal
 
   /**
+    * Energy.
+    */
+  val J: untyped.Measure = com.quantarray.skylark.measure.J
+  val kJ: untyped.Measure = com.quantarray.skylark.measure.kJ
+  val MJ: untyped.Measure = com.quantarray.skylark.measure.MJ
+  val GJ: untyped.Measure = com.quantarray.skylark.measure.GJ
+
+  val MMBtu: untyped.Measure = com.quantarray.skylark.measure.MMBtu
+
+  /**
     * Length.
     */
   val m: untyped.Measure = com.quantarray.skylark.measure.m
@@ -66,7 +88,11 @@ package object untyped
   /**
     * Currency.
     */
+  val CAD: untyped.Measure = com.quantarray.skylark.measure.CAD
+
   val USD: untyped.Measure = com.quantarray.skylark.measure.USD
+
+  val USC: untyped.Measure = com.quantarray.skylark.measure.USC
 
   object arithmetic
   {
