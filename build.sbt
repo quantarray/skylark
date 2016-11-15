@@ -18,7 +18,7 @@ val scalatestVersion = "2.2.1"
 val slf4jApiVersion = "1.7.5"
 
 lazy val commonSettings = Seq(
-  organization := "com.bns",
+  organization := "com.quantarray",
 
   version := projectVersion,
 
