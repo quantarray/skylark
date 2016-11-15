@@ -109,8 +109,6 @@ package object untyped
     }
 
     object safe extends SafeArithmeticImplicits
-    {
-    }
 
     object unsafe extends SafeArithmeticImplicits
     {
@@ -404,24 +402,21 @@ package object untyped
     def USD = apply(com.quantarray.skylark.measure.USD)
   }
 
+  implicit final class DoubleQuantity(val value: Double) extends AnyVal with Measures[Double]
+  {
+    implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
+  }
+
+  implicit final class IntQuantity(private val intValue: Int) extends AnyVal with Measures[Double]
+  {
+    implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
+
+    override def value: Double = intValue
+  }
+
   object implicits extends AnyRef
                            with arithmetic.SafeArithmeticImplicits
                            with conversion.DefaultConversionImplicits
                            with simplification.DefaultSimplificationImplicits
-  {
-
-    implicit final class DoubleQuantity(val value: Double) extends AnyVal with Measures[Double]
-    {
-      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
-    }
-
-    implicit final class IntQuantity(private val intValue: Int) extends AnyVal with Measures[Double]
-    {
-      implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
-
-      override def value: Double = intValue
-    }
-
-  }
 
 }
