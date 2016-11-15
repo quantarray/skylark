@@ -10,10 +10,7 @@ val scalaReflectVersion = compilerVersion
 val scalaMacrosParadiseVersion = "2.1.0"
 val scalaXmlVersion = "1.0.2"
 
-val jodaConvertVersion = "1.5"
-val jodaTimeVersion = "2.3"
 val logbackClassicVersion = "1.0.13"
-val scalaCsvVersion = "1.2.1"
 val scalacticVersion = "2.2.1"
 val scalameterVersion = "0.6"
 val scalaMockScalaTestSupportVersion = "3.2"
@@ -49,8 +46,6 @@ lazy val `skylark-measure` = (project in file("skylark-measure")).
     name := "skylark-measure",
     libraryDependencies ++= Seq(
       "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
-      "joda-time" % "joda-time" % jodaTimeVersion,
-      "org.joda" % "joda-convert" % jodaConvertVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
       "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
@@ -58,43 +53,43 @@ lazy val `skylark-measure` = (project in file("skylark-measure")).
 
     useGpg := true,
 
-	usePgpKeyHex("389FB928"),
+    usePgpKeyHex("389FB928"),
 
-	credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
 
-	publishTo <<= version
-	{ v: String =>
-	  val nexus = "https://oss.sonatype.org/"
-	  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
-	  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-	},
+    publishTo <<= version
+    { v: String =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
+      else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    },
 
-	publishMavenStyle := true,
+    publishMavenStyle := true,
 
-	publishArtifact in Test := false,
+    publishArtifact in Test := false,
 
-	pomIncludeRepository :=
-	  { x => false },
+    pomIncludeRepository :=
+      { x => false },
 
-	pomExtra := <url>http://skylark.io/</url>
-	  <licenses>
-	    <license>
-	      <name>Apache License, Version 2.0</name>
-	      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
-	      <distribution>repo</distribution>
-	    </license>
-	  </licenses>
-	  <scm>
-	    <url>git@github.com:quantarray/skylark.git</url>
-	    <connection>scm:git:git@github.com:quantarray/skylark.git</connection>
-	  </scm>
-	  <developers>
-	    <developer>
-	      <id>araik</id>
-	      <name>Araik Grigoryan</name>
-	      <url>http://www.quantarray.com</url>
-	    </developer>
-	  </developers>
+    pomExtra := <url>http://skylark.io/</url>
+      <licenses>
+        <license>
+          <name>Apache License, Version 2.0</name>
+          <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+      <scm>
+        <url>git@github.com:quantarray/skylark.git</url>
+        <connection>scm:git:git@github.com:quantarray/skylark.git</connection>
+      </scm>
+      <developers>
+        <developer>
+          <id>araik</id>
+          <name>Araik Grigoryan</name>
+          <url>http://www.quantarray.com</url>
+        </developer>
+      </developers>
 
   )
 
