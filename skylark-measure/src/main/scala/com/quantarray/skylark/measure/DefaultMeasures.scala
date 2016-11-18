@@ -24,8 +24,70 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-trait DefaultMeasures
+trait DefaultMeasures extends DefaultDimensions
 {
+  /**
+    * SI prefixes.
+    */
+  val Yotta = DecadicMultiple("Y", 1E24)
+
+  val Zetta = DecadicMultiple("Z", 1E21)
+
+  val Exa = DecadicMultiple("E", 1E18)
+
+  val Peta = DecadicMultiple("P", 1E15)
+
+  val Tera = DecadicMultiple("T", 1E12)
+
+  val Giga = DecadicMultiple("G", 1E9)
+
+  val Mega = DecadicMultiple("M", 1E6)
+
+  val Kilo = DecadicMultiple("k", 1000)
+
+  val Hecto = DecadicMultiple("h", 100)
+
+  val Deka = DecadicMultiple("da", 10)
+
+  val Deci = DecadicMultiple("d", 0.1)
+
+  val Centi = DecadicMultiple("c", 0.01)
+
+  val Milli = DecadicMultiple("m", 0.001)
+
+  val Micro = DecadicMultiple("µ", 1E-6)
+
+  val Nano = DecadicMultiple("n", 1E-9)
+
+  val Pico = DecadicMultiple("p", 1E-12)
+
+  val Femto = DecadicMultiple("f", 1E-15)
+
+  val Atto = DecadicMultiple("a", 1E-18)
+
+  val Zepto = DecadicMultiple("z", 1E-21)
+
+  val Yocto = DecadicMultiple("y", 1E-24)
+
+  /**
+    * IEC (http://en.wikipedia.org/wiki/International_Electrotechnical_Commission) prefixes.
+    */
+  val Ki = BinaryMultiple("Ki", 10)
+
+  val Mi = BinaryMultiple("Mi", 11)
+
+  val Gi = BinaryMultiple("Gi", 12)
+
+  val Ti = BinaryMultiple("Ti", 13)
+
+  val Pi = BinaryMultiple("Pi", 14)
+
+  val Ei = BinaryMultiple("Ei", 15)
+
+  val Zi = BinaryMultiple("Zi", 16)
+
+  val Yi = BinaryMultiple("Yi", 17)
+
   import composition._
   import arithmetic.safe._
 
@@ -34,83 +96,84 @@ trait DefaultMeasures
     */
   final val Unit = DimensionlessMeasure("\uD835\uDFD9", Universal())
 
-  val percent = "%" := 0.01 * Unit
+  final val percent = "%" := 0.01 * Unit
 
   // http://en.wikipedia.org/wiki/Basis_point
-  val bp = "bp" := 0.0001 * Unit
+  final val bp = "bp" := 0.0001 * Unit
 
   // http://en.wikipedia.org/wiki/Radian
-  val rad = DimensionlessMeasure("rad", Derived(SI), 1 / (2 * scala.math.Pi))
+  final val rad = DimensionlessMeasure("rad", Derived(SI), 1 / (2 * scala.math.Pi))
 
   // http://en.wikipedia.org/wiki/Steradian
-  val sr = DimensionlessMeasure("sr", Derived(SI), 1 / (4 * scala.math.Pi))
+  final val sr = DimensionlessMeasure("sr", Derived(SI), 1 / (4 * scala.math.Pi))
 
   /**
     * Time.
     */
-  val s = TimeMeasure("s", SI)
-  val (sec, secs) = (s, s)
-  val min = "min" := 60 * s
-  val mins = min
-  val h = "h" := 60 * min
-  val (hour, hours) = (h, h)
-  val day = "day" := 24 * h
-  val days = day
-  val year365 = "Year[365]" := 365 * day
-  val years = year365
-  val year360 = "Year[360]" := 360 * day
+  final val s = TimeMeasure("s", SI)
+  final val sec = s
+  final val secs = s
+  final val min = "min" := 60 * s
+  final val mins = min
+  final val h = "h" := 60 * min
+  final val (hour, hours) = (h, h)
+  final val day = "day" := 24 * h
+  final val days = day
+  final val year365 = "Year[365]" := 365 * day
+  final val years = year365
+  final val year360 = "Year[360]" := 360 * day
 
-  val ms = Milli * s
-  val ns = Nano * s
+  final val ms = Milli * s
+  final val ns = Nano * s
 
   val fortnight = day.composes("Fortnight", Imperial(), 14)
 
   /**
     * Mass.
     */
-  val g = MassMeasure("g", SI)
-  val kg = Kilo * g
-  val cg = Centi * g
-  val mg = Milli * g
-  val t = MassMeasure("t", SI)
-  val oz_metric = MassMeasure("metric oz", SI) // http://en.wikipedia.org/wiki/Ounce#Metric_ounces
+  final val g = MassMeasure("g", SI)
+  final val kg = Kilo * g
+  final val cg = Centi * g
+  final val mg = Milli * g
+  final val t = MassMeasure("t", SI)
+  final val oz_metric = MassMeasure("metric oz", SI) // http://en.wikipedia.org/wiki/Ounce#Metric_ounces
 
-  val oz = MassMeasure("oz", US)
-  val lb = MassMeasure("lb", US)
+  final val oz = MassMeasure("oz", US)
+  final val lb = MassMeasure("lb", US)
 
-  val mt = "mt" := 2204.625 * lb
-  val ton = mt
+  final val mt = "mt" := 2204.625 * lb
+  final val ton = mt
 
   // http://en.wikipedia.org/wiki/Grain_(unit)
-  val gr = MassMeasure("grain", Imperial())
+  final val gr = MassMeasure("grain", Imperial())
   // http://en.wikipedia.org/wiki/Pennyweight
-  val dwt = MassMeasure("dwt", Imperial())
-  val oz_troy = MassMeasure("troy oz", Imperial())
-  val lb_troy = MassMeasure("troy lb", Imperial())
+  final val dwt = MassMeasure("dwt", Imperial())
+  final val oz_troy = MassMeasure("troy oz", Imperial())
+  final val lb_troy = MassMeasure("troy lb", Imperial())
 
   /**
     * Length.
     */
-  val m = LengthMeasure("m", SI)
-  val km = Kilo * m
-  val hm = Hecto * m
-  val dam = Deka * m
-  val dm = Deci * m
-  val cm = Centi * m
-  val mm = Milli * m
-  val nm = Nano * m
+  final val m = LengthMeasure("m", SI)
+  final val km = Kilo * m
+  final val hm = Hecto * m
+  final val dam = Deka * m
+  final val dm = Deci * m
+  final val cm = Centi * m
+  final val mm = Milli * m
+  final val nm = Nano * m
 
-  val in = LengthMeasure("in", Imperial())
-  val ft = "ft" := 12 * in
-  val yd = "yd" := 3 * ft
-  val rd = "rod" := 16.5 * ft
-  val fur = "fur" := 40 * rd
-  val mi = "mi" := 132 * fur
+  final val in = LengthMeasure("in", Imperial())
+  final val ft = "ft" := 12 * in
+  final val yd = "yd" := 3 * ft
+  final val rd = "rod" := 16.5 * ft
+  final val fur = "fur" := 40 * rd
+  final val mi = "mi" := 132 * fur
 
-  val nmi = "nmi" := 1852 * m
+  final val nmi = "nmi" := 1852 * m
 
   // http://en.wikipedia.org/wiki/Thou_(length)
-  val thou = "thou" := 0.001 * in
+  final val thou = "thou" := 0.001 * in
 
   //http://en.wikipedia.org/wiki/Astronomical_unit
   val au = "au" := 149597870700.0 * m
@@ -131,36 +194,36 @@ trait DefaultMeasures
   /**
     * Area.
     */
-  val m2 = m ^ 2
-  val km2 = km ^ 2
+  final val m2 = m ^ 2
+  final val km2 = km ^ 2
   // Hectometer
-  val hm2 = m ^ 2
-  val ha = m2.composes("Hectare", 10000)
+  final val hm2 = m ^ 2
+  final val ha = m2.composes("Hectare", 10000)
 
-  val ft2 = ft ^ 2
-  val acre = ft2.composes("Acre", 43560)
+  final val ft2 = ft ^ 2
+  final val acre = ft2.composes("Acre", 43560)
 
   /**
     * Volume.
     */
-  val m3 = m ^ 3
-  val cm3 = cm ^ 3
-  val liter = "liter" := 0.001 * m3
+  final val m3 = m ^ 3
+  final val cm3 = cm ^ 3
+  final val liter = "liter" := 0.001 * m3
 
-  val in3 = in ^ 3
+  final val in3 = in ^ 3
 
   // Liquid
-  val pi_liquid = in3.composes("pint", 28.875)
-  val qt_liquid = pi_liquid.composes("quart", 2.0)
-  val gal = qt_liquid.composes("gal", US, 4.0)
+  final val pi_liquid = in3.composes("pint", 28.875)
+  final val qt_liquid = pi_liquid.composes("quart", 2.0)
+  final val gal = qt_liquid.composes("gal", US, 4.0)
 
-  val bbl = VolumeMeasure("bbl", Imperial())
+  final val bbl = VolumeMeasure("bbl", Imperial())
 
   // Dry
-  val pi_dry = in3.composes("pint", US, 33.6003125)
-  val qt_dry = pi_dry.composes("quart", 2)
-  val peck = qt_dry.composes("peck", 8)
-  val bushel = peck.composes("bushel", 4)
+  final val pi_dry = in3.composes("pint", US, 33.6003125)
+  final val qt_dry = pi_dry.composes("quart", 2)
+  final val peck = qt_dry.composes("peck", 8)
+  final val bushel = peck.composes("bushel", 4)
 
   /**
     * Force.
@@ -185,7 +248,7 @@ trait DefaultMeasures
   val MJ = Mega * J
   val GJ = Giga * J
 
-  val MMBtu = EnergyMeasure("MMBtu", Imperial())
+  final val MMBtu = EnergyMeasure("MMBtu", Imperial())
 
   /**
     * Pressure.
@@ -280,7 +343,7 @@ trait DefaultMeasures
   // Belize dollar
   val BZD = Currency("BZD")
   // Canadian dollar
-  val CAD = Currency("CAD")
+  final val CAD = Currency("CAD")
   // Congolese franc
   val CDF = Currency("CDF")
   // Swiss franc
@@ -518,7 +581,7 @@ trait DefaultMeasures
   // Ugandan shilling
   val UGX = Currency("UGX")
   // United States dollar
-  val USD = Currency("USD")
+  final val USD = Currency("USD")
   // United States dollar (next day) (funds code)
   val USN = Currency("USN")
   // United States dollar (same day) (funds code)
@@ -575,5 +638,5 @@ trait DefaultMeasures
   val ZMW = Currency("ZMW")
 
   // United States cent
-  val USC = "USC" := 0.01 * USD
+  final val USC = "USC" := 0.01 * USD
 }

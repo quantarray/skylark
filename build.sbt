@@ -40,16 +40,34 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.bintrayRepo("jetbrains", "teamcity-rest-client")
 )
 
+lazy val `skylark-measure-macros` = (project in file("skylark-measure-macros")).
+  settings(commonSettings: _*).
+  settings(
+    name := "skylark-measure-macros",
+    libraryDependencies ++= Seq(
+      "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
+      "org.scalamacros" % "paradise_2.11.0" % scalaMacrosParadiseVersion,
+      "org.slf4j" % "slf4j-api" % slf4jApiVersion,
+      "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
+      "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
+    ),
+
+    addCompilerPlugin("org.scalamacros" % "paradise" % scalaMacrosParadiseVersion cross CrossVersion.full)
+  )
+
 lazy val `skylark-measure` = (project in file("skylark-measure")).
   settings(commonSettings: _*).
   settings(
     name := "skylark-measure",
     libraryDependencies ++= Seq(
       "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
+      "org.scalamacros" % "paradise_2.11.0" % scalaMacrosParadiseVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
       "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
     ),
+
+    addCompilerPlugin("org.scalamacros" % "paradise" % scalaMacrosParadiseVersion cross CrossVersion.full),
 
     useGpg := true,
 
@@ -91,7 +109,7 @@ lazy val `skylark-measure` = (project in file("skylark-measure")).
         </developer>
       </developers>
 
-  )
+  ).dependsOn(`skylark-measure-macros`)
 
 lazy val skylark = (project in file(".")).
   settings(commonSettings: _*).
@@ -99,5 +117,5 @@ lazy val skylark = (project in file(".")).
     name := "skylark",
     testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-skylark")).
   aggregate(
-    `skylark-measure`
+    `skylark-measure-macros`, `skylark-measure`
   )
