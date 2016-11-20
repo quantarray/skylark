@@ -67,7 +67,7 @@ You can find our the conversion factor from one `to` another. No conversion fact
 (kg to lb).value should be(2.204625)
 ```
 
-When dealing with marshalling/serialization, ou can store units of measure along with a numeric value as a plain string. 
+When dealing with marshalling/serialization, you can store units of measure along with a numeric value as a plain string. 
 With `MeasureParsers` you can turn that string back into a measure.
  
 ```scala
@@ -104,9 +104,9 @@ are defined by converters and require their own `CanConvert` instances of their 
 (12.in to ft) should equal(1.0 ft)
 ```
 
-### Strongly-typed and untyped measures and quantities
+### Strongly-typed vs. untyped measures and quantities
 
-**skylark-measure** gives you the freedom and flexibility of working with strongly-typed measures (e.g. `MassMeasure`) or looser-typed `untyped.Measure`. 
+**skylark-measure** gives you the freedom and flexibility to work with strongly-typed measures (e.g. `MassMeasure`) or looser-typed `untyped.Measure`. 
 The choice of which to work with depends on the individual API you would like to expose and enforce.
 
 In the situation where you know you must receive a `MassMeasure`, you would encode exactly as natural logic or physics would dictate. There is, hence, no chance
