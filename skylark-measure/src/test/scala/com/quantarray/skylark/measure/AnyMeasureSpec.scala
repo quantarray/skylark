@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.untyped
+package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.measures.any._
 import com.quantarray.skylark.measure.untyped.implicits._
 import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 
-class UntypedMeasureSpec extends FlatSpec with Matchers
+class AnyMeasureSpec extends FlatSpec with Matchers
 {
 
   import com.quantarray.skylark.measure.commodity.us.commercial.grains.corn.shelled.{bushel => cbu}
