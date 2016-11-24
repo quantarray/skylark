@@ -19,6 +19,8 @@
 
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.measures._
+
 /**
   * Mass converter.
   *

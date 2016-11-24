@@ -38,64 +38,64 @@ package object untyped
     */
   type DimensionlessMeasure = com.quantarray.skylark.measure.DimensionlessMeasure
 
-  final val Unit: AnyMeasure = com.quantarray.skylark.measure.Unit
+  final val Unit: AnyMeasure = com.quantarray.skylark.measure.measures.Unit
 
-  val percent: AnyMeasure = com.quantarray.skylark.measure.percent
+  val percent: AnyMeasure = com.quantarray.skylark.measure.measures.percent
 
-  val bp: AnyMeasure = com.quantarray.skylark.measure.bp
+  val bp: AnyMeasure = com.quantarray.skylark.measure.measures.bp
 
   /**
     * Time.
     */
-  val s: AnyMeasure = com.quantarray.skylark.measure.s
-  val min: AnyMeasure = com.quantarray.skylark.measure.min
-  val mins: AnyMeasure = com.quantarray.skylark.measure.mins
-  val h: AnyMeasure = com.quantarray.skylark.measure.h
-  val hour: AnyMeasure = com.quantarray.skylark.measure.hour
-  val day: AnyMeasure = com.quantarray.skylark.measure.day
-  val days: AnyMeasure = com.quantarray.skylark.measure.days
-  val year365: AnyMeasure = com.quantarray.skylark.measure.year365
-  val years: AnyMeasure = com.quantarray.skylark.measure.years
+  val s: AnyMeasure = com.quantarray.skylark.measure.measures.s
+  val min: AnyMeasure = com.quantarray.skylark.measure.measures.min
+  val mins: AnyMeasure = com.quantarray.skylark.measure.measures.mins
+  val h: AnyMeasure = com.quantarray.skylark.measure.measures.h
+  val hour: AnyMeasure = com.quantarray.skylark.measure.measures.hour
+  val day: AnyMeasure = com.quantarray.skylark.measure.measures.day
+  val days: AnyMeasure = com.quantarray.skylark.measure.measures.days
+  val year365: AnyMeasure = com.quantarray.skylark.measure.measures.year365
+  val years: AnyMeasure = com.quantarray.skylark.measure.measures.years
 
   /**
     * Mass.
     */
-  val g: AnyMeasure = com.quantarray.skylark.measure.g
+  val g: AnyMeasure = com.quantarray.skylark.measure.measures.g
 
-  val kg: AnyMeasure = com.quantarray.skylark.measure.kg
+  val kg: AnyMeasure = com.quantarray.skylark.measure.measures.kg
 
-  val mt: AnyMeasure = com.quantarray.skylark.measure.mt
+  val mt: AnyMeasure = com.quantarray.skylark.measure.measures.mt
 
   /**
     * Volume.
     */
-  val bbl: AnyMeasure = com.quantarray.skylark.measure.bbl
+  val bbl: AnyMeasure = com.quantarray.skylark.measure.measures.bbl
 
-  val gal: AnyMeasure = com.quantarray.skylark.measure.gal
+  val gal: AnyMeasure = com.quantarray.skylark.measure.measures.gal
 
   /**
     * Energy.
     */
-  val J: AnyMeasure = com.quantarray.skylark.measure.J
-  val kJ: AnyMeasure = com.quantarray.skylark.measure.kJ
-  val MJ: AnyMeasure = com.quantarray.skylark.measure.MJ
-  val GJ: AnyMeasure = com.quantarray.skylark.measure.GJ
+  val J: AnyMeasure = com.quantarray.skylark.measure.measures.J
+  val kJ: AnyMeasure = com.quantarray.skylark.measure.measures.kJ
+  val MJ: AnyMeasure = com.quantarray.skylark.measure.measures.MJ
+  val GJ: AnyMeasure = com.quantarray.skylark.measure.measures.GJ
 
-  val MMBtu: AnyMeasure = com.quantarray.skylark.measure.MMBtu
+  val MMBtu: AnyMeasure = com.quantarray.skylark.measure.measures.MMBtu
 
   /**
     * Length.
     */
-  val m: AnyMeasure = com.quantarray.skylark.measure.m
+  val m: AnyMeasure = com.quantarray.skylark.measure.measures.m
 
   /**
     * Currency.
     */
-  val CAD: AnyMeasure = com.quantarray.skylark.measure.CAD
+  val CAD: AnyMeasure = com.quantarray.skylark.measure.measures.CAD
 
-  val USD: AnyMeasure = com.quantarray.skylark.measure.USD
+  val USD: AnyMeasure = com.quantarray.skylark.measure.measures.USD
 
-  val USC: AnyMeasure = com.quantarray.skylark.measure.USC
+  val USC: AnyMeasure = com.quantarray.skylark.measure.measures.USC
 
   object arithmetic
   {
@@ -343,92 +343,92 @@ package object untyped
     /**
       * Dimensionless.
       */
-    def unit = apply(com.quantarray.skylark.measure.Unit)
+    def unit = apply(com.quantarray.skylark.measure.measures.Unit)
 
     def units = unit
 
-    def percent = apply(com.quantarray.skylark.measure.percent)
+    def percent = apply(com.quantarray.skylark.measure.measures.percent)
 
-    def bp = apply(com.quantarray.skylark.measure.bp)
+    def bp = apply(com.quantarray.skylark.measure.measures.bp)
 
-    def rad = apply(com.quantarray.skylark.measure.rad)
+    def rad = apply(com.quantarray.skylark.measure.measures.rad)
 
-    def sr = apply(com.quantarray.skylark.measure.sr)
+    def sr = apply(com.quantarray.skylark.measure.measures.sr)
 
     /**
       * Time.
       */
-    def day = apply(com.quantarray.skylark.measure.day)
+    def day = apply(com.quantarray.skylark.measure.measures.day)
 
     def days = day
 
     /**
       * Mass.
       */
-    def g = apply(com.quantarray.skylark.measure.g)
+    def g = apply(com.quantarray.skylark.measure.measures.g)
 
-    def kg = apply(com.quantarray.skylark.measure.kg)
+    def kg = apply(com.quantarray.skylark.measure.measures.kg)
 
-    def cg = apply(com.quantarray.skylark.measure.cg)
+    def cg = apply(com.quantarray.skylark.measure.measures.cg)
 
-    def mg = apply(com.quantarray.skylark.measure.mg)
+    def mg = apply(com.quantarray.skylark.measure.measures.mg)
 
-    def t = apply(com.quantarray.skylark.measure.t)
+    def t = apply(com.quantarray.skylark.measure.measures.t)
 
-    def oz_metric = apply(com.quantarray.skylark.measure.oz_metric)
+    def oz_metric = apply(com.quantarray.skylark.measure.measures.oz_metric)
 
-    def oz = apply(com.quantarray.skylark.measure.oz)
+    def oz = apply(com.quantarray.skylark.measure.measures.oz)
 
-    def lb = apply(com.quantarray.skylark.measure.lb)
+    def lb = apply(com.quantarray.skylark.measure.measures.lb)
 
-    def mt = apply(com.quantarray.skylark.measure.mt)
+    def mt = apply(com.quantarray.skylark.measure.measures.mt)
 
-    def ton = apply(com.quantarray.skylark.measure.ton)
+    def ton = apply(com.quantarray.skylark.measure.measures.ton)
 
-    def gr = apply(com.quantarray.skylark.measure.gr)
+    def gr = apply(com.quantarray.skylark.measure.measures.gr)
 
-    def dwt = apply(com.quantarray.skylark.measure.dwt)
+    def dwt = apply(com.quantarray.skylark.measure.measures.dwt)
 
-    def lb_troy = apply(com.quantarray.skylark.measure.lb_troy)
+    def lb_troy = apply(com.quantarray.skylark.measure.measures.lb_troy)
 
-    def oz_troy = apply(com.quantarray.skylark.measure.oz_troy)
+    def oz_troy = apply(com.quantarray.skylark.measure.measures.oz_troy)
 
     /**
       * Length.
       */
-    def m = apply(com.quantarray.skylark.measure.m)
+    def m = apply(com.quantarray.skylark.measure.measures.m)
 
-    def in = apply(com.quantarray.skylark.measure.in)
+    def in = apply(com.quantarray.skylark.measure.measures.in)
 
-    def ft = apply(com.quantarray.skylark.measure.ft)
+    def ft = apply(com.quantarray.skylark.measure.measures.ft)
 
-    def yd = apply(com.quantarray.skylark.measure.yd)
+    def yd = apply(com.quantarray.skylark.measure.measures.yd)
 
     /**
       * Area.
       */
-    def km2 = apply(com.quantarray.skylark.measure.km2)
+    def km2 = apply(com.quantarray.skylark.measure.measures.km2)
 
-    def ha = apply(com.quantarray.skylark.measure.ha)
+    def ha = apply(com.quantarray.skylark.measure.measures.ha)
 
     /**
       * Volume.
       */
-    def in3 = apply(com.quantarray.skylark.measure.in3)
+    def in3 = apply(com.quantarray.skylark.measure.measures.in3)
 
-    def gal = apply(com.quantarray.skylark.measure.gal)
+    def gal = apply(com.quantarray.skylark.measure.measures.gal)
 
-    def bbl = apply(com.quantarray.skylark.measure.bbl)
+    def bbl = apply(com.quantarray.skylark.measure.measures.bbl)
 
     /**
       * Energy.
       */
-    def MMBtu = apply(com.quantarray.skylark.measure.MMBtu)
+    def MMBtu = apply(com.quantarray.skylark.measure.measures.MMBtu)
 
     /**
       * Currency.
       */
-    def USD = apply(com.quantarray.skylark.measure.USD)
+    def USD = apply(com.quantarray.skylark.measure.measures.USD)
   }
 
   implicit final class DoubleQuantity(val value: Double) extends AnyVal with Measures[Double]

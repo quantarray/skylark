@@ -19,10 +19,8 @@
 
 package com.quantarray.skylark
 
-package object measure extends DefaultMeasures
+package object measure extends DefaultDimensions
 {
-  measuresScope =>
-
   val * = ProductMeasure
   val / = RatioMeasure
   val ^ = ExponentialMeasure
@@ -31,8 +29,12 @@ package object measure extends DefaultMeasures
 
   val ⤇ = Conversion
 
-  object quantity
+  object measures extends DefaultMeasures
+
+  object quantity extends DefaultMeasures
   {
+
+    measuresScope =>
 
     @QuantifyMeasure[DefaultMeasures, Quantity[Double, _]](measuresScope)
     class QuantifiedMeasures(val value: Double)
@@ -100,9 +102,11 @@ package object measure extends DefaultMeasures
           object corn
           {
 
+            import com.quantarray.skylark.measure.measures._
+
             object shelled
             {
-              val bushel = "bushel" := 56 * lb
+              val bushel: MassMeasure = "bushel" := 56 * lb
             }
 
           }
@@ -207,6 +211,8 @@ package object measure extends DefaultMeasures
 
       object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLengthMeasure]
       {
+        import com.quantarray.skylark.measure.measures._
+
         override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = Conversion(from, to) match
         {
           case `bbl` ⤇ `gal` => Some(42.0)

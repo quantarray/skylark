@@ -39,5 +39,7 @@ case class DimensionlessMeasure(name: String, system: SystemOfUnits, base: Optio
 
 object DimensionlessMeasure
 {
+  final val Unit = DimensionlessMeasure("\uD835\uDFD9", Universal())
+
   def apply(name: String, system: SystemOfUnits, base: Double): DimensionlessMeasure = new DimensionlessMeasure(name, system, Some(Unit, base))
 }

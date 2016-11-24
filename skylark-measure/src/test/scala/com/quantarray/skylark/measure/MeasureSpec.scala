@@ -20,6 +20,7 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.measures._
 import org.scalatest.{FlatSpec, Matchers}
 
 /**
@@ -34,7 +35,7 @@ class MeasureSpec extends FlatSpec with Matchers
       kg.name should be("kg")
       kg.dimension should be(Mass)
       kg.system should be(SI)
-      kg.isStructuralAtom should be(right = true)
+      kg.isStructuralAtom should be(true)
       kg.exponent should be(1.0)
       kg * s should be(ProductMeasure(kg, s))
       kg.inverse should be(ExponentialMeasure(kg, -1.0))

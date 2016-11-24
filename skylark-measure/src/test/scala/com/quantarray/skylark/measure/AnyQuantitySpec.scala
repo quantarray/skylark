@@ -19,6 +19,7 @@
 
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.measures._
 import com.quantarray.skylark.measure.quantity.any._
 import com.quantarray.skylark.measure.untyped.implicits._
 import org.scalatest.{FlatSpec, Matchers}

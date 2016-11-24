@@ -94,7 +94,7 @@ trait DefaultMeasures extends DefaultDimensions
   /**
     * Dimensionless.
     */
-  final val Unit = DimensionlessMeasure("\uD835\uDFD9", Universal())
+  final val Unit = DimensionlessMeasure.Unit
 
   final val percent = "%" := 0.01 * Unit
 
