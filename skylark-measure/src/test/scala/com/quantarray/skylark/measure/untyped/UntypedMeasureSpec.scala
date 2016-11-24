@@ -19,6 +19,7 @@
 
 package com.quantarray.skylark.measure.untyped
 
+import com.quantarray.skylark.measure.measures.any._
 import com.quantarray.skylark.measure.untyped.implicits._
 import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}

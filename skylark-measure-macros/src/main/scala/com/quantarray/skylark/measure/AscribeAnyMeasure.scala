@@ -51,7 +51,7 @@ private[measure] object AscribeAnyMeasure
     val measureValTermSymbols: List[TermSymbol] = targetTraitTpe.members.collect
     { case d if d.isTerm => d.asTerm }.filter(t => t.isStable && t.isVal && t.isFinal).toList.reverse
 
-    val measureDefs = measureValTermSymbols.map(
+    val measureVals = measureValTermSymbols.map(
       {
         measureValTermSymbol =>
 
@@ -71,7 +71,7 @@ private[measure] object AscribeAnyMeasure
       q"""
       object $objectName
       {
-        ..$measureDefs
+        ..$measureVals
       }
         """
     )

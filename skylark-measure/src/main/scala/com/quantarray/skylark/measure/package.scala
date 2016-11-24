@@ -33,11 +33,8 @@ package object measure extends DefaultDimensions
   {
     measuresScope =>
 
-    @AscribeAnyMeasure[DefaultDimensions](measuresScope)
+    @AscribeAnyMeasure[DefaultMeasures](measuresScope)
     object any
-    {
-
-    }
   }
 
   object quantities extends DefaultMeasures
