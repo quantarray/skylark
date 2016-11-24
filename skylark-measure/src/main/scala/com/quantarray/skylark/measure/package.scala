@@ -34,13 +34,13 @@ package object measure extends DefaultMeasures
   object quantity
   {
 
-    @Quantify[DefaultMeasures, Quantity[Double, _]](measuresScope)
+    @QuantifyMeasure[DefaultMeasures, Quantity[Double, _]](measuresScope)
     class QuantifiedMeasures(val value: Double)
 
     object any
     {
 
-      @QuantifyAny[DefaultMeasures, AnyQuantity[Double]](measuresScope)
+      @QuantifyAnyMeasure[DefaultMeasures, AnyQuantity[Double]](measuresScope)
       class QuantifiedAnyMeasures(val value: Double)
 
     }

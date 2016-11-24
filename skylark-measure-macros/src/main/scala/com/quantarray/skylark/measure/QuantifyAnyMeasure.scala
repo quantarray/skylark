@@ -23,14 +23,14 @@ import scala.annotation.{StaticAnnotation, compileTimeOnly}
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
-@compileTimeOnly("Quantify annotation can only be used with classes")
-private[measure] class Quantify[T, Q](measuresScope: Any) extends StaticAnnotation
+@compileTimeOnly("QuantifyAnyMeasure annotation can only be used with classes")
+private[measure] class QuantifyAnyMeasure[T, Q](measuresScope: Any) extends StaticAnnotation
 {
-  def macroTransform(annottees: Any*): Any = macro Quantify.macroTransformImpl
+  def macroTransform(annottees: Any*): Any = macro QuantifyAnyMeasure.macroTransformImpl
 
 }
 
-private[measure] object Quantify
+private[measure] object QuantifyAnyMeasure
 {
   def macroTransformImpl(c: blackbox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] =
   {
@@ -46,7 +46,7 @@ private[measure] object Quantify
     val measuresScope: List[Tree] = c.prefix.tree match
     {
       case q"new $name[$targetTraitTpe, $quantityTpe](...$paramss)" if paramss.nonEmpty => paramss.head
-      case _ => c.abort(c.enclosingPosition, "Quantify requires a single constructor parameter pointing to the scope where measures are defined.")
+      case _ => c.abort(c.enclosingPosition, "QuantifyAnyMeasure requires a single constructor parameter pointing to the scope where measures are defined.")
     }
 
     val measureValTermSymbols: List[TermSymbol] = targetTraitTpe.members.collect
@@ -59,7 +59,7 @@ private[measure] object Quantify
           val quantityIdentifier = TermName(measureValTermSymbol.name.toString.trim)
           val measureTermName = TermName(measureValTermSymbol.name.toString.trim)
 
-          val quantityTpeIdentifier = q"""Quantity[Double, ${measureValTermSymbol.typeSignature}]"""
+          val quantityTpeIdentifier = q"""AnyQuantity[Double]"""
 
           q"""def $quantityIdentifier = $quantityTpeIdentifier(value, ${measuresScope.head}.$measureTermName)"""
       })
@@ -76,7 +76,7 @@ private[measure] object Quantify
 
         tpname
 
-      case _ => c.abort(c.enclosingPosition, s"Quantify annotation can only be used with classes.")
+      case _ => c.abort(c.enclosingPosition, s"QuantifyAnyMeasure annotation can only be used with classes.")
     }
 
     c.Expr(
@@ -85,7 +85,7 @@ private[measure] object Quantify
       {
         implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
 
-        def *[M <: Measure[M]](measure: M): Quantity[Double, M] = Quantity(value, measure)
+        def *(measure: AnyMeasure): AnyQuantity[Double] = AnyQuantity(value, measure)
 
         ..$quantityDefs
       }
