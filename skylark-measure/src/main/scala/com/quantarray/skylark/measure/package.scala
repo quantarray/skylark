@@ -23,7 +23,7 @@ package object measure extends DefaultMeasures
 {
   measuresScope =>
 
-  @Quantify[DefaultMeasures, Quantity[_, _]](measuresScope)
+  @Quantify[DefaultMeasures, Quantity[Double, _]](measuresScope)
   class QuantifiedMeasures(val value: Double)
 
   val * = ProductMeasure

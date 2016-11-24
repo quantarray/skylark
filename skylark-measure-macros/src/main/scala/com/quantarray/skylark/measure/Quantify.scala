@@ -36,12 +36,12 @@ object Quantify
   {
     import c.universe._
 
-    val targetTrait: Tree = c.prefix.tree match
+    val targetTraitTree: Tree = c.prefix.tree match
     {
-      case q"new $name[$targetTraitTpe, $quantityTpe](...$paramss)" => targetTraitTpe
+      case q"new $name[$targetTraitTree, $quantityTree](...$paramss)" => targetTraitTree
     }
 
-    val tpe: Type = c.typecheck(q"0.asInstanceOf[$targetTrait]").tpe
+    val targetTraitTpe: Type = c.typecheck(q"0.asInstanceOf[$targetTraitTree]").tpe
 
     val measuresScope: List[Tree] = c.prefix.tree match
     {
@@ -49,7 +49,7 @@ object Quantify
       case _ => c.abort(c.enclosingPosition, "Quantify requires a single constructor parameter pointing to the scope where measures are defined.")
     }
 
-    val measureValTermSymbols: List[TermSymbol] = tpe.members.collect
+    val measureValTermSymbols: List[TermSymbol] = targetTraitTpe.members.collect
     { case d if d.isTerm => d.asTerm }.filter(t => t.isStable && t.isVal && t.isFinal).toList.reverse
 
     val quantityDefs = measureValTermSymbols.map(
@@ -59,7 +59,9 @@ object Quantify
           val quantityIdentifier = TermName(measureValTermSymbol.name.toString.trim)
           val measureTermName = TermName(measureValTermSymbol.name.toString.trim)
 
-          q"""def $quantityIdentifier = Quantity[Double, ${measureValTermSymbol.typeSignature}](value, ${measuresScope.head}.$measureTermName)"""
+          val quantityTpeIdentifier = q"""Quantity[Double, ${measureValTermSymbol.typeSignature}]"""
+
+          q"""def $quantityIdentifier = $quantityTpeIdentifier(value, ${measuresScope.head}.$measureTermName)"""
       })
 
     val className = annottees.map(_.tree) match
