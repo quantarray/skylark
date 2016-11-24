@@ -38,7 +38,7 @@ package object measure extends DefaultMeasures
   {
     type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, CurrencyPrice]
 
-    trait DefaultSimplification
+    trait DefaultSimplificationImplicits
     {
 
       implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
@@ -58,7 +58,7 @@ package object measure extends DefaultMeasures
 
     }
 
-    object default extends AnyRef with DefaultSimplification
+    object default extends AnyRef with DefaultSimplificationImplicits
 
   }
 
@@ -218,7 +218,7 @@ package object measure extends DefaultMeasures
 
   object implicits extends AnyRef
                            with arithmetic.SafeArithmeticImplicits
-                           with simplification.DefaultSimplification
+                           with simplification.DefaultSimplificationImplicits
                            with conversion.DefaultConversionImplicits
 
 }
