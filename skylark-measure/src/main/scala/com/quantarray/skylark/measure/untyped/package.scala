@@ -35,101 +35,101 @@ package object untyped
     */
   type DimensionlessMeasure = com.quantarray.skylark.measure.DimensionlessMeasure
 
-  final val Unit: untyped.Measure = com.quantarray.skylark.measure.Unit
+  final val Unit: untyped.AnyMeasure = com.quantarray.skylark.measure.Unit
 
-  val percent: untyped.Measure = com.quantarray.skylark.measure.percent
+  val percent: untyped.AnyMeasure = com.quantarray.skylark.measure.percent
 
-  val bp: untyped.Measure = com.quantarray.skylark.measure.bp
+  val bp: untyped.AnyMeasure = com.quantarray.skylark.measure.bp
 
   /**
     * Time.
     */
-  val s: untyped.Measure = com.quantarray.skylark.measure.s
-  val min: untyped.Measure = com.quantarray.skylark.measure.min
-  val mins: untyped.Measure = com.quantarray.skylark.measure.mins
-  val h: untyped.Measure = com.quantarray.skylark.measure.h
-  val hour: untyped.Measure = com.quantarray.skylark.measure.hour
-  val day: untyped.Measure = com.quantarray.skylark.measure.day
-  val days: untyped.Measure = com.quantarray.skylark.measure.days
-  val year365: untyped.Measure = com.quantarray.skylark.measure.year365
-  val years: untyped.Measure = com.quantarray.skylark.measure.years
+  val s: untyped.AnyMeasure = com.quantarray.skylark.measure.s
+  val min: untyped.AnyMeasure = com.quantarray.skylark.measure.min
+  val mins: untyped.AnyMeasure = com.quantarray.skylark.measure.mins
+  val h: untyped.AnyMeasure = com.quantarray.skylark.measure.h
+  val hour: untyped.AnyMeasure = com.quantarray.skylark.measure.hour
+  val day: untyped.AnyMeasure = com.quantarray.skylark.measure.day
+  val days: untyped.AnyMeasure = com.quantarray.skylark.measure.days
+  val year365: untyped.AnyMeasure = com.quantarray.skylark.measure.year365
+  val years: untyped.AnyMeasure = com.quantarray.skylark.measure.years
 
   /**
     * Mass.
     */
-  val g: untyped.Measure = com.quantarray.skylark.measure.g
+  val g: untyped.AnyMeasure = com.quantarray.skylark.measure.g
 
-  val kg: untyped.Measure = com.quantarray.skylark.measure.kg
+  val kg: untyped.AnyMeasure = com.quantarray.skylark.measure.kg
 
-  val mt: untyped.Measure = com.quantarray.skylark.measure.mt
+  val mt: untyped.AnyMeasure = com.quantarray.skylark.measure.mt
 
   /**
     * Volume.
     */
-  val bbl: untyped.Measure = com.quantarray.skylark.measure.bbl
+  val bbl: untyped.AnyMeasure = com.quantarray.skylark.measure.bbl
 
-  val gal: untyped.Measure = com.quantarray.skylark.measure.gal
+  val gal: untyped.AnyMeasure = com.quantarray.skylark.measure.gal
 
   /**
     * Energy.
     */
-  val J: untyped.Measure = com.quantarray.skylark.measure.J
-  val kJ: untyped.Measure = com.quantarray.skylark.measure.kJ
-  val MJ: untyped.Measure = com.quantarray.skylark.measure.MJ
-  val GJ: untyped.Measure = com.quantarray.skylark.measure.GJ
+  val J: untyped.AnyMeasure = com.quantarray.skylark.measure.J
+  val kJ: untyped.AnyMeasure = com.quantarray.skylark.measure.kJ
+  val MJ: untyped.AnyMeasure = com.quantarray.skylark.measure.MJ
+  val GJ: untyped.AnyMeasure = com.quantarray.skylark.measure.GJ
 
-  val MMBtu: untyped.Measure = com.quantarray.skylark.measure.MMBtu
+  val MMBtu: untyped.AnyMeasure = com.quantarray.skylark.measure.MMBtu
 
   /**
     * Length.
     */
-  val m: untyped.Measure = com.quantarray.skylark.measure.m
+  val m: untyped.AnyMeasure = com.quantarray.skylark.measure.m
 
   /**
     * Currency.
     */
-  val CAD: untyped.Measure = com.quantarray.skylark.measure.CAD
+  val CAD: untyped.AnyMeasure = com.quantarray.skylark.measure.CAD
 
-  val USD: untyped.Measure = com.quantarray.skylark.measure.USD
+  val USD: untyped.AnyMeasure = com.quantarray.skylark.measure.USD
 
-  val USC: untyped.Measure = com.quantarray.skylark.measure.USC
+  val USC: untyped.AnyMeasure = com.quantarray.skylark.measure.USC
 
   object arithmetic
   {
 
     trait SafeArithmeticImplicits
     {
-      implicit def exponentialCanExponentiate = new CanExponentiate[untyped.Measure, untyped.Measure]
+      implicit def exponentialCanExponentiate = new CanExponentiate[untyped.AnyMeasure, untyped.AnyMeasure]
       {
-        override def pow(base: untyped.Measure, exponent: Double): untyped.Measure = ExponentialMeasure(base, exponent)
+        override def pow(base: untyped.AnyMeasure, exponent: Double): untyped.AnyMeasure = ExponentialMeasure(base, exponent)
       }
 
-      implicit def productCanMultiply = new CanMultiply[untyped.Measure, untyped.Measure, untyped.Measure]
+      implicit def productCanMultiply = new CanMultiply[untyped.AnyMeasure, untyped.AnyMeasure, untyped.AnyMeasure]
       {
-        override def times(multiplicand: untyped.Measure, multiplier: untyped.Measure): untyped.Measure = ProductMeasure(multiplicand, multiplier)
+        override def times(multiplicand: untyped.AnyMeasure, multiplier: untyped.AnyMeasure): untyped.AnyMeasure = ProductMeasure(multiplicand, multiplier)
       }
 
-      implicit def ratioCanDivide = new CanDivide[untyped.Measure, untyped.Measure, untyped.Measure]
+      implicit def ratioCanDivide = new CanDivide[untyped.AnyMeasure, untyped.AnyMeasure, untyped.AnyMeasure]
       {
-        override def divide(numerator: untyped.Measure, denominator: untyped.Measure): untyped.Measure = RatioMeasure(numerator, denominator)
+        override def divide(numerator: untyped.AnyMeasure, denominator: untyped.AnyMeasure): untyped.AnyMeasure = RatioMeasure(numerator, denominator)
       }
 
-      implicit def lhsCanAddQuantity = new untyped.CanAddQuantity[Double, untyped.Quantity[Double], untyped.Quantity[Double]]
+      implicit def lhsCanAddQuantity = new untyped.CanAddAnyQuantity[Double, untyped.AnyQuantity[Double], untyped.AnyQuantity[Double]]
       {
-        type R = untyped.Measure
+        type R = untyped.AnyMeasure
 
-        type QR = Option[untyped.Quantity[Double]]
+        type QR = Option[untyped.AnyQuantity[Double]]
 
-        override def plus(addend1: untyped.Measure, addend2: untyped.Measure): untyped.Measure = addend1
+        override def plus(addend1: untyped.AnyMeasure, addend2: untyped.AnyMeasure): untyped.AnyMeasure = addend1
 
-        override def plus(addend1: untyped.Quantity[Double], addend2: untyped.Quantity[Double])(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): QR =
+        override def plus(addend1: untyped.AnyQuantity[Double], addend2: untyped.AnyQuantity[Double])(implicit cc: CanConvert[untyped.AnyMeasure, untyped.AnyMeasure]): QR =
         {
           val targetMeasure = plus(addend1.measure, addend2.measure)
 
           val a1 = cc.convert(addend1.measure, targetMeasure).map(_ * addend1.value)
           val a2 = cc.convert(addend2.measure, targetMeasure).map(_ * addend2.value)
 
-          a1.flatMap(aa1 => a2.map(_ + aa1)).map(v => Quantity(v, targetMeasure))
+          a1.flatMap(aa1 => a2.map(_ + aa1)).map(v => AnyQuantity(v, targetMeasure))
         }
       }
     }
@@ -138,15 +138,15 @@ package object untyped
 
     object unsafe extends SafeArithmeticImplicits
     {
-      implicit def lhsCanAddQuantityUnsafe = new untyped.CanAddQuantity[Double, untyped.Quantity[Double], untyped.Quantity[Double]]
+      implicit def lhsCanAddQuantityUnsafe = new untyped.CanAddAnyQuantity[Double, untyped.AnyQuantity[Double], untyped.AnyQuantity[Double]]
       {
-        type R = untyped.Measure
+        type R = untyped.AnyMeasure
 
-        type QR = untyped.Quantity[Double]
+        type QR = untyped.AnyQuantity[Double]
 
-        override def plus(addend1: untyped.Measure, addend2: untyped.Measure): untyped.Measure = addend1
+        override def plus(addend1: untyped.AnyMeasure, addend2: untyped.AnyMeasure): untyped.AnyMeasure = addend1
 
-        override def plus(addend1: untyped.Quantity[Double], addend2: untyped.Quantity[Double])(implicit cc: CanConvert[untyped.Measure, untyped.Measure]): QR =
+        override def plus(addend1: untyped.AnyQuantity[Double], addend2: untyped.AnyQuantity[Double])(implicit cc: CanConvert[untyped.AnyMeasure, untyped.AnyMeasure]): QR =
         {
           val targetMeasure = plus(addend1.measure, addend2.measure)
 
@@ -155,7 +155,7 @@ package object untyped
 
           (a1, a2) match
           {
-            case (Some(aa1), Some(aa2)) => Quantity(aa1 + aa2, targetMeasure)
+            case (Some(aa1), Some(aa2)) => AnyQuantity(aa1 + aa2, targetMeasure)
             case (Some(_), _) => throw ConvertException(addend2.measure, targetMeasure)
             case (_, Some(_)) => throw ConvertException(addend1.measure, targetMeasure)
             case _ => throw ConvertException(s"Cannot convert to $targetMeasure.")
@@ -169,9 +169,9 @@ package object untyped
   object conversion
   {
 
-    trait DefaultMeasureConverter extends MeasureConverter with com.quantarray.skylark.measure.conversion.DefaultConversionImplicits
+    trait DefaultMeasureConverter extends AnyMeasureConverter with com.quantarray.skylark.measure.conversion.DefaultConversionImplicits
     {
-      override def convert(from: untyped.Measure, to: untyped.Measure): Option[Double] = ⤇(from, to) match
+      override def convert(from: untyped.AnyMeasure, to: untyped.AnyMeasure): Option[Double] = ⤇(from, to) match
       {
         case (dm1: DimensionlessMeasure) ⤇ (dm2: DimensionlessMeasure) => dimensionlessCanConvert.convert(dm1, dm2)
         case (tm1: TimeMeasure) ⤇ (tm2: TimeMeasure) => timeCanConvert.convert(tm1, tm2)
@@ -186,14 +186,14 @@ package object untyped
     trait DefaultConversionImplicits
     {
 
-      implicit val measureCanConvert = new CanConvert[untyped.Measure, untyped.Measure]
+      implicit val measureCanConvert = new CanConvert[untyped.AnyMeasure, untyped.AnyMeasure]
       {
 
-        implicit val canConvert: CanConvert[untyped.Measure, untyped.Measure] = implicitly(this)
+        implicit val canConvert: CanConvert[untyped.AnyMeasure, untyped.AnyMeasure] = implicitly(this)
 
-        override def convert: Converter[untyped.Measure, untyped.Measure] = new DefaultMeasureConverter
+        override def convert: Converter[untyped.AnyMeasure, untyped.AnyMeasure] = new DefaultMeasureConverter
         {
-          override def convert(from: untyped.Measure, to: untyped.Measure): Option[Double] = ⤇(from, to) match
+          override def convert(from: untyped.AnyMeasure, to: untyped.AnyMeasure): Option[Double] = ⤇(from, to) match
           {
             case (diff1 * (same1 / diff2)) ⤇ same2 if same1 == same2 => diff1.to(diff2)
             case _ => super.convert(from, to)
@@ -212,21 +212,21 @@ package object untyped
 
     import scala.collection.immutable.SortedMap
 
-    case object DefaultReducer extends Reducer[untyped.Measure, untyped.Measure]
+    case object DefaultReducer extends Reducer[untyped.AnyMeasure, untyped.AnyMeasure]
     {
 
       implicit val measureOrdering = Ordering.by
       {
-        measure: untyped.Measure => measure.name
+        measure: untyped.AnyMeasure => measure.name
       }
 
-      type ExponentMap = SortedMap[untyped.Measure, Double]
+      type ExponentMap = SortedMap[untyped.AnyMeasure, Double]
 
       val ExponentMap = SortedMap
 
-      override def apply(from: untyped.Measure): untyped.Measure =
+      override def apply(from: untyped.AnyMeasure): untyped.AnyMeasure =
       {
-        val es = exponentials(deflate(from), 1.0, ExponentMap.empty[untyped.Measure, Double])
+        val es = exponentials(deflate(from), 1.0, ExponentMap.empty[untyped.AnyMeasure, Double])
 
         val productOfExponentials = es.groupBy(_._1).values.map(x => x.reduce((x, y) => (x._1, x._2 + y._2))).filter(_._2 != 0).toList
 
@@ -243,11 +243,11 @@ package object untyped
         reduced
       }
 
-      private def deflate(inflated: untyped.Measure): untyped.Measure =
+      private def deflate(inflated: untyped.AnyMeasure): untyped.AnyMeasure =
       {
-        def deflateProduct(inflated: untyped.ProductMeasure): untyped.Measure = deflateNonRecompose.orElse(giveUp)(inflated)
+        def deflateProduct(inflated: untyped.ProductMeasure): untyped.AnyMeasure = deflateNonRecompose.orElse(giveUp)(inflated)
 
-        def deflateNonRecompose: PartialFunction[untyped.Measure, untyped.Measure] =
+        def deflateNonRecompose: PartialFunction[untyped.AnyMeasure, untyped.AnyMeasure] =
         {
           case untyped.ProductMeasure(md, mr) if md == Unit && mr == Unit => Unit
           case untyped.ProductMeasure(md, mr) if md == Unit => deflate(mr)
@@ -259,13 +259,13 @@ package object untyped
           case untyped.ExponentialMeasure(base, exponent) if exponent == 1.0 => deflate(base)
         }
 
-        def deflateRecompose: PartialFunction[untyped.Measure, untyped.Measure] =
+        def deflateRecompose: PartialFunction[untyped.AnyMeasure, untyped.AnyMeasure] =
         {
           case untyped.ProductMeasure(md, mr) => deflateProduct(ProductMeasure(deflate(md), deflate(mr)))
           case untyped.ExponentialMeasure(base, exponent) => ExponentialMeasure(deflate(base), exponent)
         }
 
-        def giveUp: PartialFunction[untyped.Measure, untyped.Measure] =
+        def giveUp: PartialFunction[untyped.AnyMeasure, untyped.AnyMeasure] =
         {
           case measure => measure
         }
@@ -273,7 +273,7 @@ package object untyped
         deflateNonRecompose.orElse(deflateRecompose).orElse(giveUp)(inflated)
       }
 
-      private def exponentials(measure: untyped.Measure, outerExponent: Double, map: ExponentMap): ExponentMap = measure match
+      private def exponentials(measure: untyped.AnyMeasure, outerExponent: Double, map: ExponentMap): ExponentMap = measure match
       {
         case untyped.ProductMeasure(md, mr) => exponentials(md, outerExponent, exponentials(mr, outerExponent, map))
         case untyped.RatioMeasure(nr, dr) => exponentials(nr, outerExponent, exponentials(dr, -outerExponent, map))
@@ -281,7 +281,7 @@ package object untyped
         case _ => map + (measure -> (map.getOrElse(measure, 0.0) + measure.exponent * outerExponent))
       }
 
-      private def exponential(measure: (untyped.Measure, Double)): untyped.Measure = measure match
+      private def exponential(measure: (untyped.AnyMeasure, Double)): untyped.AnyMeasure = measure match
       {
         case (x, 1.0) => x
         case _ => untyped.ExponentialMeasure(measure._1, measure._2)
@@ -293,9 +293,9 @@ package object untyped
 
       case object ProductOfExponentials
       {
-        def apply(from: untyped.Measure): untyped.ProductMeasure = product(from, 1)
+        def apply(from: untyped.AnyMeasure): untyped.ProductMeasure = product(from, 1)
 
-        private def product(from: untyped.Measure, outerExponent: Double): untyped.ProductMeasure = from match
+        private def product(from: untyped.AnyMeasure, outerExponent: Double): untyped.ProductMeasure = from match
         {
           case untyped.ProductMeasure(md, mr) => ProductMeasure(product(md, outerExponent), product(mr, outerExponent))
           case untyped.RatioMeasure(nr, dr) => ProductMeasure(product(nr, outerExponent), product(dr, -outerExponent))
@@ -305,9 +305,9 @@ package object untyped
         }
       }
 
-      implicit val defaultCanSimplify = new CanSimplify[untyped.Measure, untyped.Measure]
+      implicit val defaultCanSimplify = new CanSimplify[untyped.AnyMeasure, untyped.AnyMeasure]
       {
-        override def simplify(inflated: untyped.Measure): untyped.Measure =
+        override def simplify(inflated: untyped.AnyMeasure): untyped.AnyMeasure =
         {
           val productOfExponentials = ProductOfExponentials(inflated)
 
@@ -330,12 +330,12 @@ package object untyped
     /**
       * Composes a quantity of supplied measure.
       */
-    def apply(measure: untyped.Measure) = untyped.Quantity(value, measure)
+    def apply(measure: untyped.AnyMeasure) = untyped.AnyQuantity(value, measure)
 
     /**
       * Composes a quantity of supplied measure.
       */
-    def *(measure: untyped.Measure): untyped.Quantity[N] = apply(measure)
+    def *(measure: untyped.AnyMeasure): untyped.AnyQuantity[N] = apply(measure)
 
     /**
       * Dimensionless.

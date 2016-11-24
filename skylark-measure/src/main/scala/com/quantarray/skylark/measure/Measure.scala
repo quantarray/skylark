@@ -32,7 +32,7 @@ import scala.language.implicitConversions
   *
   * @author Araik Grigoryan
   */
-trait Measure[Self <: Measure[Self]] extends untyped.Measure
+trait Measure[Self <: Measure[Self]] extends untyped.AnyMeasure
 {
   self: Self =>
 

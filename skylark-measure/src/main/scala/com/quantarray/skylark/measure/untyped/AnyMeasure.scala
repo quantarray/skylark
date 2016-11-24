@@ -24,11 +24,11 @@ import com.quantarray.skylark.measure._
 import scala.language.dynamics
 
 /**
-  * Untyped measure.
+  * Any measure.
   *
   * @author Araik Grigoryan
   */
-trait Measure extends Product with Serializable with Dynamic
+trait AnyMeasure extends Product with Serializable with Dynamic
 {
   self =>
 
@@ -40,7 +40,7 @@ trait Measure extends Product with Serializable with Dynamic
   /**
     * Gets dimension of this measure.
     */
-  def dimension: Dimension
+  def dimension: AnyDimension
 
   /**
     * Gets system of units.
@@ -50,7 +50,7 @@ trait Measure extends Product with Serializable with Dynamic
   /**
     * Gets ultimate base.
     */
-  def ultimateBase: Option[(Measure, Double)]
+  def ultimateBase: Option[(AnyMeasure, Double)]
 
   /**
     * Determines if this measure can be decomposed into constituent measures.
@@ -68,43 +68,43 @@ trait Measure extends Product with Serializable with Dynamic
   def exponent: Double = 1.0
 
   @inline
-  def collect[B](pf: PartialFunction[Measure, B]): B = pf(this)
+  def collect[B](pf: PartialFunction[AnyMeasure, B]): B = pf(this)
 
-  def ^(exponent: Double)(implicit ce: CanExponentiate[Measure, Measure]): Measure = ce.pow(this, exponent)
+  def ^(exponent: Double)(implicit ce: CanExponentiate[AnyMeasure, AnyMeasure]): AnyMeasure = ce.pow(this, exponent)
 
-  def *(measure: Measure)(implicit cm: CanMultiply[Measure, Measure, Measure]): Measure = cm.times(this, measure)
+  def *(measure: AnyMeasure)(implicit cm: CanMultiply[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cm.times(this, measure)
 
-  def /(measure: Measure)(implicit cm: CanDivide[Measure, Measure, Measure]): Measure = cm.divide(this, measure)
+  def /(measure: AnyMeasure)(implicit cm: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cm.divide(this, measure)
 
-  def to(target: Measure)(implicit cc: CanConvert[Measure, Measure]): Option[Double] = cc.convert(this, target)
+  def to(target: AnyMeasure)(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): Option[Double] = cc.convert(this, target)
 
-  def toOrElse[B >: Double](target: Measure, default: B)(implicit cc: CanConvert[Measure, Measure]): B = to(target).getOrElse(default)
+  def toOrElse[B >: Double](target: AnyMeasure, default: B)(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): B = to(target).getOrElse(default)
 
-  def simplify(implicit cs: CanSimplify[Measure, Measure]): Measure = cs.simplify(this)
+  def simplify(implicit cs: CanSimplify[AnyMeasure, AnyMeasure]): AnyMeasure = cs.simplify(this)
 }
 
-trait ProductMeasure extends Measure
+trait ProductMeasure extends AnyMeasure
 {
-  val multiplicand: Measure
+  val multiplicand: AnyMeasure
 
-  val multiplier: Measure
+  val multiplier: AnyMeasure
 
-  lazy val dimension = ProductDimension(multiplicand.dimension, multiplier.dimension)
+  lazy val dimension = AnyProductDimension(multiplicand.dimension, multiplier.dimension)
 
   lazy val system = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
 }
 
 object ProductMeasure
 {
-  def apply(multiplicand: Measure, multiplier: Measure): ProductMeasure =
+  def apply(multiplicand: AnyMeasure, multiplier: AnyMeasure): ProductMeasure =
   {
     val params = (multiplicand, multiplier)
 
     new ProductMeasure
     {
-      override val multiplicand: Measure = params._1
+      override val multiplicand: AnyMeasure = params._1
 
-      override val multiplier: Measure = params._2
+      override val multiplier: AnyMeasure = params._2
 
       override val name = s"${multiplicand.structuralName} * ${multiplier.structuralName}"
 
@@ -132,31 +132,31 @@ object ProductMeasure
     }
   }
 
-  def unapply(upm: ProductMeasure): Option[(Measure, Measure)] = Some((upm.multiplicand, upm.multiplier))
+  def unapply(upm: ProductMeasure): Option[(AnyMeasure, AnyMeasure)] = Some((upm.multiplicand, upm.multiplier))
 }
 
-trait RatioMeasure extends Measure
+trait RatioMeasure extends AnyMeasure
 {
-  val numerator: Measure
+  val numerator: AnyMeasure
 
-  val denominator: Measure
+  val denominator: AnyMeasure
 
-  lazy val dimension: Dimension = RatioDimension(numerator.dimension, denominator.dimension)
+  lazy val dimension: AnyDimension = AnyRatioDimension(numerator.dimension, denominator.dimension)
 
   lazy val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 }
 
 object RatioMeasure
 {
-  def apply(numerator: Measure, denominator: Measure): RatioMeasure =
+  def apply(numerator: AnyMeasure, denominator: AnyMeasure): RatioMeasure =
   {
     val params = (numerator, denominator)
 
     new RatioMeasure
     {
-      override val numerator: Measure = params._1
+      override val numerator: AnyMeasure = params._1
 
-      override val denominator: Measure = params._2
+      override val denominator: AnyMeasure = params._2
 
       val name = s"${numerator.structuralName} / ${denominator.structuralName}"
 
@@ -184,14 +184,14 @@ object RatioMeasure
     }
   }
 
-  def unapply(urm: RatioMeasure): Option[(Measure, Measure)] = Some((urm.numerator, urm.denominator))
+  def unapply(urm: RatioMeasure): Option[(AnyMeasure, AnyMeasure)] = Some((urm.numerator, urm.denominator))
 }
 
-trait ExponentialMeasure extends Measure
+trait ExponentialMeasure extends AnyMeasure
 {
-  def expBase: Measure
+  def expBase: AnyMeasure
 
-  lazy val dimension: Dimension = ExponentialDimension(expBase.dimension, exponent)
+  lazy val dimension: AnyDimension = AnyExponentialDimension(expBase.dimension, exponent)
 
   lazy val system = expBase.system
 
@@ -204,13 +204,13 @@ trait ExponentialMeasure extends Measure
 
 object ExponentialMeasure
 {
-  def apply(base: Measure, exponent: Double): ExponentialMeasure =
+  def apply(base: AnyMeasure, exponent: Double): ExponentialMeasure =
   {
     val params = (base, exponent)
 
     new ExponentialMeasure
     {
-      override val expBase: Measure = params._1
+      override val expBase: AnyMeasure = params._1
 
       override val exponent: Double = params._2
 
@@ -240,5 +240,5 @@ object ExponentialMeasure
     }
   }
 
-  def unapply(uem: ExponentialMeasure): Option[(Measure, Double)] = Some((uem.expBase, uem.exponent))
+  def unapply(uem: ExponentialMeasure): Option[(AnyMeasure, Double)] = Some((uem.expBase, uem.exponent))
 }

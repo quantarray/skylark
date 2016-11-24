@@ -20,30 +20,30 @@
 package com.quantarray.skylark.measure.untyped
 
 /**
- * Untyped dimension.
+ * Any dimension.
  *
  * @author Araik Grigoryan
  */
-trait Dimension extends Product with Serializable
+trait AnyDimension extends Product with Serializable
 
-trait ProductDimension extends Dimension
+trait AnyProductDimension extends AnyDimension
 {
-  def multiplicand: Dimension
+  def multiplicand: AnyDimension
 
-  def multiplier: Dimension
+  def multiplier: AnyDimension
 }
 
-object ProductDimension
+object AnyProductDimension
 {
-  def apply(multiplicand: Dimension, multiplier: Dimension): ProductDimension =
+  def apply(multiplicand: AnyDimension, multiplier: AnyDimension): AnyProductDimension =
   {
     val params = (multiplicand, multiplier)
 
-    new ProductDimension
+    new AnyProductDimension
     {
-      val multiplicand: Dimension = params._1
+      val multiplicand: AnyDimension = params._1
 
-      val multiplier: Dimension = params._2
+      val multiplier: AnyDimension = params._2
 
       private val productElements = Seq(multiplicand, multiplier)
 
@@ -51,31 +51,31 @@ object ProductDimension
 
       val productArity: Int = productElements.size
 
-      override def canEqual(that: Any): Boolean = that.isInstanceOf[ProductDimension]
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[AnyProductDimension]
 
       override def toString: String = s"$multiplicand * $multiplier"
     }
   }
 }
 
-trait RatioDimension extends Dimension
+trait AnyRatioDimension extends AnyDimension
 {
-  def numerator: Dimension
+  def numerator: AnyDimension
 
-  def denominator: Dimension
+  def denominator: AnyDimension
 }
 
-object RatioDimension
+object AnyRatioDimension
 {
-  def apply(numerator: Dimension, denominator: Dimension): RatioDimension =
+  def apply(numerator: AnyDimension, denominator: AnyDimension): AnyRatioDimension =
   {
     val params = (numerator, denominator)
 
-    new RatioDimension
+    new AnyRatioDimension
     {
-      val numerator: Dimension = params._1
+      val numerator: AnyDimension = params._1
 
-      val denominator: Dimension = params._2
+      val denominator: AnyDimension = params._2
 
       private val productElements = Seq(numerator, denominator)
 
@@ -83,29 +83,29 @@ object RatioDimension
 
       val productArity: Int = productElements.size
 
-      override def canEqual(that: Any): Boolean = that.isInstanceOf[RatioDimension]
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[AnyRatioDimension]
 
       override def toString: String = s"$numerator / $denominator"
     }
   }
 }
 
-trait ExponentialDimension extends Dimension
+trait AnyExponentialDimension extends AnyDimension
 {
-  def base: Dimension
+  def base: AnyDimension
 
   def exponent: Double
 }
 
-object ExponentialDimension
+object AnyExponentialDimension
 {
-  def apply(base: Dimension, exponent: Double): ExponentialDimension =
+  def apply(base: AnyDimension, exponent: Double): AnyExponentialDimension =
   {
     val params = (base, exponent)
 
-    new ExponentialDimension
+    new AnyExponentialDimension
     {
-      val base: Dimension = params._1
+      val base: AnyDimension = params._1
 
       val exponent: Double = params._2
 
@@ -115,7 +115,7 @@ object ExponentialDimension
 
       val productArity: Int = productElements.size
 
-      override def canEqual(that: Any): Boolean = that.isInstanceOf[ExponentialDimension]
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[AnyExponentialDimension]
 
       override def toString: String = s"$base ^ $exponent"
     }

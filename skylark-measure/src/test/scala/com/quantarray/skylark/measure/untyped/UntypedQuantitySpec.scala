@@ -59,11 +59,11 @@ class UntypedQuantitySpec extends FlatSpec with Matchers
 
   it should "add/subtract with a custom CanConvert" in
     {
-      implicit val measureCanConvert = new CanConvert[Measure, Measure]
+      implicit val measureCanConvert = new CanConvert[AnyMeasure, AnyMeasure]
       {
-        override def convert: Converter[Measure, Measure] = new MeasureConverter
+        override def convert: Converter[AnyMeasure, AnyMeasure] = new AnyMeasureConverter
         {
-          protected override def convert(from: Measure, to: Measure): Option[Double] = ⤇(from, to) match
+          protected override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
           {
             case `bbl` ⤇ `gal` => Some(42)
             case `gal` ⤇ `bbl` => apply(to, from).map(1.0 / _)
@@ -82,9 +82,9 @@ class UntypedQuantitySpec extends FlatSpec with Matchers
   it should "reduce unsafely" in
   {
 
-    def targetSum(quantities: Seq[Quantity[Double]], target: Measure): Quantity[Double] =
+    def targetSum(quantities: Seq[AnyQuantity[Double]], target: AnyMeasure): AnyQuantity[Double] =
     {
-      quantities.reduce[Quantity[Double]]
+      quantities.reduce[AnyQuantity[Double]]
       {
         (a, b) =>
 
