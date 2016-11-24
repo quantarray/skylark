@@ -24,7 +24,7 @@ import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
 @compileTimeOnly("Quantify annotation can only be used with classes")
-class Quantify[T](measuresScope: Any) extends StaticAnnotation
+class Quantify[T, Q](measuresScope: Any) extends StaticAnnotation
 {
   def macroTransform(annottees: Any*): Any = macro Quantify.macroTransformImpl
 
@@ -38,14 +38,14 @@ object Quantify
 
     val targetTrait: Tree = c.prefix.tree match
     {
-      case q"new $name[$tpe](...$paramss)" => tpe
+      case q"new $name[$targetTraitTpe, $quantityTpe](...$paramss)" => targetTraitTpe
     }
 
     val tpe: Type = c.typecheck(q"0.asInstanceOf[$targetTrait]").tpe
 
     val measuresScope: List[Tree] = c.prefix.tree match
     {
-      case q"new $name[$typ](...$paramss)" if paramss.nonEmpty => paramss.head
+      case q"new $name[$targetTraitTpe, $quantityTpe](...$paramss)" if paramss.nonEmpty => paramss.head
       case _ => c.abort(c.enclosingPosition, "Quantify requires a single constructor parameter pointing to the scope where measures are defined.")
     }
 
@@ -69,12 +69,12 @@ object Quantify
         paramss match
         {
           case List(List(q"$paramAccessor val value: $valueType")) =>
-          case _ => c.abort(c.enclosingPosition, s"$tpname must have a single parameter named 'value'")
+          case _ => c.abort(c.enclosingPosition, s"$tpname must have a single parameter named 'value'.")
         }
 
         tpname
 
-      case _ => c.abort(c.enclosingPosition, s"Quantify annotation can only be used with classes")
+      case _ => c.abort(c.enclosingPosition, s"Quantify annotation can only be used with classes.")
     }
 
     c.Expr(
