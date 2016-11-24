@@ -235,7 +235,7 @@ package object untyped
 
         val reduced = productOfExponentials.size match
         {
-          case 0 => Unit
+          case 0 => measures.Unit
           case 1 => exponential(productOfExponentials.head)
           case 2 => measure.AnyProductMeasure(exponential(productOfExponentials.head), exponential(productOfExponentials(1)))
           case _ =>
@@ -252,13 +252,13 @@ package object untyped
 
         def deflateNonRecompose: PartialFunction[AnyMeasure, AnyMeasure] =
         {
-          case AnyProductMeasure(md, mr) if md == Unit && mr == Unit => Unit
-          case AnyProductMeasure(md, mr) if md == Unit => deflate(mr)
-          case AnyProductMeasure(md, mr) if mr == Unit => deflate(md)
+          case AnyProductMeasure(md, mr) if md == measures.Unit && mr == measures.Unit => measures.Unit
+          case AnyProductMeasure(md, mr) if md == measures.Unit => deflate(mr)
+          case AnyProductMeasure(md, mr) if mr == measures.Unit => deflate(md)
           case AnyProductMeasure(md, mr@AnyRatioMeasure(nr, dr)) if md == dr => deflate(nr)
           case AnyProductMeasure(md@AnyRatioMeasure(nr, dr), mr) if dr == mr => deflate(nr)
-          case AnyRatioMeasure(nr, Unit) => deflate(nr)
-          case AnyExponentialMeasure(Unit, _) => Unit
+          case AnyRatioMeasure(nr, measures.Unit) => deflate(nr)
+          case AnyExponentialMeasure(measures.Unit, _) => measures.Unit
           case AnyExponentialMeasure(base, exponent) if exponent == 1.0 => deflate(base)
         }
 
@@ -302,9 +302,9 @@ package object untyped
         {
           case AnyProductMeasure(md, mr) => AnyProductMeasure(product(md, outerExponent), product(mr, outerExponent))
           case AnyRatioMeasure(nr, dr) => AnyProductMeasure(product(nr, outerExponent), product(dr, -outerExponent))
-          case AnyExponentialMeasure(base, exponent) => AnyProductMeasure(product(base, exponent * outerExponent), Unit)
-          case _ if outerExponent == 1.0 => AnyProductMeasure(from, Unit)
-          case _ => AnyProductMeasure(AnyExponentialMeasure(from, outerExponent), Unit)
+          case AnyExponentialMeasure(base, exponent) => AnyProductMeasure(product(base, exponent * outerExponent), measures.Unit)
+          case _ if outerExponent == 1.0 => AnyProductMeasure(from, measures.Unit)
+          case _ => AnyProductMeasure(AnyExponentialMeasure(from, outerExponent), measures.Unit)
         }
       }
 

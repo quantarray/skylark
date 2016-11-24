@@ -30,6 +30,15 @@ package object measure extends DefaultDimensions
   val ⤇ = Conversion
 
   object measures extends DefaultMeasures
+  {
+    measuresScope =>
+
+    @AscribeAnyMeasure[DefaultDimensions](measuresScope)
+    object any
+    {
+
+    }
+  }
 
   object quantities extends DefaultMeasures
   {
