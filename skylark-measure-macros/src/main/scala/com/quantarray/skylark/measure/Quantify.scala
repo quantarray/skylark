@@ -49,17 +49,17 @@ object Quantify
       case _ => c.abort(c.enclosingPosition, "Quantify requires a single constructor parameter pointing to the scope where measures are defined.")
     }
 
-    val values: List[TermSymbol] = tpe.members.collect
+    val measureValTermSymbols: List[TermSymbol] = tpe.members.collect
     { case d if d.isTerm => d.asTerm }.filter(t => t.isStable && t.isVal && t.isFinal).toList.reverse
 
-    val quantityDefs = values.map(
+    val quantityDefs = measureValTermSymbols.map(
       {
-        value =>
+        measureValTermSymbol =>
 
-          val quantityIdentifier = TermName(value.name.toString.trim)
-          val measure = TermName(value.name.toString.trim)
+          val quantityIdentifier = TermName(measureValTermSymbol.name.toString.trim)
+          val measureTermName = TermName(measureValTermSymbol.name.toString.trim)
 
-          q"""def $quantityIdentifier = Quantity[Double, ${value.typeSignature}](value, ${measuresScope.head}.$measure)"""
+          q"""def $quantityIdentifier = Quantity[Double, ${measureValTermSymbol.typeSignature}](value, ${measuresScope.head}.$measureTermName)"""
       })
 
     val className = annottees.map(_.tree) match
