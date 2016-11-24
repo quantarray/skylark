@@ -24,7 +24,7 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-trait DefaultDimensions
+trait DefaultDimensions extends Serializable
 {
 
   case class NoDimension() extends Dimension[NoDimension]
@@ -101,36 +101,36 @@ trait DefaultDimensions
 
   type ForceDimension = RatioDimension[ProductDimension[MassDimension, LengthDimension], ExponentialDimension[TimeDimension]]
 
-  val Force = (Mass * Length) / (Time ^ 2)
+  val Force: RatioDimension[ProductDimension[MassDimension, LengthDimension], ExponentialDimension[TimeDimension]] = (Mass * Length) / (Time ^ 2)
 
   type EnergyDimension = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]], ExponentialDimension[TimeDimension]]
 
-  val Energy = (Mass * (Length ^ 2)) / (Time ^ 2)
+  val Energy: RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]], ExponentialDimension[TimeDimension]] = (Mass * (Length ^ 2)) / (Time ^ 2)
 
   type PowerDimension = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]], ExponentialDimension[TimeDimension]]
 
-  val Power = (Mass * (Length ^ 2)) / (Time ^ 3)
+  val Power: RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]], ExponentialDimension[TimeDimension]] = (Mass * (Length ^ 2)) / (Time ^ 3)
 
   type PressureDimension = RatioDimension[MassDimension, ProductDimension[LengthDimension, ExponentialDimension[TimeDimension]]]
 
-  val Pressure = Mass / (Length * (Time ^ 2))
+  val Pressure: RatioDimension[MassDimension, ProductDimension[LengthDimension, ExponentialDimension[TimeDimension]]] = Mass / (Length * (Time ^ 2))
 
   type LuminousFluxDimension = ProductDimension[LuminousIntensityDimension, NoDimension]
 
-  val LuminousFlux = LuminousIntensity * Dimensionless
+  val LuminousFlux: ProductDimension[LuminousIntensityDimension, NoDimension] = LuminousIntensity * Dimensionless
 
   type VoltageDimension = RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]],
     ProductDimension[ExponentialDimension[TimeDimension], ElectricCurrentDimension]]
 
-  val Voltage = (Mass * (Length ^ 2)) / ((Time ^ 3) * ElectricCurrent)
+  val Voltage: RatioDimension[ProductDimension[MassDimension, ExponentialDimension[LengthDimension]], ProductDimension[ExponentialDimension[TimeDimension], ElectricCurrentDimension]] = (Mass * (Length ^ 2)) / ((Time ^ 3) * ElectricCurrent)
 
   type TemporalFrequencyDimension = RatioDimension[NoDimension, TimeDimension]
 
-  val TemporalFrequency = Dimensionless / Time
+  val TemporalFrequency: RatioDimension[NoDimension, TimeDimension] = Dimensionless / Time
 
   type SpatialFrequencyDimension = RatioDimension[NoDimension, LengthDimension]
 
-  val SpatialFrequency = Dimensionless / Length
+  val SpatialFrequency: RatioDimension[NoDimension, LengthDimension] = Dimensionless / Length
 
   type AngularFrequencyDimension = RatioDimension[NoDimension, TimeDimension]
 
@@ -138,6 +138,6 @@ trait DefaultDimensions
 
   type ElectricChargeDimension = ProductDimension[ElectricCurrentDimension, TimeDimension]
 
-  val ElectricCharge = ElectricCurrent * Time
+  val ElectricCharge: ProductDimension[ElectricCurrentDimension, TimeDimension] = ElectricCurrent * Time
 
 }
