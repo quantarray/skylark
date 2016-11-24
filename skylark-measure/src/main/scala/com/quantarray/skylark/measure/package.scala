@@ -23,9 +23,6 @@ package object measure extends DefaultMeasures
 {
   measuresScope =>
 
-  @Quantify[DefaultMeasures, Quantity[Double, _]](measuresScope)
-  class QuantifiedMeasures(val value: Double)
-
   val * = ProductMeasure
   val / = RatioMeasure
   val ^ = ExponentialMeasure
@@ -33,6 +30,22 @@ package object measure extends DefaultMeasures
   type ⤇[From, To] = Conversion[From, To]
 
   val ⤇ = Conversion
+
+  object quantity
+  {
+
+    @Quantify[DefaultMeasures, Quantity[Double, _]](measuresScope)
+    class QuantifiedMeasures(val value: Double)
+
+    object any
+    {
+
+      @QuantifyAny[DefaultMeasures, AnyQuantity[Double]](measuresScope)
+      class QuantifiedAnyMeasures(val value: Double)
+
+    }
+
+  }
 
   object simplification
   {

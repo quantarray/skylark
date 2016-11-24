@@ -26,13 +26,13 @@ import scala.language.implicitConversions
   *
   * @author Araik Grigoryan
   */
-case class Quantity[N, M <: Measure[M]](value: N, measure: M)(implicit val qn: QuasiNumeric[N]) extends AnyQuantity[N]
+case class Quantity[N, M <: Measure[M]](override val value: N, override val measure: M)(implicit qn: QuasiNumeric[N]) extends AnyQuantity[N](value, measure)
 {
   override def unary_-() = Quantity(qn.negate(value), measure)
 
-  def *(constant: Double) = Quantity(qn.timesConstant(value, constant), measure)
+  override def *(constant: Double) = Quantity(qn.timesConstant(value, constant), measure)
 
-  def /(constant: Double) = Quantity(qn.divideByConstant(value, constant), measure)
+  override def /(constant: Double) = Quantity(qn.divideByConstant(value, constant), measure)
 
   /**
     * Adds another quantity. CanAdd instance allows addition of apples and oranges to obtain bananas.

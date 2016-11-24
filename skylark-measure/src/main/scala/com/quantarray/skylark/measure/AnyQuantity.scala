@@ -24,22 +24,22 @@ package com.quantarray.skylark.measure
   *
   * @author Araik Grigoryan
   */
-abstract class AnyQuantity[N] extends Product with Serializable
+class AnyQuantity[N](val value: N, val measure: AnyMeasure)(implicit qn: QuasiNumeric[N]) extends Product with Serializable
 {
-  implicit val qn: QuasiNumeric[N]
+  private val productElements = Seq(value, measure)
 
-  def value: N
+  override def productElement(n: Int): Any = productElements(n)
 
-  def measure: AnyMeasure
+  val productArity: Int = productElements.size
 
   def unary_-() = AnyQuantity(qn.negate(value), measure)
 
-  def *(constant: Double): AnyQuantity[N]
+  def *(constant: Double): AnyQuantity[N] = AnyQuantity(qn.timesConstant(value, constant), measure)
 
   def *(quantity: AnyQuantity[N])(implicit cm: CanMultiply[AnyMeasure, AnyMeasure, AnyMeasure]): AnyQuantity[N] =
     AnyQuantity(qn.times(value, quantity.value), measure * quantity.measure)
 
-  def /(constant: Double): AnyQuantity[N]
+  def /(constant: Double): AnyQuantity[N] = AnyQuantity(qn.divideByConstant(value, constant), measure)
 
   def /(quantity: AnyQuantity[N])(implicit cd: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): AnyQuantity[N] =
     AnyQuantity(qn.divide(value, quantity.value), measure / quantity.measure)
@@ -56,43 +56,21 @@ abstract class AnyQuantity[N] extends Product with Serializable
   def toOrElse[B >: AnyQuantity[N]](target: AnyMeasure, default: B)(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): B = to(target).getOrElse(default)
 
   def simplify(implicit cs: CanSimplify[AnyMeasure, AnyMeasure]): AnyQuantity[N] = AnyQuantity(value, measure.simplify)
+
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[AnyQuantity[_]]
+
+  override def equals(obj: scala.Any): Boolean = obj match
+  {
+    case that: AnyQuantity[_] => canEqual(that) && this.value == that.value && this.measure == that.measure
+    case _ => false
+  }
+
+  override def hashCode(): Int = 41 * value.hashCode() + measure.hashCode()
+
+  override def toString: String = s"$value $measure"
 }
 
 object AnyQuantity
 {
-  def apply[N](value: N, measure: AnyMeasure)(implicit qn: QuasiNumeric[N]): AnyQuantity[N] =
-  {
-    val params = (value, measure, qn)
-
-    new AnyQuantity[N]
-    {
-      val value: N = params._1
-
-      val measure: AnyMeasure = params._2
-
-      implicit val qn: QuasiNumeric[N] = params._3
-
-      override def *(constant: Double): AnyQuantity[N] = AnyQuantity(qn.timesConstant(value, constant), measure)
-
-      override def /(constant: Double): AnyQuantity[N] = AnyQuantity(qn.divideByConstant(value, constant), measure)
-
-      private val productElements = Seq(value, measure)
-
-      override def productElement(n: Int): Any = productElements(n)
-
-      val productArity: Int = productElements.size
-
-      override def canEqual(that: Any): Boolean = that.isInstanceOf[AnyQuantity[_]]
-
-      override def equals(obj: scala.Any): Boolean = obj match
-      {
-        case that: AnyQuantity[_] => canEqual(that) && this.value == that.value && this.measure == that.measure
-        case _ => false
-      }
-
-      override def hashCode(): Int = 41 * value.hashCode() + measure.hashCode()
-
-      override def toString: String = s"$value $measure"
-    }
-  }
+  def apply[N](value: N, measure: AnyMeasure)(implicit qn: QuasiNumeric[N]): AnyQuantity[N] = new AnyQuantity[N](value, measure)
 }

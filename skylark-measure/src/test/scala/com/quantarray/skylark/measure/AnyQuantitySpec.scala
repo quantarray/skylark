@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.untyped
+package com.quantarray.skylark.measure
 
-import com.quantarray.skylark.measure.{AnyMeasure, AnyMeasureConverter, AnyQuantity}
+import com.quantarray.skylark.measure.quantity.any._
 import com.quantarray.skylark.measure.untyped.implicits._
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.language.postfixOps
 
-class UntypedQuantitySpec extends FlatSpec with Matchers
+class AnyQuantitySpec extends FlatSpec with Matchers
 {
   "Quantity" should "perform constant arithmetic" in
     {
