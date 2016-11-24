@@ -24,13 +24,13 @@ import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
 @compileTimeOnly("Quantify annotation can only be used with classes")
-class Quantify[T, Q](measuresScope: Any) extends StaticAnnotation
+private[measure] class Quantify[T, Q](measuresScope: Any) extends StaticAnnotation
 {
   def macroTransform(annottees: Any*): Any = macro Quantify.macroTransformImpl
 
 }
 
-object Quantify
+private[measure] object Quantify
 {
   def macroTransformImpl(c: blackbox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] =
   {
