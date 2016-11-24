@@ -31,7 +31,7 @@ package object measure extends DefaultDimensions
 
   object measures extends DefaultMeasures
 
-  object quantity extends DefaultMeasures
+  object quantities extends DefaultMeasures
   {
 
     measuresScope =>
