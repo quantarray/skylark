@@ -29,7 +29,7 @@ class MeasureParsersSpec extends FlatSpec with Matchers with MeasureParsers
 
     override def read: MeasureReader = new MeasureReader
     {
-      override def apply(name: String): Option[untyped.AnyMeasure] = name match
+      override def apply(name: String): Option[AnyMeasure] = name match
       {
         case "USD" => Some(USD)
         case "bbl" => Some(bbl)

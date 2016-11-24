@@ -26,7 +26,7 @@ import scala.language.existentials
  *
  * @author Araik Grigoryan
  */
-trait Dimension[Self <: Dimension[Self]] extends untyped.AnyDimension
+trait Dimension[Self <: Dimension[Self]] extends AnyDimension
 {
   self: Self =>
 
@@ -38,18 +38,18 @@ trait Dimension[Self <: Dimension[Self]] extends untyped.AnyDimension
 }
 
 sealed case class ProductDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]](multiplicand: D1, multiplier: D2)
-  extends Dimension[ProductDimension[D1, D2]] with untyped.AnyProductDimension
+  extends Dimension[ProductDimension[D1, D2]] with AnyProductDimension
 {
   override def toString = s"$multiplicand * $multiplier"
 }
 
 sealed case class RatioDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]](numerator: D1, denominator: D2)
-  extends Dimension[RatioDimension[D1, D2]] with untyped.AnyRatioDimension
+  extends Dimension[RatioDimension[D1, D2]] with AnyRatioDimension
 {
   override def toString = s"$numerator / $denominator"
 }
 
-sealed case class ExponentialDimension[B <: Dimension[B]](base: B, exponent: Double) extends Dimension[ExponentialDimension[B]] with untyped.AnyExponentialDimension
+sealed case class ExponentialDimension[B <: Dimension[B]](base: B, exponent: Double) extends Dimension[ExponentialDimension[B]] with AnyExponentialDimension
 {
   override def toString = s"$base ^ $exponent"
 }

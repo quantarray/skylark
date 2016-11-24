@@ -32,7 +32,7 @@ import scala.language.implicitConversions
   *
   * @author Araik Grigoryan
   */
-trait Measure[Self <: Measure[Self]] extends untyped.AnyMeasure
+trait Measure[Self <: Measure[Self]] extends AnyMeasure
 {
   self: Self =>
 
@@ -115,7 +115,7 @@ trait Measure[Self <: Measure[Self]] extends untyped.AnyMeasure
 /**
   * Product measure.
   */
-trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]] with untyped.ProductMeasure
+trait ProductMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[ProductMeasure[M1, M2]] with AnyProductMeasure
 {
   val multiplicand: M1
 
@@ -172,7 +172,7 @@ object ProductMeasure
 /**
   * Ratio measure.
   */
-trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]] with untyped.RatioMeasure
+trait RatioMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] extends Measure[RatioMeasure[M1, M2]] with AnyRatioMeasure
 {
   val numerator: M1
 
@@ -242,7 +242,7 @@ object RatioMeasure
 /**
   * Exponential measure.
   */
-trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with untyped.ExponentialMeasure
+trait ExponentialMeasure[B <: Measure[B]] extends Measure[ExponentialMeasure[B]] with AnyExponentialMeasure
 {
   val expBase: B
 

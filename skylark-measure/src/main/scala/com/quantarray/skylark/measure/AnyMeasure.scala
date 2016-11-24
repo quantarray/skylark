@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.untyped
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 import scala.language.dynamics
 
@@ -60,7 +58,7 @@ trait AnyMeasure extends Product with Serializable with Dynamic
   /**
     * Gets structural name of this measure.
     */
-  final def structuralName = if (isStructuralAtom) name else s"($name)"
+  final def structuralName: String = if (isStructuralAtom) name else s"($name)"
 
   /**
     * Gets exponent of this measure.
@@ -83,7 +81,7 @@ trait AnyMeasure extends Product with Serializable with Dynamic
   def simplify(implicit cs: CanSimplify[AnyMeasure, AnyMeasure]): AnyMeasure = cs.simplify(this)
 }
 
-trait ProductMeasure extends AnyMeasure
+trait AnyProductMeasure extends AnyMeasure
 {
   val multiplicand: AnyMeasure
 
@@ -91,16 +89,16 @@ trait ProductMeasure extends AnyMeasure
 
   lazy val dimension = AnyProductDimension(multiplicand.dimension, multiplier.dimension)
 
-  lazy val system = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
+  lazy val system: SystemOfUnits = if (multiplicand.system == multiplier.system) Derived(multiplicand.system) else Hybrid(multiplicand.system, multiplier.system)
 }
 
-object ProductMeasure
+object AnyProductMeasure
 {
-  def apply(multiplicand: AnyMeasure, multiplier: AnyMeasure): ProductMeasure =
+  def apply(multiplicand: AnyMeasure, multiplier: AnyMeasure): AnyProductMeasure =
   {
     val params = (multiplicand, multiplier)
 
-    new ProductMeasure
+    new AnyProductMeasure
     {
       override val multiplicand: AnyMeasure = params._1
 
@@ -114,7 +112,7 @@ object ProductMeasure
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
-        case that: ProductMeasure => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
+        case that: AnyProductMeasure => this.multiplicand == that.multiplicand && this.multiplier == that.multiplier
         case _ => false
       }
 
@@ -126,16 +124,16 @@ object ProductMeasure
 
       val productArity: Int = productElements.size
 
-      override def canEqual(that: Any): Boolean = that.isInstanceOf[ProductMeasure]
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[AnyProductMeasure]
 
-      override def toString = name
+      override def toString: String = name
     }
   }
 
-  def unapply(upm: ProductMeasure): Option[(AnyMeasure, AnyMeasure)] = Some((upm.multiplicand, upm.multiplier))
+  def unapply(upm: AnyProductMeasure): Option[(AnyMeasure, AnyMeasure)] = Some((upm.multiplicand, upm.multiplier))
 }
 
-trait RatioMeasure extends AnyMeasure
+trait AnyRatioMeasure extends AnyMeasure
 {
   val numerator: AnyMeasure
 
@@ -143,16 +141,16 @@ trait RatioMeasure extends AnyMeasure
 
   lazy val dimension: AnyDimension = AnyRatioDimension(numerator.dimension, denominator.dimension)
 
-  lazy val system = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
+  lazy val system: SystemOfUnits = if (numerator.system == denominator.system) Derived(numerator.system) else Hybrid(numerator.system, denominator.system)
 }
 
-object RatioMeasure
+object AnyRatioMeasure
 {
-  def apply(numerator: AnyMeasure, denominator: AnyMeasure): RatioMeasure =
+  def apply(numerator: AnyMeasure, denominator: AnyMeasure): AnyRatioMeasure =
   {
     val params = (numerator, denominator)
 
-    new RatioMeasure
+    new AnyRatioMeasure
     {
       override val numerator: AnyMeasure = params._1
 
@@ -166,7 +164,7 @@ object RatioMeasure
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
-        case that: RatioMeasure => this.numerator == that.numerator && this.denominator == that.denominator
+        case that: AnyRatioMeasure => this.numerator == that.numerator && this.denominator == that.denominator
         case _ => false
       }
 
@@ -178,43 +176,43 @@ object RatioMeasure
 
       val productArity: Int = productElements.size
 
-      override def canEqual(that: Any): Boolean = that.isInstanceOf[RatioMeasure]
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[AnyRatioMeasure]
 
-      override def toString = name
+      override def toString: String = name
     }
   }
 
-  def unapply(urm: RatioMeasure): Option[(AnyMeasure, AnyMeasure)] = Some((urm.numerator, urm.denominator))
+  def unapply(urm: AnyRatioMeasure): Option[(AnyMeasure, AnyMeasure)] = Some((urm.numerator, urm.denominator))
 }
 
-trait ExponentialMeasure extends AnyMeasure
+trait AnyExponentialMeasure extends AnyMeasure
 {
   def expBase: AnyMeasure
 
   lazy val dimension: AnyDimension = AnyExponentialDimension(expBase.dimension, exponent)
 
-  lazy val system = expBase.system
+  lazy val system: SystemOfUnits = expBase.system
 
-  lazy val baseName = exponent match
+  lazy val baseName: String = exponent match
   {
     case 1.0 => s"$expBase"
     case _ => s"${expBase.structuralName} ^ $exponent"
   }
 }
 
-object ExponentialMeasure
+object AnyExponentialMeasure
 {
-  def apply(base: AnyMeasure, exponent: Double): ExponentialMeasure =
+  def apply(base: AnyMeasure, exponent: Double): AnyExponentialMeasure =
   {
     val params = (base, exponent)
 
-    new ExponentialMeasure
+    new AnyExponentialMeasure
     {
       override val expBase: AnyMeasure = params._1
 
       override val exponent: Double = params._2
 
-      override val name = baseName
+      override val name: String = baseName
 
       override val ultimateBase = None
 
@@ -222,7 +220,7 @@ object ExponentialMeasure
 
       override def equals(obj: scala.Any): Boolean = obj match
       {
-        case that: ExponentialMeasure => this.expBase == that.expBase && this.exponent == that.exponent
+        case that: AnyExponentialMeasure => this.expBase == that.expBase && this.exponent == that.exponent
         case _ => false
       }
 
@@ -234,11 +232,11 @@ object ExponentialMeasure
 
       val productArity: Int = productElements.size
 
-      override def canEqual(that: Any): Boolean = that.isInstanceOf[ExponentialMeasure]
+      override def canEqual(that: Any): Boolean = that.isInstanceOf[AnyExponentialMeasure]
 
-      override def toString = name
+      override def toString: String = name
     }
   }
 
-  def unapply(uem: ExponentialMeasure): Option[(AnyMeasure, Double)] = Some((uem.expBase, uem.exponent))
+  def unapply(uem: AnyExponentialMeasure): Option[(AnyMeasure, Double)] = Some((uem.expBase, uem.exponent))
 }

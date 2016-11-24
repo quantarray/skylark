@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.untyped
+package com.quantarray.skylark.measure
 
 /**
  * Any dimension.

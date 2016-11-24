@@ -28,7 +28,7 @@ trait MeasureProvider
 {
   trait MeasureReader
   {
-    def apply(name: String): Option[untyped.AnyMeasure]
+    def apply(name: String): Option[AnyMeasure]
   }
 
   def read: MeasureReader

@@ -17,9 +17,7 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.untyped
-
-import com.quantarray.skylark.measure._
+package com.quantarray.skylark.measure
 
 /**
   * Any quantity.

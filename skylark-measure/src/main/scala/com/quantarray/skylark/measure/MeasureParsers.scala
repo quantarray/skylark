@@ -30,39 +30,39 @@ trait MeasureParsers extends JavaTokenParsers
 {
   val measureProvider: MeasureProvider
 
-  def measureExpression: Parser[untyped.AnyMeasure] = measureTerm
+  def measureExpression: Parser[AnyMeasure] = measureTerm
 
-  def measureTerm: Parser[untyped.AnyMeasure] = productMeasureFactor | ratioMeasureFactor | exponentialMeasureFactor | measureFactor
+  def measureTerm: Parser[AnyMeasure] = productMeasureFactor | ratioMeasureFactor | exponentialMeasureFactor | measureFactor
 
-  def productMeasureFactor: Parser[untyped.AnyMeasure] = measureFactor ~ "*" ~ measureTerm ^^
+  def productMeasureFactor: Parser[AnyMeasure] = measureFactor ~ "*" ~ measureTerm ^^
     {
       case multiplicand ~ _ ~ multiplier => untyped.*(multiplicand, multiplier)
     }
 
-  def ratioMeasureFactor: Parser[untyped.AnyMeasure] = measureFactor ~ "/" ~ measureTerm ^^
+  def ratioMeasureFactor: Parser[AnyMeasure] = measureFactor ~ "/" ~ measureTerm ^^
     {
       case numerator ~ _ ~ denominator => untyped./(numerator, denominator)
     }
 
-  def exponentialMeasureFactor: Parser[untyped.AnyMeasure] = measureFactor ~ "^" ~ floatingPointNumber ^^
+  def exponentialMeasureFactor: Parser[AnyMeasure] = measureFactor ~ "^" ~ floatingPointNumber ^^
     {
       case base ~ _ ~ exponent => untyped.^(base, exponent.toDouble)
     }
 
-  def measureFactor: Parser[untyped.AnyMeasure] = measureMatter | measureParenthesizedExpression
+  def measureFactor: Parser[AnyMeasure] = measureMatter | measureParenthesizedExpression
 
-  def measureParenthesizedExpression: Parser[untyped.AnyMeasure] = "(" ~ measureExpression ~ ")" ^^
+  def measureParenthesizedExpression: Parser[AnyMeasure] = "(" ~ measureExpression ~ ")" ^^
     {
       case _ ~ measure ~ _ => measure
     }
 
-  def measureMatter: Parser[untyped.AnyMeasure] = measureAtom
+  def measureMatter: Parser[AnyMeasure] = measureAtom
 
-  def measureAtom: Parser[untyped.AnyMeasure] =
+  def measureAtom: Parser[AnyMeasure] =
     """[^()*/\^\s]+""".r ^^
       {
         case measureName if measureProvider.read(measureName).isDefined => measureProvider.read(measureName).get
       }
 
-  def parseMeasure(measure: String): ParseResult[untyped.AnyMeasure] = parseAll(measureExpression, measure)
+  def parseMeasure(measure: String): ParseResult[AnyMeasure] = parseAll(measureExpression, measure)
 }

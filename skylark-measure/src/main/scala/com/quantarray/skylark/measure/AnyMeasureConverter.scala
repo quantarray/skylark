@@ -17,19 +17,29 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure.untyped
-
-import scala.annotation.implicitNotFound
+package com.quantarray.skylark.measure
 
 /**
-  * Can add any quantity type class.
+  * Any measure converter.
   *
   * @author Araik Grigoryan
   */
-@implicitNotFound("Cannot find CanAddAnyQuantity implementation that adds ${A1} and ${A2}.")
-trait CanAddAnyQuantity[N, A1 <: AnyQuantity[N], A2 <: AnyQuantity[N]] extends CanAdd[AnyMeasure, AnyMeasure]
+trait AnyMeasureConverter extends SameTypeConverter[AnyMeasure]
 {
-  type QR
-
-  def plus(addend1: A1, addend2: A2)(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): QR
+  protected override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] =
+  {
+    if (from == to)
+    {
+      Some(1.0)
+    }
+    else
+    {
+      (from.ultimateBase, to.ultimateBase) match
+      {
+        case (Some(f), Some(t)) if from.system == to.system && f._1 == t._1 => Some(f._2 / t._2)
+        case _ => super.convert(from, to)
+      }
+    }
+  }
 }
+
