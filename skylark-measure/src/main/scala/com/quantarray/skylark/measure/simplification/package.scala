@@ -8,7 +8,7 @@ package com.quantarray.skylark.measure
  */
 package object simplification
 {
-  type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, CurrencyPrice]
+  type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, FX]
 
   trait DefaultSimplificationImplicits
   {

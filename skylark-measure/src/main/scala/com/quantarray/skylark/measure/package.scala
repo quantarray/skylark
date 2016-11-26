@@ -59,9 +59,9 @@ package object measure extends DefaultDimensions
 
   type Price[M <: Measure[M], N <: Measure[N]] = RatioMeasure[M, N]
 
-  type EnergyPrice = RatioMeasure[Currency, EnergyMeasure]
+  type EnergyPrice = Price[Currency, EnergyMeasure]
 
-  type CurrencyPrice = RatioMeasure[Currency, Currency]
+  type FX = Price[Currency, Currency]
 
   object commodity
   {
