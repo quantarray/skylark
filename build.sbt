@@ -16,6 +16,7 @@ val scalameterVersion = "0.6"
 val scalaMockScalaTestSupportVersion = "3.2"
 val scalatestVersion = "2.2.1"
 val slf4jApiVersion = "1.7.5"
+val sparkVersion = "2.0.2"
 
 lazy val commonSettings = Seq(
   organization := "com.quantarray",
@@ -111,11 +112,26 @@ lazy val `skylark-measure` = (project in file("skylark-measure")).
 
   ).dependsOn(`skylark-measure-macros`)
 
+lazy val `skylark-measure-spark` = (project in file("skylark-measure-spark")).
+  settings(commonSettings: _*).
+  settings(
+    name := "skylark-measure-spark",
+    libraryDependencies ++= Seq(
+      "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
+      "org.slf4j" % "slf4j-api" % slf4jApiVersion,
+      "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
+      "org.apache.spark" %% "spark-core" % sparkVersion,
+      "org.apache.spark" %% "spark-sql" % sparkVersion,
+      "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
+    )
+
+  ).dependsOn(`skylark-measure`)
+
 lazy val skylark = (project in file(".")).
   settings(commonSettings: _*).
   settings(
     name := "skylark",
     testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-skylark")).
   aggregate(
-    `skylark-measure-macros`, `skylark-measure`
+    `skylark-measure-macros`, `skylark-measure`, `skylark-measure-spark`
   )
