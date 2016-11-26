@@ -55,34 +55,6 @@ package object measure extends DefaultDimensions
 
   }
 
-  object simplification
-  {
-    type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, CurrencyPrice]
-
-    trait DefaultSimplificationImplicits
-    {
-
-      implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
-      {
-        override def simplify(inflated: EnergyPriceTimesCurrencyPriceMeasure): Option[EnergyPrice] =
-        {
-          if (inflated.multiplicand.numerator == inflated.multiplier.denominator)
-          {
-            Some(RatioMeasure(inflated.multiplier.numerator, inflated.multiplicand.denominator))
-          }
-          else
-          {
-            None
-          }
-        }
-      }
-
-    }
-
-    object default extends AnyRef with DefaultSimplificationImplicits
-
-  }
-
   type ExponentialLengthMeasure = ExponentialMeasure[LengthMeasure]
 
   type Price[M <: Measure[M], N <: Measure[N]] = RatioMeasure[M, N]
