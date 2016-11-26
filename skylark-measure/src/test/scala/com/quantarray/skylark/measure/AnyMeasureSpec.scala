@@ -19,8 +19,8 @@
 
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.any.implicits._
 import com.quantarray.skylark.measure.measures.any._
-import com.quantarray.skylark.measure.untyped.implicits._
 import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -31,7 +31,7 @@ class AnyMeasureSpec extends FlatSpec with Matchers
 
   private val numericTolerance = 0.00000000001
 
-  "Untyped measure" should "exponentiate" in
+  "AnyMeasure" should "exponentiate" in
     {
       kg ^ 2 should be(kg ^ 2)
     }

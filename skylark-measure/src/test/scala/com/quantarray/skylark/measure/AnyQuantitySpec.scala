@@ -19,9 +19,9 @@
 
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.any.implicits._
 import com.quantarray.skylark.measure.measures._
 import com.quantarray.skylark.measure.quantities.any._
-import com.quantarray.skylark.measure.untyped.implicits._
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.language.postfixOps
@@ -44,7 +44,7 @@ class AnyQuantitySpec extends FlatSpec with Matchers
 
   it should "add/subtract unsafely" in
     {
-      import com.quantarray.skylark.measure.untyped.arithmetic.unsafe._
+      import com.quantarray.skylark.measure.any.arithmetic.unsafe._
 
       (3.kg + 3.lb) should be(4.360775642116006 kg)
       intercept[ConvertException]
@@ -90,7 +90,7 @@ class AnyQuantitySpec extends FlatSpec with Matchers
       {
         (a, b) =>
 
-          import com.quantarray.skylark.measure.untyped.arithmetic.unsafe._
+          import com.quantarray.skylark.measure.any.arithmetic.unsafe._
 
           a.to(target).get + b
       }
