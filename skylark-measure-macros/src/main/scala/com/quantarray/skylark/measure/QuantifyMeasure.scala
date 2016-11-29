@@ -85,7 +85,9 @@ private[measure] object QuantifyMeasure
       {
         implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
 
-        def *[M <: Measure[M]](measure: M): Quantity[Double, M] = Quantity(value, measure)
+        def apply[M <: Measure[M]](measure: M): Quantity[Double, M] = Quantity(value, measure)
+
+        def *[M <: Measure[M]](measure: M): Quantity[Double, M] = apply(measure)
 
         ..$quantityDefs
       }
