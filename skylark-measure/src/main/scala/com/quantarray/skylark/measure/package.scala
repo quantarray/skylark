@@ -254,6 +254,8 @@ package object measure extends DefaultDimensions
     object conversion
     {
 
+      import cats.implicits._
+
       trait DefaultMeasureConverter extends AnyMeasureConverter with com.quantarray.skylark.measure.conversion.DefaultConversionImplicits
       {
         override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
@@ -281,6 +283,7 @@ package object measure extends DefaultDimensions
             override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
             {
               case (diff1 * (same1 / diff2)) ⤇ same2 if same1 == same2 => diff1.to(diff2)
+              case (x / (dm: DimensionlessMeasure)) ⤇ y => x.to(y) |@| measures.Unit.to(dm) map {_ * _}
               case _ => super.convert(from, to)
             }
           }

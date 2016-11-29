@@ -10,6 +10,7 @@ val scalaReflectVersion = compilerVersion
 val scalaMacrosParadiseVersion = "2.1.0"
 val scalaXmlVersion = "1.0.2"
 
+val catsVersion = "0.8.1"
 val logbackClassicVersion = "1.0.13"
 val scalacticVersion = "2.2.1"
 val scalameterVersion = "0.6"
@@ -90,6 +91,7 @@ lazy val `skylark-measure-macros` = (project in file("skylark-measure-macros")).
       "org.scalamacros" % "paradise_2.11.0" % scalaMacrosParadiseVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
+      "org.typelevel" %% "cats" % catsVersion,
       "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
     ),
 
