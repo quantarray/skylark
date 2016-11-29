@@ -27,7 +27,7 @@ import scala.annotation.implicitNotFound
   * @author Araik Grigoryan
   */
 @implicitNotFound("Cannot find CanAddAnyQuantity implementation that adds ${A1} and ${A2}.")
-trait CanAddAnyQuantity[N, A1 <: AnyQuantity[N], A2 <: AnyQuantity[N]] extends CanAdd[AnyMeasure, AnyMeasure]
+trait CanAddAnyQuantity[N, A1, A2] extends CanAdd[AnyMeasure, AnyMeasure]
 {
   type QR
 

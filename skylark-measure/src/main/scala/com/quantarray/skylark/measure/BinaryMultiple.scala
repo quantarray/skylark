@@ -26,7 +26,7 @@ package com.quantarray.skylark.measure
   */
 case class BinaryMultiple(prefix: String, powerOf2: Int)
 {
-  val multiple = math.pow(2, powerOf2)
+  val multiple: Double = math.pow(2, powerOf2)
 
   def ^(exponent: Int) = BinaryMultiple(prefix * exponent, math.pow(multiple, exponent).toInt)
 

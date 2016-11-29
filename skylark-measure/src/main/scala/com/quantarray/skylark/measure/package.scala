@@ -105,9 +105,79 @@ package object measure extends DefaultDimensions
 
   object any
   {
+    type AnyDimension = measure.AnyDimension
+
+    type AnyMeasure = measure.AnyMeasure
+
+    type AnyProductMeasure = measure.AnyProductMeasure
+
     val * = AnyProductMeasure
+
+    type AnyRatioMeasure = measure.AnyRatioMeasure
+
     val / = AnyRatioMeasure
+
+    type AnyExponentialMeasure = measure.AnyExponentialMeasure
+
     val ^ = AnyExponentialMeasure
+
+    type AnyMeasureConverter = measure.AnyMeasureConverter
+
+    type AnyQuantity[N] = measure.AnyQuantity[N]
+
+    val AnyQuantity = measure.AnyQuantity
+
+    type AreaMeasure = measure.AreaMeasure
+
+    type BinaryMultiple = measure.BinaryMultiple
+
+    type CanAdd[A1, A2] = measure.CanAdd[A1, A2]
+
+    type CanAddAnyQuantity[N, A1, A2] = measure.CanAddAnyQuantity[N, A1, A2]
+
+    type CanAddQuantity[N, M1 <: Measure[M1], A1 <: Quantity[N, M1], M2 <: Measure[M2], A2 <: Quantity[N, M2], RM <: Measure[RM]] = measure.CanAddQuantity[N, M1, A1, M2, A2, RM]
+
+    type CanConvert[From, To] = measure.CanConvert[From, To]
+
+    type CanDivide[N, D, R] = measure.CanDivide[N, D, R]
+
+    type CanExponentiate[B, R] = measure.CanExponentiate[B, R]
+
+    type CanMultiply[M1, M2, R] = measure.CanMultiply[M1, M2, R]
+
+    type CanSimplify[I, D] = measure.CanSimplify[I, D]
+
+    type Conversion[From, To] = measure.Conversion[From, To]
+
+    val Conversion = measure.Conversion
+
+    type Converter[From, To] = measure.Converter[From, To]
+
+    type ConvertException = measure.ConvertException
+
+    type Currency = measure.Currency
+
+    type DecadicMultiple = measure.DecadicMultiple
+
+    type DefaultDimensions = measure.DefaultDimensions
+
+    type DefaultMeasures = measure.DefaultMeasures
+
+    type Dimension[Self <: Dimension[Self]] = measure.Dimension[Self]
+
+    type ProductDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]] = measure.ProductDimension[D1, D2]
+
+    type RatioDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]] = measure.RatioDimension[D1, D2]
+
+    type ExponentialDimension[B <: Dimension[B]] = measure.ExponentialDimension[B]
+
+    val DimensionlessConverter = measure.DimensionlessConverter
+
+    type DimensionlessMeasure = measure.DimensionlessMeasure
+
+    type ⤇[From, To] = measure.⤇[From, To]
+
+    val ⤇ : Conversion.type = measure.⤇
 
     object arithmetic
     {
