@@ -88,11 +88,11 @@ lazy val `skylark-measure-macros` = (project in file("skylark-measure-macros")).
     name := "skylark-measure-macros",
     libraryDependencies ++= Seq(
       "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
-      "org.scalamacros" % "paradise_2.11.0" % scalaMacrosParadiseVersion,
+      "org.scalamacros" % "paradise_2.11.8" % scalaMacrosParadiseVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
       "org.typelevel" %% "cats" % catsVersion,
-      "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
+      "org.scalatest" %% "scalatest" % scalatestVersion % "test"
     ),
 
     addCompilerPlugin("org.scalamacros" % "paradise" % scalaMacrosParadiseVersion cross CrossVersion.full)
@@ -104,10 +104,10 @@ lazy val `skylark-measure` = (project in file("skylark-measure")).
     name := "skylark-measure",
     libraryDependencies ++= Seq(
       "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
-      "org.scalamacros" % "paradise_2.11.0" % scalaMacrosParadiseVersion,
+      "org.scalamacros" % "paradise_2.11.8" % scalaMacrosParadiseVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
-      "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
+      "org.scalatest" %% "scalatest" % scalatestVersion % "test"
     ),
 
     addCompilerPlugin("org.scalamacros" % "paradise" % scalaMacrosParadiseVersion cross CrossVersion.full)
@@ -124,7 +124,7 @@ lazy val `skylark-measure-spark` = (project in file("skylark-measure-spark")).
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
       "org.apache.spark" %% "spark-core" % sparkVersion,
       "org.apache.spark" %% "spark-sql" % sparkVersion,
-      "org.scalatest" % "scalatest_2.11" % scalatestVersion % "test"
+      "org.scalatest" %% "scalatest" % scalatestVersion % "test"
     )
 
   ).dependsOn(`skylark-measure`)
