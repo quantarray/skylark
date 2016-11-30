@@ -19,6 +19,7 @@
 
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.any.arithmetic._
 import scala.util.parsing.combinator.JavaTokenParsers
 
 /**
@@ -36,17 +37,17 @@ trait MeasureParsers extends JavaTokenParsers
 
   def productMeasureFactor: Parser[AnyMeasure] = measureFactor ~ "*" ~ measureTerm ^^
     {
-      case multiplicand ~ _ ~ multiplier => any.*(multiplicand, multiplier)
+      case multiplicand ~ _ ~ multiplier => *(multiplicand, multiplier)
     }
 
   def ratioMeasureFactor: Parser[AnyMeasure] = measureFactor ~ "/" ~ measureTerm ^^
     {
-      case numerator ~ _ ~ denominator => any./(numerator, denominator)
+      case numerator ~ _ ~ denominator => /(numerator ,denominator)
     }
 
   def exponentialMeasureFactor: Parser[AnyMeasure] = measureFactor ~ "^" ~ floatingPointNumber ^^
     {
-      case base ~ _ ~ exponent => any.^(base, exponent.toDouble)
+      case base ~ _ ~ exponent => ^(base, exponent.toDouble)
     }
 
   def measureFactor: Parser[AnyMeasure] = measureMatter | measureParenthesizedExpression

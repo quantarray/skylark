@@ -8,6 +8,11 @@ package com.quantarray.skylark.measure
  */
 package object arithmetic
 {
+  val * = ProductMeasure
+
+  val / = RatioMeasure
+
+  val ^ = ExponentialMeasure
 
   trait SafeArithmeticImplicits
   {

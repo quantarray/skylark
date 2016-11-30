@@ -20,8 +20,8 @@
 package com.quantarray.skylark.measure.spark
 
 import com.quantarray.skylark.measure.AnyQuantity
-import com.quantarray.skylark.measure.measures._
-import com.quantarray.skylark.measure.quantities.any._
+import com.quantarray.skylark.measure.any.measures._
+import com.quantarray.skylark.measure.any.quantities._
 import com.quantarray.skylark.measure.any.implicits._
 import org.scalatest.{Matchers, fixture}
 import org.apache.spark.sql.SparkSession

@@ -21,10 +21,6 @@ package com.quantarray.skylark
 
 package object measure extends DefaultDimensions
 {
-  val * = ProductMeasure
-  val / = RatioMeasure
-  val ^ = ExponentialMeasure
-
   type ⤇[From, To] = Conversion[From, To]
 
   val ⤇ = Conversion
@@ -105,82 +101,19 @@ package object measure extends DefaultDimensions
 
   object any
   {
-    type AnyDimension = measure.AnyDimension
 
-    type AnyMeasure = measure.AnyMeasure
+    val measures: com.quantarray.skylark.measure.measures.any.type = com.quantarray.skylark.measure.measures.any
 
-    type AnyProductMeasure = measure.AnyProductMeasure
-
-    val * = AnyProductMeasure
-
-    type AnyRatioMeasure = measure.AnyRatioMeasure
-
-    val / = AnyRatioMeasure
-
-    type AnyExponentialMeasure = measure.AnyExponentialMeasure
-
-    val ^ = AnyExponentialMeasure
-
-    type AnyMeasureConverter = measure.AnyMeasureConverter
-
-    type AnyQuantity[N] = measure.AnyQuantity[N]
-
-    val AnyQuantity = measure.AnyQuantity
-
-    type AreaMeasure = measure.AreaMeasure
-
-    type BinaryMultiple = measure.BinaryMultiple
-
-    type CanAdd[A1, A2] = measure.CanAdd[A1, A2]
-
-    type CanAddAnyQuantity[N, A1, A2] = measure.CanAddAnyQuantity[N, A1, A2]
-
-    type CanAddQuantity[N, M1 <: Measure[M1], A1 <: Quantity[N, M1], M2 <: Measure[M2], A2 <: Quantity[N, M2], RM <: Measure[RM]] = measure.CanAddQuantity[N, M1, A1, M2, A2, RM]
-
-    type CanConvert[From, To] = measure.CanConvert[From, To]
-
-    type CanDivide[N, D, R] = measure.CanDivide[N, D, R]
-
-    type CanExponentiate[B, R] = measure.CanExponentiate[B, R]
-
-    type CanMultiply[M1, M2, R] = measure.CanMultiply[M1, M2, R]
-
-    type CanSimplify[I, D] = measure.CanSimplify[I, D]
-
-    type Conversion[From, To] = measure.Conversion[From, To]
-
-    val Conversion = measure.Conversion
-
-    type Converter[From, To] = measure.Converter[From, To]
-
-    type ConvertException = measure.ConvertException
-
-    type Currency = measure.Currency
-
-    type DecadicMultiple = measure.DecadicMultiple
-
-    type DefaultDimensions = measure.DefaultDimensions
-
-    type DefaultMeasures = measure.DefaultMeasures
-
-    type Dimension[Self <: Dimension[Self]] = measure.Dimension[Self]
-
-    type ProductDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]] = measure.ProductDimension[D1, D2]
-
-    type RatioDimension[D1 <: Dimension[D1], D2 <: Dimension[D2]] = measure.RatioDimension[D1, D2]
-
-    type ExponentialDimension[B <: Dimension[B]] = measure.ExponentialDimension[B]
-
-    val DimensionlessConverter = measure.DimensionlessConverter
-
-    type DimensionlessMeasure = measure.DimensionlessMeasure
-
-    type ⤇[From, To] = measure.⤇[From, To]
-
-    val ⤇ : Conversion.type = measure.⤇
+    val quantities: com.quantarray.skylark.measure.quantities.any.type = com.quantarray.skylark.measure.quantities.any
 
     object arithmetic
     {
+
+      val * = AnyProductMeasure
+
+      val / = AnyRatioMeasure
+
+      val ^ = AnyExponentialMeasure
 
       trait SafeArithmeticImplicits
       {
@@ -275,6 +208,8 @@ package object measure extends DefaultDimensions
 
         implicit val measureCanConvert = new CanConvert[AnyMeasure, AnyMeasure]
         {
+          import arithmetic._
+          import com.quantarray.skylark.measure.measures._
 
           implicit val canConvert: CanConvert[AnyMeasure, AnyMeasure] = implicitly(this)
 
@@ -283,7 +218,7 @@ package object measure extends DefaultDimensions
             override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
             {
               case (diff1 * (same1 / diff2)) ⤇ same2 if same1 == same2 => diff1.to(diff2)
-              case (x / (dm: DimensionlessMeasure)) ⤇ y => x.to(y) |@| measures.Unit.to(dm) map {_ * _}
+              case (x / (dm: DimensionlessMeasure)) ⤇ y => x.to(y) |@| Unit.to(dm) map {_ * _}
               case _ => super.convert(from, to)
             }
           }
@@ -302,6 +237,7 @@ package object measure extends DefaultDimensions
 
       case object DefaultReducer extends Reducer[AnyMeasure, AnyMeasure]
       {
+        import com.quantarray.skylark.measure.measures._
 
         implicit val measureOrdering: Ordering[AnyMeasure] = Ordering.by
         {
@@ -320,7 +256,7 @@ package object measure extends DefaultDimensions
 
           val reduced = productOfExponentials.size match
           {
-            case 0 => measures.Unit
+            case 0 => Unit
             case 1 => exponential(productOfExponentials.head)
             case 2 => AnyProductMeasure(exponential(productOfExponentials.head), exponential(productOfExponentials(1)))
             case _ =>
@@ -337,13 +273,13 @@ package object measure extends DefaultDimensions
 
           def deflateNonRecompose: PartialFunction[AnyMeasure, AnyMeasure] =
           {
-            case AnyProductMeasure(md, mr) if md == measures.Unit && mr == measures.Unit => measures.Unit
-            case AnyProductMeasure(md, mr) if md == measures.Unit => deflate(mr)
-            case AnyProductMeasure(md, mr) if mr == measures.Unit => deflate(md)
-            case AnyProductMeasure(md, mr@AnyRatioMeasure(nr, dr)) if md == dr => deflate(nr)
-            case AnyProductMeasure(md@AnyRatioMeasure(nr, dr), mr) if dr == mr => deflate(nr)
-            case AnyRatioMeasure(nr, measures.Unit) => deflate(nr)
-            case AnyExponentialMeasure(measures.Unit, _) => measures.Unit
+            case AnyProductMeasure(md, mr) if md == Unit && mr == Unit => Unit
+            case AnyProductMeasure(md, mr) if md == Unit => deflate(mr)
+            case AnyProductMeasure(md, mr) if mr == Unit => deflate(md)
+            case AnyProductMeasure(md, AnyRatioMeasure(nr, dr)) if md == dr => deflate(nr)
+            case AnyProductMeasure(AnyRatioMeasure(nr, dr), mr) if dr == mr => deflate(nr)
+            case AnyRatioMeasure(nr, Unit) => deflate(nr)
+            case AnyExponentialMeasure(Unit, _) => Unit
             case AnyExponentialMeasure(base, exponent) if exponent == 1.0 => deflate(base)
           }
 
@@ -378,6 +314,7 @@ package object measure extends DefaultDimensions
 
       trait DefaultSimplificationImplicits
       {
+        import com.quantarray.skylark.measure.measures._
 
         case object ProductOfExponentials
         {
@@ -387,9 +324,9 @@ package object measure extends DefaultDimensions
           {
             case AnyProductMeasure(md, mr) => AnyProductMeasure(product(md, outerExponent), product(mr, outerExponent))
             case AnyRatioMeasure(nr, dr) => AnyProductMeasure(product(nr, outerExponent), product(dr, -outerExponent))
-            case AnyExponentialMeasure(base, exponent) => AnyProductMeasure(product(base, exponent * outerExponent), measures.Unit)
-            case _ if outerExponent == 1.0 => AnyProductMeasure(from, measures.Unit)
-            case _ => AnyProductMeasure(AnyExponentialMeasure(from, outerExponent), measures.Unit)
+            case AnyExponentialMeasure(base, exponent) => AnyProductMeasure(product(base, exponent * outerExponent), Unit)
+            case _ if outerExponent == 1.0 => AnyProductMeasure(from, Unit)
+            case _ => AnyProductMeasure(AnyExponentialMeasure(from, outerExponent), Unit)
           }
         }
 

@@ -20,7 +20,7 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.any.implicits._
-import com.quantarray.skylark.measure.measures.any._
+import com.quantarray.skylark.measure.any.measures._
 import org.scalatest.OptionValues._
 import org.scalatest.{FlatSpec, Matchers}
 

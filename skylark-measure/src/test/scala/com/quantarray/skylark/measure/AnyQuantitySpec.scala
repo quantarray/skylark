@@ -20,8 +20,8 @@
 package com.quantarray.skylark.measure
 
 import com.quantarray.skylark.measure.any.implicits._
-import com.quantarray.skylark.measure.measures._
-import com.quantarray.skylark.measure.quantities.any._
+import com.quantarray.skylark.measure.any.measures._
+import com.quantarray.skylark.measure.any.quantities._
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.language.postfixOps
