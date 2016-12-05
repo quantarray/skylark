@@ -23,23 +23,9 @@ import com.quantarray.skylark.measure.implicits._
 import com.quantarray.skylark.measure.measures._
 import org.scalatest.{FlatSpec, Matchers}
 
-class MeasureParsersSpec extends FlatSpec with Matchers with MeasureParsers
+class AnyMeasureParsersSpec extends FlatSpec with Matchers with AnyMeasureParsers
 {
-  final val measureProvider = new MeasureProvider
-  {
-
-    override def read: MeasureReader = new MeasureReader
-    {
-      override def apply(name: String): Option[AnyMeasure] = name match
-      {
-        case "USD" => Some(USD)
-        case "bbl" => Some(bbl)
-        case "m" => Some(m)
-        case "s" => Some(s)
-        case "kg" => Some(kg)
-      }
-    }
-  }
+  val measureAtoms: Map[String, AnyMeasure] = Seq(USD, bbl, m, s, kg).map(measure => measure.name -> measure).toMap
 
   "USD" should "be parsable" in
     {

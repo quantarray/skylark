@@ -19,18 +19,18 @@
 
 package com.quantarray.skylark.measure.spark
 
-import com.quantarray.skylark.measure.AnyQuantity
+import com.quantarray.skylark.measure.AnyMeasureParsers.ops._
+import com.quantarray.skylark.measure.any.arithmetic.safe._
 import com.quantarray.skylark.measure.any.measures._
-import com.quantarray.skylark.measure.any.quantities._
-import com.quantarray.skylark.measure.any.implicits._
-import org.scalatest.{Matchers, fixture}
+import com.quantarray.skylark.measure.{AnyMeasureParsers, AnyQuantity, AnyQuantityRef}
 import org.apache.spark.sql.SparkSession
+import org.scalatest.{Matchers, fixture}
 
 class SparkAnyQuantitySpec extends fixture.FreeSpec with fixture.TestDataFixture with Matchers
 {
   "Spark local" -
     {
-      "should perform AnyQuantity filter" in
+      "should create AnyQuantity Dataset" in
         {
           fixture =>
 
@@ -39,19 +39,26 @@ class SparkAnyQuantitySpec extends fixture.FreeSpec with fixture.TestDataFixture
               .appName(fixture.name)
               .getOrCreate()
 
-            val data = 1 to 1000 map
-              { value => AnyQuantity(value.toDouble, kg) }
+            import session.implicits._
 
-            val distData = session.sparkContext.parallelize(data)
+            val data = session.createDataset(1 to 3)
 
-            val filter = distData.filter(_.value < 10).collect()
+            val quantitiesRefs = data.map(value => AnyQuantityRef(value.toDouble, USD |/| bbl))
 
-            filter should be(Array(1.0.kg, 2.0.kg, 3.0.kg, 4.0.kg, 5.0.kg, 6.0.kg, 7.0.kg, 8.0.kg, 9.0.kg))
+            val quantityRefsColl = quantitiesRefs.collect()
 
-            val conversion = distData.filter(_.value < 10).map(_.to(lb)).collect()
+            quantityRefsColl.length should be(3)
 
-            conversion should be(Array(Some(2.204625.lb), Some(4.40925.lb), Some(6.613875.lb), Some(8.8185.lb), Some(11.023125.lb),
-              Some(13.22775.lb), Some(15.432375.lb), Some(17.637.lb), Some(19.841625.lb)))
+            val parser = AnyMeasureParsers(USD, bbl)
+
+            val quantities = quantityRefsColl.map(quantityRef => AnyQuantity(quantityRef.value, parser.parse(quantityRef.measureRef).get))
+
+            quantities.foreach
+            {
+              quantity =>
+
+                quantity.measure should be(USD / bbl)
+            }
 
             session.stop()
         }

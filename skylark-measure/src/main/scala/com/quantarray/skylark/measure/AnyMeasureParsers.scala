@@ -23,13 +23,13 @@ import com.quantarray.skylark.measure.any.arithmetic._
 import scala.util.parsing.combinator.JavaTokenParsers
 
 /**
-  * Measure parsers.
+  * Any measure parsers.
   *
   * @author Araik Grigoryan
   */
-trait MeasureParsers extends JavaTokenParsers
+trait AnyMeasureParsers extends JavaTokenParsers
 {
-  val measureProvider: MeasureProvider
+  def measureAtoms: Map[String, AnyMeasure]
 
   def measureExpression: Parser[AnyMeasure] = measureTerm
 
@@ -62,8 +62,35 @@ trait MeasureParsers extends JavaTokenParsers
   def measureAtom: Parser[AnyMeasure] =
     """[^()*/\^\s]+""".r ^^
       {
-        case measureName if measureProvider.read(measureName).isDefined => measureProvider.read(measureName).get
+        case measureName if measureAtoms.contains(measureName) => measureAtoms(measureName)
       }
 
   def parseMeasure(measure: String): ParseResult[AnyMeasure] = parseAll(measureExpression, measure)
+
+  def parse(measure: String): Option[AnyMeasure] =
+  {
+    val parseResult = parseMeasure(measure)
+
+    if(parseResult.successful) Some(parseResult.get) else None
+  }
+}
+
+object AnyMeasureParsers
+{
+  def apply(measures: AnyMeasure*): AnyMeasureParsers = new AnyMeasureParsers
+  {
+    val measureAtoms: Map[String, AnyMeasure] = measures.map(measure => measure.name -> measure).toMap
+  }
+
+  object ops
+  {
+    implicit class AnyMeasureStringOps(val measure: AnyMeasure) extends AnyVal
+    {
+      def |*|(otherMeasure: AnyMeasure)(implicit cm: CanMultiply[AnyMeasure, AnyMeasure, AnyMeasure]): String = (measure * otherMeasure).name
+
+      def |/|(otherMeasure: AnyMeasure)(implicit cm: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): String = (measure / otherMeasure).name
+
+      def |^|(exponent: Double)(implicit ce: CanExponentiate[AnyMeasure, AnyMeasure]): String = (measure ^ exponent).name
+    }
+  }
 }

@@ -72,7 +72,7 @@ trait AnyMeasure extends Product with Serializable with Dynamic
 
   def *(measure: AnyMeasure)(implicit cm: CanMultiply[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cm.times(this, measure)
 
-  def /(measure: AnyMeasure)(implicit cm: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cm.divide(this, measure)
+  def /(measure: AnyMeasure)(implicit cd: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cd.divide(this, measure)
 
   def to(target: AnyMeasure)(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): Option[Double] = cc.convert(this, target)
 
