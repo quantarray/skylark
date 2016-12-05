@@ -28,7 +28,8 @@ project/plugins/project/
 .idea/highlighting.xml
 .idea/inspectionProfiles/
 .idea/libraries/
-/.idea/markdown-navigator.xml
+.idea/markdown-navigator.xml
+.idea/markdown-navigator/profiles_settings.xml
 .idea/misc.xml
 .idea/modules/
 .idea/modules.xml
@@ -39,4 +40,3 @@ project/plugins/project/
 .idea/uiDesigner.xml
 .idea/vcs.xml
 .idea/workspace.xml
-/.idea/markdown-navigator/profiles_settings.xml
