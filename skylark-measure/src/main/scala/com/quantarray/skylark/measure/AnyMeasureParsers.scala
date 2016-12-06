@@ -77,10 +77,12 @@ trait AnyMeasureParsers extends JavaTokenParsers
 
 object AnyMeasureParsers
 {
-  def apply(measures: AnyMeasure*): AnyMeasureParsers = new AnyMeasureParsers
+  def apply(measures: Iterable[(String, AnyMeasure)]): AnyMeasureParsers = new AnyMeasureParsers
   {
-    val measureAtoms: Map[String, AnyMeasure] = measures.map(measure => measure.name -> measure).toMap
+    val measureAtoms: Map[String, AnyMeasure] = measures.toMap
   }
+
+  def apply(measures: AnyMeasure*): AnyMeasureParsers = apply(measures.map(measure => measure.name -> measure))
 
   object ops
   {
@@ -88,7 +90,7 @@ object AnyMeasureParsers
     {
       def |*|(otherMeasure: AnyMeasure)(implicit cm: CanMultiply[AnyMeasure, AnyMeasure, AnyMeasure]): String = (measure * otherMeasure).name
 
-      def |/|(otherMeasure: AnyMeasure)(implicit cm: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): String = (measure / otherMeasure).name
+      def |/|(otherMeasure: AnyMeasure)(implicit cd: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): String = (measure / otherMeasure).name
 
       def |^|(exponent: Double)(implicit ce: CanExponentiate[AnyMeasure, AnyMeasure]): String = (measure ^ exponent).name
     }
