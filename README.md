@@ -11,7 +11,7 @@
 
 # Skylark
 
-Skylark is a collection of libraries for quantitative and financial computation.
+Skylark is a collection of libraries for quantitative computation.
 
 ## skylark-measure
 
@@ -19,12 +19,7 @@ Skylark is a collection of libraries for quantitative and financial computation.
 their surface but in the end lack the richness and versatility necessary to use in real enterprise applications.
 
 ```scala
-libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.13.2"
-```
-
-```scala
-import com.quantarray.skylark.measure._
-import com.quantarray.skylark.measure.implicits._
+libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.14.4"
 ```
 
 ### Simple usage
@@ -32,6 +27,9 @@ import com.quantarray.skylark.measure.implicits._
 Many units of measure are defined for you.
 
 ```scala
+import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.measures._
+
 kg
 lb
 Pa
@@ -41,10 +39,13 @@ Hz
 Any unit of measure will have a set of basic properties that you would naturally expect to interrogate.
 
 ```scala
+import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.measures._
+
 kg.name should be("kg")
 kg.dimension should be(Mass)
 kg.system should be(SI)
-kg.isStructuralAtom should be(right = true)
+kg.isStructuralAtom should be(true)
 kg.exponent should be(1.0)
 kg * s should be(ProductMeasure(kg, s))
 kg.inverse should be(ExponentialMeasure(kg, -1.0))
@@ -58,25 +59,40 @@ kg to oz_metric should be(None) // Default conversion is not guaranteed to exist
 You can take existing units and compose more complex ones by multiplying, dividing, and exponentiating.
 
 ```scala
+import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.measures._
+
 val N = kg * m / sec ^ 2
 ```
 
 You can find our the conversion factor from one `to` another. No conversion factor may exist.
 
 ```scala
+import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.measures._
+import org.scalatest.OptionValues._
+
 (kg to lb).value should be(2.204625)
 ```
 
-When dealing with marshalling/serialization, you can store units of measure along with a numeric value as a plain string. 
-With `MeasureParsers` you can turn that string back into a measure.
+When dealing with marshalling/encoding/serialization, you can store units of measure along with a numeric value as a plain string.
+With `AnyMeasureParsers` you can turn that string back into a measure.
  
 ```scala
-parseMeasure("USD / bbl").get should equal(USD / bbl)
+import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.measures._
+import org.scalatest.OptionValues._
+
+val parser = AnyMeasureParsers(USD, bbl) // Declare the measure atom instances you expect to be present
+parser.parse("USD / bbl").value should equal(USD / bbl)
 ```
 
 It's easy to compose numerical quantities with units of measure using a dot or postfix syntax.
 
 ```scala
+import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.quantities._
+
 10.kg
 4 m
 1000.0.bbl
@@ -85,6 +101,9 @@ It's easy to compose numerical quantities with units of measure using a dot or p
 You can perform the expected arithmetic operations on quantities.
 
 ```scala
+import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.quantities._
+
 10.kg * 4.m should equal(40.0 * (kg * m))
 (4.oz_troy * 7.percent).to(oz_troy) should equal(0.28.oz_troy)
 
@@ -100,13 +119,17 @@ Quantity conversions are also supported via the same `to` operator. Basic conver
 are defined by converters and require their own `CanConvert` instances of their components' conversions.
 
 ```scala
-(1.ft to in) should equal(12.0 in)
-(12.in to ft) should equal(1.0 ft)
+import com.quantarray.skylark.measure.implicits._
+import com.quantarray.skylark.measure.quantities._
+import org.scalatest.OptionValues._
+
+(1.ft to in).value should equal(12.0 in)
+(12.in to ft).value should equal(1.0 ft)
 ```
 
-### Strongly-typed vs. untyped measures and quantities
+### Measure vs. AnyMeasure
 
-**skylark-measure** gives you the freedom and flexibility to work with strongly-typed measures (e.g. `MassMeasure`) or looser-typed `untyped.Measure`. 
+**skylark-measure** gives you the freedom and flexibility to work with strongly-typed measures (e.g. `MassMeasure`) or looser-typed `AnyMeasure`.
 The choice of which to work with depends on the individual API you would like to expose and enforce.
 
 In the situation where you know you must receive a `MassMeasure`, you would encode exactly as natural logic or physics would dictate. There is, hence, no chance
@@ -127,9 +150,9 @@ type Momentum = Quantity[Double, MomentumMeasure]
 def momentum(mass: Mass, velocity: Velocity): Momentum = mass * velocity
 ```
 
-In other situations, where knowledge of a type of measure is uncertain, one would rely on an amorphous `untyped.Measure`, in package 
-`com.quantarray.skylark.measure.untyped`. Operations on `untyped.Measure` yields another `untyped.Measure`. You can always `match` on an 
-`untyped.Measure` to check or assert a certain shape.
+In other situations, where knowledge of a type of measure is uncertain, one would rely on `AnyMeasure`.
+Operations on `AnyMeasure` yields another `AnyMeasure` and thus have less strict type requirements than a type derived from `Measure`.
+You can always `match` on `AnyMeasure` to check or assert a certain shape.
 
 ### Overriding default behavior
 
