@@ -1,7 +1,7 @@
 import sbt.Keys._
 import sbt._
 
-val projectVersion = "0.15.0"
+val projectVersion = "0.16.0-SNAPSHOT"
 
 val compilerVersion = "2.11.8"
 
