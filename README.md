@@ -19,7 +19,7 @@ Skylark is a collection of libraries for quantitative computation.
 their surface but in the end lack the richness and versatility necessary to use in real enterprise applications.
 
 ```scala
-libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.14.4"
+libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.15.0"
 ```
 
 ### Simple usage
