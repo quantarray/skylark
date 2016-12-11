@@ -19,10 +19,12 @@
 
 package com.quantarray.skylark.measure
 
+import com.quantarray.skylark.measure.any.conversion.DefaultMeasureConverterWithCanConvert
 import com.quantarray.skylark.measure.any.implicits._
 import com.quantarray.skylark.measure.any.measures._
 import com.quantarray.skylark.measure.any.quantities._
 import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.OptionValues._
 
 import scala.language.postfixOps
 
@@ -63,12 +65,15 @@ class AnyQuantitySpec extends FlatSpec with Matchers
     {
       implicit val measureCanConvert = new CanConvert[AnyMeasure, AnyMeasure]
       {
-        override def convert: Converter[AnyMeasure, AnyMeasure] = new AnyMeasureConverter
+        private val cc = this
+
+        override def convert: Converter[AnyMeasure, AnyMeasure] = new DefaultMeasureConverterWithCanConvert
         {
+          implicit def canConvert: CanConvert[AnyMeasure, AnyMeasure] = cc
+
           protected override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
           {
             case `bbl` ⤇ `gal` => Some(42)
-            case `gal` ⤇ `bbl` => apply(to, from).map(1.0 / _)
             case _ => super.convert(from, to)
           }
         }
@@ -81,21 +86,45 @@ class AnyQuantitySpec extends FlatSpec with Matchers
       40.gal - 1.bbl should equal(Some(-2.gal))
     }
 
-  it should "reduce unsafely" in
-  {
-
-    def targetSum(quantities: Seq[AnyQuantity[Double]], target: AnyMeasure): AnyQuantity[Double] =
+  it should "convert with a custom CanConvert" in
     {
-      quantities.reduce[AnyQuantity[Double]]
+      implicit val measureCanConvert = new CanConvert[AnyMeasure, AnyMeasure]
       {
-        (a, b) =>
+        private val cc = this
 
-          import com.quantarray.skylark.measure.any.arithmetic.unsafe._
+        override def convert: Converter[AnyMeasure, AnyMeasure] = new DefaultMeasureConverterWithCanConvert
+        {
+          implicit def canConvert: CanConvert[AnyMeasure, AnyMeasure] = cc
 
-          a.to(target).get + b
+          protected override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
+          {
+            case `bbl` ⤇ `gal` => Some(42)
+            case _ => super.convert(from, to)
+          }
+        }
       }
+
+      (bbl * (USD / gal)).to(USD).value should equal(42.0)
+      ((bbl ^ -1.0) * (USD * gal)).to(USD).value should equal(1 / 42.0)
+      (bbl / percent).to(gal).value should equal(4200)
+      (bbl * (percent ^ -1.0)).to(gal).value should equal(4200)
     }
 
-    targetSum(List(3.kg, 4.kg), g) should equal(7000.g)
-  }
+  it should "reduce unsafely" in
+    {
+
+      def targetSum(quantities: Seq[AnyQuantity[Double]], target: AnyMeasure): AnyQuantity[Double] =
+      {
+        quantities.reduce[AnyQuantity[Double]]
+          {
+            (a, b) =>
+
+              import com.quantarray.skylark.measure.any.arithmetic.unsafe._
+
+              a.to(target).get + b
+          }
+      }
+
+      targetSum(List(3.kg, 4.kg), g) should equal(7000.g)
+    }
 }

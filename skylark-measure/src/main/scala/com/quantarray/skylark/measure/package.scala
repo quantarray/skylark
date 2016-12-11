@@ -188,10 +188,11 @@ package object measure extends DefaultDimensions
     {
 
       import cats.implicits._
+      import arithmetic._
 
       trait DefaultMeasureConverter extends AnyMeasureConverter with com.quantarray.skylark.measure.conversion.DefaultConversionImplicits
       {
-        override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
+        protected override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
         {
           case (dm1: DimensionlessMeasure) ⤇ (dm2: DimensionlessMeasure) => dimensionlessCanConvert.convert(dm1, dm2)
           case (tm1: TimeMeasure) ⤇ (tm2: TimeMeasure) => timeCanConvert.convert(tm1, tm2)
@@ -203,24 +204,33 @@ package object measure extends DefaultDimensions
         }
       }
 
+      trait DefaultMeasureConverterWithCanConvert extends DefaultMeasureConverter
+      {
+
+        import com.quantarray.skylark.measure.measures._
+
+        implicit def canConvert: CanConvert[AnyMeasure, AnyMeasure]
+
+        protected override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
+        {
+          case (x * (same1 / y)) ⤇ same2 if same1 == same2 => x to y
+          case ((x ^ -1.0) * (same1 * y)) ⤇ same2 if same1 == same2 => y to x
+          case (x / (dm: DimensionlessMeasure)) ⤇ y => x.to(y) |@| Unit.to(dm) map { _ * _ }
+          case (x * ((dm: DimensionlessMeasure) ^ -1.0)) ⤇ y => x.to(y) |@| Unit.to(dm) map { _ * _ }
+          case _ => super.convert(from, to)
+        }
+      }
+
       trait DefaultConversionImplicits
       {
 
         implicit val measureCanConvert = new CanConvert[AnyMeasure, AnyMeasure]
         {
-          import arithmetic._
-          import com.quantarray.skylark.measure.measures._
+          private val cc = this
 
-          implicit val canConvert: CanConvert[AnyMeasure, AnyMeasure] = implicitly(this)
-
-          override def convert: Converter[AnyMeasure, AnyMeasure] = new DefaultMeasureConverter
+          override def convert: Converter[AnyMeasure, AnyMeasure] = new DefaultMeasureConverterWithCanConvert
           {
-            override def convert(from: AnyMeasure, to: AnyMeasure): Option[Double] = ⤇(from, to) match
-            {
-              case (diff1 * (same1 / diff2)) ⤇ same2 if same1 == same2 => diff1.to(diff2)
-              case (x / (dm: DimensionlessMeasure)) ⤇ y => x.to(y) |@| Unit.to(dm) map {_ * _}
-              case _ => super.convert(from, to)
-            }
+            implicit def canConvert: CanConvert[AnyMeasure, AnyMeasure] = cc
           }
         }
 
@@ -237,6 +247,7 @@ package object measure extends DefaultDimensions
 
       case object DefaultReducer extends Reducer[AnyMeasure, AnyMeasure]
       {
+
         import com.quantarray.skylark.measure.measures._
 
         implicit val measureOrdering: Ordering[AnyMeasure] = Ordering.by
@@ -314,6 +325,7 @@ package object measure extends DefaultDimensions
 
       trait DefaultSimplificationImplicits
       {
+
         import com.quantarray.skylark.measure.measures._
 
         case object ProductOfExponentials
