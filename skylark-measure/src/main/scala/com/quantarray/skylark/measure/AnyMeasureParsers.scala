@@ -83,16 +83,4 @@ object AnyMeasureParsers
   }
 
   def apply(measures: AnyMeasure*): AnyMeasureParsers = apply(measures.map(measure => measure.name -> measure))
-
-  object ops
-  {
-    implicit class AnyMeasureStringOps(val measure: AnyMeasure) extends AnyVal
-    {
-      def |*|(otherMeasure: AnyMeasure)(implicit cm: CanMultiply[AnyMeasure, AnyMeasure, AnyMeasure]): String = (measure * otherMeasure).name
-
-      def |/|(otherMeasure: AnyMeasure)(implicit cd: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): String = (measure / otherMeasure).name
-
-      def |^|(exponent: Double)(implicit ce: CanExponentiate[AnyMeasure, AnyMeasure]): String = (measure ^ exponent).name
-    }
-  }
 }

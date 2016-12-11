@@ -17,21 +17,13 @@
  * limitations under the License.
  */
 
-package com.quantarray.skylark.measure
+package com.quantarray.skylark.measure.spark
 
-import scala.language.implicitConversions
+import com.quantarray.skylark.measure.AnyQuantityRef
 
 /**
-  * Any quantity reference.
+  * Sensitivity.
   *
   * @author Araik Grigoryan
   */
-case class AnyQuantityRef[N, MR](value: N, measureRef: MR)
-{
-  override def toString: String = s"$value $measureRef"
-}
-
-object AnyQuantityRef
-{
-  implicit def anyQuantityToAnyQuantityRef[N](quantity: AnyQuantity[N]): AnyQuantityRef[N, String] = AnyQuantityRef(quantity.value, quantity.measure.name)
-}
+case class Sensitivity(name: String, quantityRef: AnyQuantityRef[Double, String])
