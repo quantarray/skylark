@@ -1,21 +1,17 @@
 import sbt.Keys._
 import sbt._
 
-val projectVersion = "0.14.4"
+val projectVersion = "0.15.0-SNAPSHOT"
 
 val compilerVersion = "2.11.8"
 
-val scalaParserCombinatorsVersion = "1.0.2"
-val scalaReflectVersion = compilerVersion
+val scalaParserCombinatorsVersion = "1.0.4"
 val scalaMacrosParadiseVersion = "2.1.0"
-val scalaXmlVersion = "1.0.2"
 
 val catsVersion = "0.8.1"
 val logbackClassicVersion = "1.0.13"
-val scalacticVersion = "2.2.1"
-val scalameterVersion = "0.6"
-val scalaMockScalaTestSupportVersion = "3.2"
-val scalatestVersion = "2.2.1"
+val scalacticVersion = "3.0.0"
+val scalatestVersion = "3.0.0"
 val slf4jApiVersion = "1.7.5"
 val sparkVersion = "2.0.2"
 
@@ -25,6 +21,10 @@ lazy val commonSettings = Seq(
   version := projectVersion,
 
   scalaVersion := compilerVersion,
+
+  crossScalaVersions := Seq(compilerVersion, "2.12.1"),
+
+  crossVersion := CrossVersion.binary,
 
   scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-feature"),
 
@@ -87,8 +87,8 @@ lazy val `skylark-measure-macros` = (project in file("skylark-measure-macros")).
   settings(
     name := "skylark-measure-macros",
     libraryDependencies ++= Seq(
-      "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
-      "org.scalamacros" % "paradise_2.11.8" % scalaMacrosParadiseVersion,
+      "org.scala-lang.modules" %% "scala-parser-combinators" % scalaParserCombinatorsVersion,
+      "org.scalamacros" % s"paradise_${scalaVersion.value}" % scalaMacrosParadiseVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
       "org.typelevel" %% "cats" % catsVersion,
@@ -103,8 +103,8 @@ lazy val `skylark-measure` = (project in file("skylark-measure")).
   settings(
     name := "skylark-measure",
     libraryDependencies ++= Seq(
-      "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
-      "org.scalamacros" % "paradise_2.11.8" % scalaMacrosParadiseVersion,
+      "org.scala-lang.modules" %% "scala-parser-combinators" % scalaParserCombinatorsVersion,
+      "org.scalamacros" % s"paradise_${scalaVersion.value}" % scalaMacrosParadiseVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
       "org.scalatest" %% "scalatest" % scalatestVersion % "test"
@@ -119,7 +119,7 @@ lazy val `skylark-measure-spark` = (project in file("skylark-measure-spark")).
   settings(
     name := "skylark-measure-spark",
     libraryDependencies ++= Seq(
-      "org.scala-lang.modules" % "scala-parser-combinators_2.11" % scalaParserCombinatorsVersion,
+      "org.scala-lang.modules" %% "scala-parser-combinators" % scalaParserCombinatorsVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
       "org.apache.spark" %% "spark-core" % sparkVersion,
