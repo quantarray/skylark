@@ -1,19 +1,4 @@
-<!--
-  Title: Skylark
-  Description: Collection of libraries for quantitative and financial computation.
-  Author: Araik Grigoryan
-  Copyright: 2012-2016 Quantarray, LLC
--->
-  
-<meta name='keywords' content='scala, unit of measure, skylark'>
-
-[![Build Status](https://travis-ci.org/quantarray/skylark.svg?branch=master)](https://travis-ci.org/quantarray/skylark)
-
-# Skylark
-
-Skylark is a collection of libraries for quantitative computation.
-
-## skylark-measure
+# Measure
 
 **skylark-measure** is a library dealing with unit-of-measure definition, arithmetic, simplification and conversions in a type-safe manner.
 
@@ -78,7 +63,7 @@ import org.scalatest.OptionValues._
 
 When dealing with marshalling/encoding/serialization, you can store units of measure along with a numeric value as a plain string.
 With `AnyMeasureParsers` you can turn that string back into a measure.
- 
+
 ```scala
 import com.quantarray.skylark.measure.implicits._
 import com.quantarray.skylark.measure.measures._
@@ -161,9 +146,9 @@ The default arithmetic, conversion, and simplification operations are defined fo
 
 #### Arithmetic
 
-**skylark-measure** relies on the presence of `implicit` type classes `CanMultiply`, `CanDivide`, and `CanExponentiate` to perform arithmetic operations. 
+**skylark-measure** relies on the presence of `implicit` type classes `CanMultiply`, `CanDivide`, and `CanExponentiate` to perform arithmetic operations.
 
-By default 
+By default
 
 * `m1 * m2` returns `ProductMeasure(m1, m2)`;
 * `m1 / m2` returns `RatioMeasure(m1, m2)`;
@@ -172,7 +157,7 @@ By default
 One can, however, override the return type by proving a custom implicit class that derives from one of the three `Can*` traits.
 
 For example, say when one does `b / s` (bits per second), one wants to work with a custom `BitRateMeasure` instead of the default `RatioMeasure(bit, s)`.
-  
+
 One would then need to define the custom object like `InformationTimeCanDivide`:
 
 ```scala

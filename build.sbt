@@ -136,4 +136,4 @@ lazy val skylark = (project in file(".")).
     testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-skylark")).
   aggregate(
     `skylark-measure-macros`, `skylark-measure`, `skylark-measure-spark`
-  )
+  ).enablePlugins(OrnatePlugin)
