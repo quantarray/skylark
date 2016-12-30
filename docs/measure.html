@@ -218,11 +218,11 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 </div></div>
 <h4 id="simplification" class="a_section" data-magellan-target="simplification">Simplification<a class="a_hlink" href="#simplification"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">EnergyPriceTimesCurrencyPriceMeasure</span> </span>= <span class="hljs-type">ProductMeasure</span>[<span class="hljs-type">EnergyPrice</span>, <span class="hljs-type">FX</span>]
+<pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">EnergyPriceTimesFXMeasure</span> </span>= <span class="hljs-type">ProductMeasure</span>[<span class="hljs-type">EnergyPrice</span>, <span class="hljs-type">FX</span>]
 
-<span class="hljs-keyword">implicit</span> <span class="hljs-keyword">val</span> energyPriceTimesCurrencyPriceCanSimplify = <span class="hljs-keyword">new</span> <span class="hljs-type">CanSimplify</span>[<span class="hljs-type">EnergyPriceTimesCurrencyPriceMeasure</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>]]
+<span class="hljs-keyword">implicit</span> <span class="hljs-keyword">val</span> energyPriceTimesCurrencyPriceCanSimplify = <span class="hljs-keyword">new</span> <span class="hljs-type">CanSimplify</span>[<span class="hljs-type">EnergyPriceTimesFXMeasure</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>]]
 {
-  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">simplify</span></span>(inflated: <span class="hljs-type">EnergyPriceTimesCurrencyPriceMeasure</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>] =
+  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">simplify</span></span>(inflated: <span class="hljs-type">EnergyPriceTimesFXMeasure</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>] =
   {
     <span class="hljs-keyword">if</span> (inflated.multiplicand.numerator == inflated.multiplier.denominator)
     {
@@ -234,6 +234,64 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
     }
   }
 }
+</code></pre>
+</div></div>
+<h3 id="package-organization" class="a_section" data-magellan-target="package-organization">Package organization<a class="a_hlink" href="#package-organization"></a></h3>
+<h4 id="types" class="a_section" data-magellan-target="types">Types<a class="a_hlink" href="#types"></a></h4>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Types</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure._
+</code></pre>
+</div></div>
+<h4 id="measures" class="a_section" data-magellan-target="measures">Measures<a class="a_hlink" href="#measures"></a></h4>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Dimensional measures</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
+</code></pre>
+</div></div>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-sql">// AnyMeasure(s) (<span class="hljs-keyword">use</span> these <span class="hljs-keyword">if</span> it<span class="hljs-string">'s more convenient to match on the measure'</span>s shape <span class="hljs-keyword">at</span> run <span class="hljs-keyword">time</span>)
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.measures._
+</code></pre>
+</div></div>
+<h4 id="quantities" class="a_section" data-magellan-target="quantities">Quantities<a class="a_hlink" href="#quantities"></a></h4>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Dimensional quantities</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
+</code></pre>
+</div></div>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-sql">// AnyQuantity(s) (<span class="hljs-keyword">use</span> these <span class="hljs-keyword">if</span> it<span class="hljs-string">'s more convenient to match on the quantity measure'</span>s shape <span class="hljs-keyword">at</span> run <span class="hljs-keyword">time</span>)
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.quantities._
+</code></pre>
+</div></div>
+<h4 id="arithmetic-simplification-conversion" class="a_section" data-magellan-target="arithmetic-simplification-conversion">Arithmetic, simplification, conversion<a class="a_hlink" href="#arithmetic-simplification-conversion"></a></h4>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Safe arithmetic (no exceptions thrown)</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.arithmetic.safe._
+
+<span class="hljs-comment">// Default simplification</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.simplification.<span class="hljs-keyword">default</span>._
+
+<span class="hljs-comment">// Default conversion</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.conversion.<span class="hljs-keyword">default</span>._
+
+<span class="hljs-comment">// Safe arithmetic, default simplification, and default conversion in one shot</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+</code></pre>
+</div></div>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Safe arithmetic (no exceptions thrown)</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.arithmetic.safe._
+
+<span class="hljs-comment">// Default simplification</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.simplification.<span class="hljs-keyword">default</span>._
+
+<span class="hljs-comment">// Default conversion</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.conversion.<span class="hljs-keyword">default</span>._
+
+<span class="hljs-comment">// Safe arithmetic, default simplification, and default conversion in one shot</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.implicits._
 </code></pre>
 </div></div>
 
@@ -255,6 +313,13 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
   <li  class="a_thispage" >
     
       <a href="measure.html">Measure</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="taylor.html">Taylor series: a complete example</a>
     
     
   </li>
@@ -329,6 +394,50 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
   <li>
     
        <a href="#simplification">Simplification</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#package-organization">Package organization</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#types">Types</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#measures">Measures</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#quantities">Quantities</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#arithmetic-simplification-conversion">Arithmetic, simplification, conversion</a> 
     
     
   </li>
