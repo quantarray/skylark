@@ -311,7 +311,7 @@ $$ f(y + dy) = f(y) + \frac{f'(y)}{1!}(dy) + \frac{f''(y)}{2!}(dy)^2 + \frac{f''
 Each derivative quantity above has its own unique unit of measure. Keeping track of the measure is essential to
  computing the final estimate. The example below shows how the measures are defined, multiplied, summed, and simplified.
 
-```scala sourceLinkURI=https://github.com/quantarray/skylark/tree/master/skylark-measure/src/test/scala/com/quantarray/skylark/measure
+```scala sourceLinkURI=https://github.com/quantarray/skylark/tree/master/skylark-measure/src/test/scala/com/quantarray/skylark/measure/TaylorSeriesSpec.scala
 import com.quantarray.skylark.measure._
 import com.quantarray.skylark.measure.any.measures._
 import com.quantarray.skylark.measure.any.quantities._
