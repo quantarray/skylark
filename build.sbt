@@ -143,3 +143,4 @@ releaseTagComment := s"Release ${(version in ThisBuild).value}."
 
 releaseCommitMessage := s"Move to version to ${(version in ThisBuild).value}."
 
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
