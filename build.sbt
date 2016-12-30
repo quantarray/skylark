@@ -13,7 +13,7 @@ val logbackClassicVersion = "1.0.13"
 val scalacticVersion = "3.0.0"
 val scalatestVersion = "3.0.0"
 val slf4jApiVersion = "1.7.5"
-val sparkVersion = "2.0.2"
+val sparkVersion = "2.1.0"
 
 lazy val commonSettings = Seq(
   organization := "com.quantarray",
