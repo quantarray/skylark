@@ -233,3 +233,67 @@ implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPr
   }
 }
 ```
+
+### Package organization
+
+#### Types
+
+```scala
+// Types
+import com.quantarray.skylark.measure._
+```
+
+#### Measures
+
+```scala
+// Dimensional measures
+import com.quantarray.skylark.measure.measures._
+```
+
+```
+// AnyMeasure(s) (use these if it's more convenient to match on the measure's shape at run time)
+import com.quantarray.skylark.measure.any.measures._
+```
+
+#### Quantities
+
+```scala
+// Dimensional quantities
+import com.quantarray.skylark.measure.quantities._
+```
+
+```
+// AnyQuantity(s) (use these if it's more convenient to match on the quantity measure's shape at run time)
+import com.quantarray.skylark.measure.any.quantities._
+```
+
+#### Arithmetic, simplification, conversion
+
+```scala
+// Safe arithmetic (no exceptions thrown)
+import com.quantarray.skylark.measure.arithmetic.safe._
+
+// Default simplification
+import com.quantarray.skylark.measure.simplification.default._
+
+// Default conversion
+import com.quantarray.skylark.measure.conversion.default._
+
+// Safe arithmetic, default simplification, and default conversion in one shot
+import com.quantarray.skylark.measure.implicits._
+```
+
+```scala
+// Safe arithmetic (no exceptions thrown)
+import com.quantarray.skylark.measure.any.arithmetic.safe._
+
+// Default simplification
+import com.quantarray.skylark.measure.any.simplification.default._
+
+// Default conversion
+import com.quantarray.skylark.measure.any.conversion.default._
+
+// Safe arithmetic, default simplification, and default conversion in one shot
+import com.quantarray.skylark.measure.any.implicits._
+```
+
