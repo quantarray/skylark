@@ -1,7 +1,6 @@
 import sbt.Keys._
 import sbt._
-
-val projectVersion = "0.16.0-SNAPSHOT"
+import sbtrelease.ReleasePlugin.autoImport._
 
 val compilerVersion = "2.11.8"
 
@@ -19,7 +18,7 @@ val sparkVersion = "2.1.0"
 lazy val commonSettings = Seq(
   organization := "com.quantarray",
 
-  version := projectVersion,
+  version := (version in ThisBuild).value,
 
   scalaVersion := compilerVersion,
 
@@ -139,3 +138,8 @@ lazy val skylark = (project in file(".")).
   aggregate(
     `skylark-measure-macros`, `skylark-measure`, `skylark-measure-spark`
   ).enablePlugins(OrnatePlugin)
+
+releaseTagComment := s"Release ${(version in ThisBuild).value}."
+
+releaseCommitMessage := s"Move to version to ${(version in ThisBuild).value}."
+
