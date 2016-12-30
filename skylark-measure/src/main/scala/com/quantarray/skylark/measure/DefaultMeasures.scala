@@ -112,22 +112,56 @@ trait DefaultMeasures extends DefaultDimensions
     */
   final val s = TimeMeasure("s", SI)
   final val sec: TimeMeasure = s
+  final val second: TimeMeasure = s
   final val secs: TimeMeasure = s
+  final val seconds: TimeMeasure = s
+
   final val min: TimeMeasure = "min" := 60 * s
+  final val minute: TimeMeasure = min
   final val mins: TimeMeasure = min
+  final val minutes: TimeMeasure = min
+
   final val h: TimeMeasure = "h" := 60 * min
   final val hour: TimeMeasure = h
   final val hours: TimeMeasure = h
+
   final val day: TimeMeasure = "day" := 24 * h
   final val days: TimeMeasure = day
+
   final val year365: TimeMeasure = "Year[365]" := 365 * day
-  final val years: TimeMeasure = year365
+  final val years365: TimeMeasure = year365
+  final val year: TimeMeasure = year365
+  final val years: TimeMeasure = year
   final val year360: TimeMeasure = "Year[360]" := 360 * day
+  final val years360: TimeMeasure = year360
 
   final val ms: TimeMeasure = Milli * s
-  final val ns: TimeMeasure = Nano * s
+  final val msec: TimeMeasure = ms
+  final val millisec: TimeMeasure = ms
+  final val millisecond: TimeMeasure = ms
+  final val msecs: TimeMeasure = ms
+  final val millisecs: TimeMeasure = ms
+  final val milliseconds: TimeMeasure = ms
 
-  val fortnight: TimeMeasure = day.composes("Fortnight", Imperial(), 14)
+  final val μs: TimeMeasure = Micro * s
+  final val μsec: TimeMeasure = μs
+  final val μsecond: TimeMeasure = μs
+  final val microsec: TimeMeasure = μs
+  final val microsecond: TimeMeasure = μs
+  final val μsecs: TimeMeasure = μs
+  final val μseconds: TimeMeasure = μs
+  final val microsecs: TimeMeasure = μs
+  final val microseconds: TimeMeasure = μs
+
+  final val ns: TimeMeasure = Nano * s
+  final val nsec: TimeMeasure = ns
+  final val nanosec: TimeMeasure = ns
+  final val nanosecond: TimeMeasure = ns
+  final val nsecs: TimeMeasure = ns
+  final val nanosecs: TimeMeasure = ns
+  final val nanoseconds: TimeMeasure = ns
+
+  final val fortnight: TimeMeasure = day.composes("Fortnight", Imperial(), 14)
 
   /**
     * Mass.
