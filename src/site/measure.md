@@ -5,7 +5,7 @@
 ### Configuration
 
 ```scala
-libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.15.0"
+libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.15.4"
 ```
 
 ### Simple usage
