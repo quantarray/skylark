@@ -250,7 +250,7 @@ import com.quantarray.skylark.measure._
 import com.quantarray.skylark.measure.measures._
 ```
 
-```
+```scala
 // AnyMeasure(s) (use these if it's more convenient to match on the measure's shape at run time)
 import com.quantarray.skylark.measure.any.measures._
 ```
@@ -262,7 +262,7 @@ import com.quantarray.skylark.measure.any.measures._
 import com.quantarray.skylark.measure.quantities._
 ```
 
-```
+```scala
 // AnyQuantity(s) (use these if it's more convenient to match on the quantity measure's shape at run time)
 import com.quantarray.skylark.measure.any.quantities._
 ```
