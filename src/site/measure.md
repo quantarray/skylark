@@ -201,11 +201,11 @@ trait BaseCommodityConversionImplicits
 #### Simplification
 
 ```scala
-type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, FX]
+type EnergyPriceTimesFXMeasure = ProductMeasure[EnergyPrice, FX]
 
-implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
+implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesFXMeasure, Option[EnergyPrice]]
 {
-  override def simplify(inflated: EnergyPriceTimesCurrencyPriceMeasure): Option[EnergyPrice] =
+  override def simplify(inflated: EnergyPriceTimesFXMeasure): Option[EnergyPrice] =
   {
     if (inflated.multiplicand.numerator == inflated.multiplier.denominator)
     {

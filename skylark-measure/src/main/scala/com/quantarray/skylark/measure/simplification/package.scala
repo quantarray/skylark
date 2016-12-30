@@ -8,14 +8,14 @@ package com.quantarray.skylark.measure
  */
 package object simplification
 {
-  type EnergyPriceTimesCurrencyPriceMeasure = ProductMeasure[EnergyPrice, FX]
+  type EnergyPriceTimesFXMeasure = ProductMeasure[EnergyPrice, FX]
 
   trait DefaultSimplificationImplicits
   {
 
-    implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesCurrencyPriceMeasure, Option[EnergyPrice]]
+    implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesFXMeasure, Option[EnergyPrice]]
     {
-      override def simplify(inflated: EnergyPriceTimesCurrencyPriceMeasure): Option[EnergyPrice] =
+      override def simplify(inflated: EnergyPriceTimesFXMeasure): Option[EnergyPrice] =
       {
         if (inflated.multiplicand.numerator == inflated.multiplier.denominator)
         {
