@@ -9,6 +9,7 @@ val scalaParserCombinatorsVersion = "1.0.4"
 val scalaMacrosParadiseVersion = "2.1.0"
 
 val catsVersion = "0.8.1"
+val commonsMathVersion = "3.6.1"
 val logbackClassicVersion = "1.0.13"
 val scalacticVersion = "3.0.0"
 val scalatestVersion = "3.0.0"
@@ -107,6 +108,7 @@ lazy val `skylark-measure` = (project in file("skylark-measure")).
       "org.scalamacros" % s"paradise_${scalaVersion.value}" % scalaMacrosParadiseVersion,
       "org.slf4j" % "slf4j-api" % slf4jApiVersion,
       "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
+      "org.apache.commons" % "commons-math3" % commonsMathVersion,
       "org.scalatest" %% "scalatest" % scalatestVersion % "test"
     ),
 

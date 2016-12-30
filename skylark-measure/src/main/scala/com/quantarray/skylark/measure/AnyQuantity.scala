@@ -44,6 +44,9 @@ class AnyQuantity[N](val value: N, val measure: AnyMeasure)(implicit qn: QuasiNu
   def /(quantity: AnyQuantity[N])(implicit cd: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): AnyQuantity[N] =
     AnyQuantity(qn.divide(value, quantity.value), measure / quantity.measure)
 
+  def ^(exponent: Double)(implicit ce: CanExponentiate[AnyMeasure, AnyMeasure]): AnyQuantity[N] =
+    AnyQuantity(qn.pow(value, exponent), measure ^ exponent)
+
   def +(quantity: AnyQuantity[N])(implicit caq: CanAddAnyQuantity[N, AnyQuantity[N], AnyQuantity[N]], cc: CanConvert[AnyMeasure, AnyMeasure]): caq.QR =
     caq.plus(this, quantity)
 
