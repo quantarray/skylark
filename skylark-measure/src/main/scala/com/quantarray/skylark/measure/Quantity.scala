@@ -26,35 +26,38 @@ import scala.language.implicitConversions
   *
   * @author Araik Grigoryan
   */
-case class Quantity[N, M <: Measure[M]](override val value: N, override val measure: M)(implicit qn: QuasiNumeric[N]) extends AnyQuantity[N](value, measure)
+case class Quantity[N, M](value: N, measure: M)(implicit qn: QuasiNumeric[N])
 {
-  override def unary_-() = Quantity(qn.negate(value), measure)
+  def unary_-() = Quantity(qn.negate(value), measure)
 
-  override def *(constant: Double) = Quantity(qn.timesConstant(value, constant), measure)
+  def *(constant: Double) = Quantity(qn.timesConstant(value, constant), measure)
 
-  override def /(constant: Double) = Quantity(qn.divideByConstant(value, constant), measure)
+  def /(constant: Double) = Quantity(qn.divideByConstant(value, constant), measure)
 
   /**
-    * Adds another quantity. CanAdd instance allows addition of apples and oranges to obtain bananas.
+    * Adds another quantity. CanAddQuantity instance allows addition of apples and oranges to obtain bananas.
     */
   def +[M2 <: Measure[M2]](quantity: Quantity[N, M2])
                           (implicit caq: CanAddQuantity[N, M, Quantity[N, M], M2, Quantity[N, M2], M],
                            cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.QR = caq.plus(this, quantity)
 
   /**
-    * Subtracts another quantity. CanAdd instance allows addition of apples and oranges to obtain bananas.
+    * Subtracts another quantity. CanAddQuantity instance allows addition of apples and oranges to obtain bananas.
     */
   def -[M2 <: Measure[M2]](quantity: Quantity[N, M2])
                           (implicit caq: CanAddQuantity[N, M, Quantity[N, M], M2, Quantity[N, M2], M],
                            cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.QR = caq.plus(this, -quantity)
 
-  def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[N, M2])(implicit cd: CanDivide[M, M2, R]): Quantity[N, R] =
-    Quantity(qn.divide(value, quantity.value), measure / quantity.measure)
+  /**
+    * Divides by another quantity.
+    */
+  def /[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[N, M2])(implicit cdq: CanDivideQuantity[N, M, Quantity[N, M], M2, Quantity[N, M2], R]): cdq.QR =
+    cdq.divide(this, quantity)
 
-  def *[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[N, M2])(implicit cm: CanMultiply[M, M2, R]): Quantity[N, R] =
-    Quantity(qn.times(value, quantity.value), measure * quantity.measure)
+  def *[M2 <: Measure[M2], R <: Measure[R]](quantity: Quantity[N, M2])(implicit cmq: CanMultiplyQuantity[N, M, Quantity[N, M], M2, Quantity[N, M2], R]): cmq.QR =
+    cmq.times(this, quantity)
 
-  def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[M, R]): Quantity[N, R] =
+  def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiateQuantity[N, M, Quantity[N, M], R]): Quantity[N, R] =
     Quantity(qn.pow(value, exponent), measure ^ exponent)
 
   def to[M2 <: Measure[M2]](target: M2)(implicit cc: CanConvert[M, M2]): Option[Quantity[N, M2]] =

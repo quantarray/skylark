@@ -56,6 +56,15 @@ package object arithmetic
         a1.flatMap(aa1 => a2.map(_ + aa1)).map(v => Quantity(v, targetMeasure))
       }
     }
+
+    implicit def canDivideQuantity[N, M1 <: Measure[M1], Q1 <: Quantity[N, M1], M2 <: Measure[M2], Q2 <: Quantity[N, M2]](implicit qn: QuasiNumeric[N]) = new CanDivideQuantity[Double, M1, Q1, M2, Q2, RatioMeasure[M1, M2]]
+    {
+      type QR = Quantity[N, RatioMeasure[M1, M2]]
+
+      override def divide(numerator: M1, denominator: M2): RatioMeasure[M1, M2] = RatioMeasure(numerator, denominator)
+
+      override def divide(numerator: Q1, denominator: Q2): QR = Quantity(qn.divide(numerator.value, denominator.value), divide(numerator.measure, denominator.measure))
+    }
   }
 
   object safe extends SafeArithmeticImplicits
