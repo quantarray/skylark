@@ -33,5 +33,5 @@ case class QuantityRef[N, MR](value: N, measureRef: MR)
 
 object QuantityRef
 {
-  implicit def anyQuantityToAnyQuantityRef[N](quantity: Quantity[N, AnyMeasure]): QuantityRef[N, String] = QuantityRef(quantity.value, quantity.measure.name)
+  implicit def quantityToQuantityRef[N](quantity: Quantity[N, AnyMeasure]): QuantityRef[N, String] = QuantityRef(quantity.value, quantity.measure.name)
 }

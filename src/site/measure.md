@@ -13,104 +13,119 @@ libraryDependencies += "com.quantarray" %% "skylark-measure" % "0.15.4"
 Many units of measure are defined for you.
 
 ```scala
-import com.quantarray.skylark.measure.implicits._
-import com.quantarray.skylark.measure.measures._
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.measures._
 
-kg
-lb
-Pa
-Hz
+  kg
+  lb
+  Pa
+  Hz
+```
+
+Easily compose another unit of measure as stand-alone entities or in relation to an already-defined one.
+
+```scala
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.measures._
+
+  // On a distant planet Gayana, new units of measure exist
+  case object GA extends SystemOfUnits
+  val flog = LengthMeasure("flog", GA)
+  val kflog: LengthMeasure = Kilo * flog
+
 ```
 
 Any unit of measure will have a set of basic properties that you would naturally expect to interrogate.
 
 ```scala
-import com.quantarray.skylark.measure.implicits._
-import com.quantarray.skylark.measure.measures._
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.measures._
 
-kg.name should be("kg")
-kg.dimension should be(Mass)
-kg.system should be(SI)
-kg.isStructuralAtom should be(true)
-kg.exponent should be(1.0)
-kg * s should be(ProductMeasure(kg, s))
-kg.inverse should be(ExponentialMeasure(kg, -1.0))
-kg to kg should be(Some(1))
-kg to lb should be(Some(2.204625))
-kg to g should be(Some(1000))
-kg to cg should be(Some(100000))
-kg to oz_metric should be(None) // Default conversion is not guaranteed to exist
+  kg.name should be("kg")
+  kg.dimension should be(Mass)
+  kg.system should be(SI)
+  kg.isStructuralAtom should be(true)
+  kg.exponent should be(1.0)
+  kg * s should be(ProductMeasure(kg, s))
+  kg.inverse should be(ExponentialMeasure(kg, -1.0))
+  kg to kg should be(Some(1))
+  kg to lb should be(Some(2.204625))
+  kg to g should be(Some(1000))
+  kg to cg should be(Some(100000))
+  kg to oz_metric should be(None) // Default conversion is not guaranteed to exist
 ```
 
-You can take existing units and compose more complex ones by multiplying, dividing, and exponentiating.
+You can compose more complex ones by multiplying, dividing, and exponentiating.
 
 ```scala
-import com.quantarray.skylark.measure.implicits._
-import com.quantarray.skylark.measure.measures._
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.measures._
 
-val N = kg * m / sec ^ 2
+  val N = kg * m / (sec ^ 2)
 ```
 
 You can find our the conversion factor from one `to` another. No conversion factor may exist.
 
 ```scala
-import com.quantarray.skylark.measure.implicits._
-import com.quantarray.skylark.measure.measures._
-import org.scalatest.OptionValues._
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.measures._
+  import org.scalatest.OptionValues._
 
-(kg to lb).value should be(2.204625)
+  (kg to lb).value should be(2.204625)
 ```
 
 When dealing with marshalling/encoding/serialization, you can store units of measure along with a numeric value as a plain string.
 With `AnyMeasureParsers` you can turn that string back into a measure.
 
 ```scala
-import com.quantarray.skylark.measure.implicits._
-import com.quantarray.skylark.measure.measures._
-import org.scalatest.OptionValues._
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.measures._
+  import org.scalatest.OptionValues._
 
-val parser = AnyMeasureParsers(USD, bbl) // Declare the measure atom instances you expect to be present
-parser.parse("USD / bbl").value should equal(USD / bbl)
+  val parser = AnyMeasureParsers(USD, bbl) // Declare the measure atom instances you expect to be present
+  parser.parse("USD / bbl").value should equal(USD / bbl)
 ```
 
-It's easy to compose numerical quantities with units of measure using a dot or postfix syntax.
+It's easy to compose numerical quantities with units of measure using a dot or postfix syntax or via full instantiation.
 
 ```scala
-import com.quantarray.skylark.measure.implicits._
-import com.quantarray.skylark.measure.quantities._
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.quantities._
 
-10.kg
-4 m
-1000.0.bbl
+  val mass = 10.kg
+  val length = 4 m
+  val volume = 1000.0.bbl
+
+  val pressure = Quantity(30, Pa)
 ```
 
 You can perform the expected arithmetic operations on quantities.
 
 ```scala
-import com.quantarray.skylark.measure.implicits._
-import com.quantarray.skylark.measure.quantities._
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.quantities._
 
-10.kg * 4.m should equal(40.0 * (kg * m))
-(4.oz_troy * 7.percent).to(oz_troy) should equal(0.28.oz_troy)
+  10.kg * 4.m should equal(40.0 * (kg * m))
+  (4.oz_troy * 7.percent).to(oz_troy) should equal(0.28.oz_troy)
 
-10.kg / 2.m should equal(5.0 * (kg / m))
-(10.USD / 2.percent).to(USD) should equal(500.USD)
+  10.kg / 2.m should equal(5.0 * (kg / m))
+  (10.USD / 2.percent).to(USD) should equal(500.USD)
 
-10.kg + 3.kg should equal(13.kg)
-10.kg - 3.kg should equal(7.kg)
-10.kg + (3.lb to kg) should equal(11.360775642116007.kg)
+  10.kg + 3.kg should equal(13.kg)
+  10.kg - 3.kg should equal(7.kg)
+  10.kg + (3.lb to kg) should equal(11.360775642116007.kg)
 ```
 
-Quantity conversions are also supported via the same `to` operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
+Quantity conversions are supported via the same `to` operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
 are defined by converters and require their own `CanConvert` instances of their components' conversions.
 
 ```scala
-import com.quantarray.skylark.measure.implicits._
-import com.quantarray.skylark.measure.quantities._
-import org.scalatest.OptionValues._
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.quantities._
+  import org.scalatest.OptionValues._
 
-(1.ft to in).value should equal(12.0 in)
-(12.in to ft).value should equal(1.0 ft)
+  (1.ft to in).value should equal(12.0 in)
+  (12.in to ft).value should equal(1.0 ft)
 ```
 
 ### Measure vs. AnyMeasure
@@ -123,17 +138,17 @@ someone can pass a quantity in units of `LuminousFluxMeasure`, for example, wher
 aesthetically pleasing).
 
 ```scala
-type VelocityMeasure = RatioMeasure[LengthMeasure, TimeMeasure]
+  type VelocityMeasure = RatioMeasure[LengthMeasure, TimeMeasure]
 
-type MomentumMeasure = ProductMeasure[MassMeasure, VelocityMeasure]
+  type MomentumMeasure = ProductMeasure[MassMeasure, VelocityMeasure]
 
-type Mass = Quantity[Double, MassMeasure]
+  type Mass = Quantity[Double, MassMeasure]
 
-type Velocity = Quantity[Double, VelocityMeasure]
+  type Velocity = Quantity[Double, VelocityMeasure]
 
-type Momentum = Quantity[Double, MomentumMeasure]
+  type Momentum = Quantity[Double, MomentumMeasure]
 
-def momentum(mass: Mass, velocity: Velocity): Momentum = mass * velocity
+  def momentum(mass: Mass, velocity: Velocity): Momentum = mass * velocity
 ```
 
 In other situations, where knowledge of a measure's dimension is uncertain, one would rely on `AnyMeasure`.
@@ -161,15 +176,15 @@ For example, say when one does `b / s` (bits per second), one wants to work with
 One would then need to define the custom object like `InformationTimeCanDivide`:
 
 ```scala
-object custom extends com.quantarray.skylark.measure.arithmetic.SafeArithmeticImplicits
-{
-
-  implicit object InformationTimeCanDivide extends CanDivide[InformationMeasure, TimeMeasure, BitRateMeasure]
+  object custom extends com.quantarray.skylark.measure.arithmetic.SafeArithmeticImplicits
   {
-    override def divide(numerator: InformationMeasure, denominator: TimeMeasure): BitRateMeasure = BitRateMeasure(numerator, denominator)
-  }
 
-}
+    implicit object InformationTimeCanDivide extends CanDivide[InformationMeasure, TimeMeasure, BitRateMeasure]
+    {
+      override def divide(numerator: InformationMeasure, denominator: TimeMeasure): BitRateMeasure = BitRateMeasure(numerator, denominator)
+    }
+
+  }
 ```
 
 #### Conversion
@@ -177,46 +192,46 @@ object custom extends com.quantarray.skylark.measure.arithmetic.SafeArithmeticIm
 **skylark-measure** relies on the presence of `implicit` type class `CanConvert` and helper `Converter` type to convert between measures of different type.
 
 ```scala
-object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLengthMeasure]
-{
-  import com.quantarray.skylark.measure.measures._
-
-  override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = Conversion(from, to) match
+  object VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, ExponentialLengthMeasure]
   {
-    case `bbl` ⤇ `gal` => Some(42.0)
-  }
-}
+    import com.quantarray.skylark.measure.measures._
 
-trait BaseCommodityConversionImplicits
-{
-
-  implicit val volumeToExponentialLengthCanConvert = new CanConvert[VolumeMeasure, ExponentialLengthMeasure]
-  {
-    override def convert: Converter[VolumeMeasure, ExponentialLengthMeasure] = VolumeToExponentialLengthConverter
+    override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = Conversion(from, to) match
+    {
+      case `bbl` ⤇ `gal` => Some(42.0)
+    }
   }
 
-}
+  trait BaseCommodityConversionImplicits
+  {
+
+    implicit val volumeToExponentialLengthCanConvert = new CanConvert[VolumeMeasure, ExponentialLengthMeasure]
+    {
+      override def convert: Converter[VolumeMeasure, ExponentialLengthMeasure] = VolumeToExponentialLengthConverter
+    }
+
+  }
 ```
 
 #### Simplification
 
 ```scala
-type EnergyPriceTimesFXMeasure = ProductMeasure[EnergyPrice, FX]
+  type EnergyPriceTimesFXMeasure = ProductMeasure[EnergyPrice, FX]
 
-implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesFXMeasure, Option[EnergyPrice]]
-{
-  override def simplify(inflated: EnergyPriceTimesFXMeasure): Option[EnergyPrice] =
+  implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesFXMeasure, Option[EnergyPrice]]
   {
-    if (inflated.multiplicand.numerator == inflated.multiplier.denominator)
+    override def simplify(inflated: EnergyPriceTimesFXMeasure): Option[EnergyPrice] =
     {
-      Some(RatioMeasure(inflated.multiplier.numerator, inflated.multiplicand.denominator))
-    }
-    else
-    {
-      None
+      if (inflated.multiplicand.numerator == inflated.multiplier.denominator)
+      {
+        Some(RatioMeasure(inflated.multiplier.numerator, inflated.multiplicand.denominator))
+      }
+      else
+      {
+        None
+      }
     }
   }
-}
 ```
 
 ### Package organization
@@ -248,7 +263,7 @@ import com.quantarray.skylark.measure.quantities._
 ```
 
 ```scala
-// AnyQuantity(s) (use these if it's more convenient to match on the quantity measure's shape at run time)
+// Quantity[N, AnyMeasure] (use these if it's more convenient to match on the quantity measure's shape at run time)
 import com.quantarray.skylark.measure.any.quantities._
 ```
 
@@ -267,6 +282,8 @@ import com.quantarray.skylark.measure.conversion.default._
 // Safe arithmetic, default simplification, and default conversion in one shot
 import com.quantarray.skylark.measure.implicits._
 ```
+
+Similarly, arithmetic with `Quantity[N, AnyMeasure]`
 
 ```scala
 // Safe arithmetic (no exceptions thrown)

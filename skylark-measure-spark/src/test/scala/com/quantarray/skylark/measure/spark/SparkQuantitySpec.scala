@@ -25,7 +25,7 @@ import com.quantarray.skylark.measure.{AnyMeasureParsers, Quantity}
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{Matchers, fixture}
 
-class SparkAnyQuantitySpec extends fixture.FreeSpec with fixture.TestDataFixture with Matchers
+class SparkQuantitySpec extends fixture.FreeSpec with fixture.TestDataFixture with Matchers
 {
   "Spark local" -
     {
