@@ -19,12 +19,15 @@
 
 package com.quantarray.skylark.measure
 
+import scala.annotation.implicitNotFound
+
 /**
-  * Any measure reference.
-  *
-  * @author Araik Grigoryan
-  */
-case class AnyMeasureRef[R](ref: R)
+ * Can simplify measure type class. Determines the shape of simplified (deflated) measure.
+ *
+ * @author Araik Grigoryan
+ */
+@implicitNotFound("Cannot find CanSimplifyMeasure implementation that simplifies ${I} to ${D}.")
+trait CanSimplifyMeasure[I, D]
 {
-  override def toString: String = ref.toString
+  def simplify(inflated: I): D
 }

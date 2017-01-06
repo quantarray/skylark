@@ -19,14 +19,16 @@
 
 package com.quantarray.skylark.measure
 
+import scala.language.higherKinds
+
 /**
   * Can multiply quantity type class.
   *
   * @author Araik Grigoryan
   */
-trait CanMultiplyQuantity[N, M1, Q1, M2, Q2, RM] extends CanMultiply[M1, M2, RM]
+trait CanMultiplyQuantity[N, M1, Q1[_, _], M2, Q2[_, _], RM] extends CanMultiplyMeasure[M1, M2, RM]
 {
   type QR
 
-  def times(multiplicand: Q1, multiplier: Q2): QR
+  def timesQuantity(multiplicand: Q1[N, M1], multiplier: Q2[N, M2]): QR
 }

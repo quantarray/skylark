@@ -113,9 +113,9 @@ class AnyQuantitySpec extends FlatSpec with Matchers
   it should "reduce unsafely" in
     {
 
-      def targetSum(quantities: Seq[AnyQuantity[Double]], target: AnyMeasure): AnyQuantity[Double] =
+      def targetSum(quantities: Seq[Quantity[Double, AnyMeasure]], target: AnyMeasure): Quantity[Double, AnyMeasure] =
       {
-        quantities.reduce[AnyQuantity[Double]]
+        quantities.reduce[Quantity[Double, AnyMeasure]]
           {
             (a, b) =>
 

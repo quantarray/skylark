@@ -21,7 +21,7 @@ package com.quantarray.skylark.measure.spark
 
 import com.quantarray.skylark.measure.any.arithmetic.safe._
 import com.quantarray.skylark.measure.any.measures._
-import com.quantarray.skylark.measure.{AnyMeasureParsers, AnyQuantity, AnyQuantityRef}
+import com.quantarray.skylark.measure.{AnyMeasureParsers, Quantity}
 import org.apache.spark.sql.SparkSession
 import org.scalatest.{Matchers, fixture}
 
@@ -42,7 +42,7 @@ class SparkAnyQuantitySpec extends fixture.FreeSpec with fixture.TestDataFixture
 
             val data = session.createDataset(1 to 3)
 
-            val sensitivities = data.map(value => Sensitivity("Delta", AnyQuantity(value.toDouble, USD / bbl)))
+            val sensitivities = data.map(value => Sensitivity("Delta", Quantity(value.toDouble, USD / bbl)))
 
             val collectedSensitivities = sensitivities.collect()
 
@@ -50,7 +50,7 @@ class SparkAnyQuantitySpec extends fixture.FreeSpec with fixture.TestDataFixture
 
             val parser = AnyMeasureParsers(USD, bbl)
 
-            val quantities = collectedSensitivities.map(sensitivity => AnyQuantity(sensitivity.quantityRef.value, parser.parse(sensitivity.quantityRef.measureRef).get))
+            val quantities = collectedSensitivities.map(sensitivity => Quantity(sensitivity.quantityRef.value, parser.parse(sensitivity.quantityRef.measureRef).get))
 
             quantities.foreach
             {

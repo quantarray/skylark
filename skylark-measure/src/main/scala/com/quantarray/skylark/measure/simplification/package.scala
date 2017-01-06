@@ -13,7 +13,7 @@ package object simplification
   trait DefaultSimplificationImplicits
   {
 
-    implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesFXMeasure, Option[EnergyPrice]]
+    implicit val canSimplifyEnergyPriceTimesCurrencyPrice = new CanSimplifyMeasure[EnergyPriceTimesFXMeasure, Option[EnergyPrice]]
     {
       override def simplify(inflated: EnergyPriceTimesFXMeasure): Option[EnergyPrice] =
       {
@@ -26,6 +26,15 @@ package object simplification
           None
         }
       }
+    }
+
+    implicit val canSimplifyEnergyPriceTimesCurrencyPriceQuantity = new CanSimplifyQuantity[Double, EnergyPriceTimesFXMeasure, Quantity, Option[EnergyPrice]]
+    {
+      type QR = Option[Quantity[Double, EnergyPrice]]
+
+      override def simplify(inflated: EnergyPriceTimesFXMeasure): Option[EnergyPrice] = canSimplifyEnergyPriceTimesCurrencyPrice.simplify(inflated)
+
+      override def simplifyQuantity(inflated: Quantity[Double, EnergyPriceTimesFXMeasure]): QR = simplify(inflated.measure).map(Quantity(inflated.value, _))
     }
 
   }

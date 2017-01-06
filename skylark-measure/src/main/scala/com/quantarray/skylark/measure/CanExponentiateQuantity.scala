@@ -19,14 +19,16 @@
 
 package com.quantarray.skylark.measure
 
+import scala.language.higherKinds
+
 /**
   * Can exponentiate quantity type class.
   *
   * @author Araik Grigoryan
   */
-trait CanExponentiateQuantity[N, M, Q, RM] extends CanExponentiate[M, RM]
+trait CanExponentiateQuantity[N, M, Q[_, _], RM] extends CanExponentiateMeasure[M, RM]
 {
   type QR
 
-  def pow(base: Q, exponent: Double): QR
+  def powQuantity(base: Q[N, M], exponent: Double): QR
 }

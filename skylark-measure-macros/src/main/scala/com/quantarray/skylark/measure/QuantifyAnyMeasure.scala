@@ -59,7 +59,7 @@ private[measure] object QuantifyAnyMeasure
           val quantityIdentifier = TermName(measureValTermSymbol.name.toString.trim)
           val measureTermName = TermName(measureValTermSymbol.name.toString.trim)
 
-          val quantityTpeIdentifier = q"""AnyQuantity[Double]"""
+          val quantityTpeIdentifier = q"""Quantity[Double, AnyMeasure]"""
 
           q"""def $quantityIdentifier = $quantityTpeIdentifier(value, ${measuresScope.head}.$measureTermName)"""
       })
@@ -85,9 +85,9 @@ private[measure] object QuantifyAnyMeasure
       {
         implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
 
-        def apply(measure: AnyMeasure): AnyQuantity[Double] = AnyQuantity(value, measure)
+        def apply(measure: AnyMeasure): Quantity[Double, AnyMeasure] = Quantity(value, measure)
 
-        def *(measure: AnyMeasure): AnyQuantity[Double] = apply(measure)
+        def *(measure: AnyMeasure): Quantity[Double, AnyMeasure] = apply(measure)
 
         ..$quantityDefs
       }

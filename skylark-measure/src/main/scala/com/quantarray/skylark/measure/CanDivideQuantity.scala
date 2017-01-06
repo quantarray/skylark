@@ -19,14 +19,16 @@
 
 package com.quantarray.skylark.measure
 
+import scala.language.higherKinds
+
 /**
   * Can divide quantity type class.
   *
   * @author Araik Grigoryan
   */
-trait CanDivideQuantity[N, M1, Q1, M2, Q2, RM] extends CanDivide[M1, M2, RM]
+trait CanDivideQuantity[N, M1, Q1[_, _], M2, Q2[_, _], RM] extends CanDivideMeasure[M1, M2, RM]
 {
   type QR
 
-  def divide(numerator: Q1, denominator: Q2): QR
+  def divideQuantity(numerator: Q1[N, M1], denominator: Q2[N, M2]): QR
 }

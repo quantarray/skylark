@@ -19,17 +19,19 @@
 
 package com.quantarray.skylark.measure
 
-import scala.annotation.implicitNotFound
+import scala.language.implicitConversions
 
 /**
-  * Can add any quantity type class.
+  * Quantity reference.
   *
   * @author Araik Grigoryan
   */
-@implicitNotFound("Cannot find CanAddAnyQuantity implementation that adds ${A1} and ${A2}.")
-trait CanAddAnyQuantity[N, A1, A2] extends CanAdd[AnyMeasure, AnyMeasure]
+case class QuantityRef[N, MR](value: N, measureRef: MR)
 {
-  type QR
+  override def toString: String = s"$value $measureRef"
+}
 
-  def plus(addend1: A1, addend2: A2)(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): QR
+object QuantityRef
+{
+  implicit def anyQuantityToAnyQuantityRef[N](quantity: Quantity[N, AnyMeasure]): QuantityRef[N, String] = QuantityRef(quantity.value, quantity.measure.name)
 }

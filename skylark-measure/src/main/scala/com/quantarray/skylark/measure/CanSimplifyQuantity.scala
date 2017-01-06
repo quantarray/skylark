@@ -2,7 +2,7 @@
  * Skylark
  * http://skylark.io
  *
- * Copyright 2012-2016 Quantarray, LLC
+ * Copyright 2012-2017 Quantarray, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,17 @@
 package com.quantarray.skylark.measure
 
 import scala.annotation.implicitNotFound
+import scala.language.higherKinds
 
 /**
-  * Can add type class.
+  * Can simplify quantity type class.
   *
   * @author Araik Grigoryan
   */
-@implicitNotFound("Cannot find CanAdd implementation that adds ${A1} and ${A2}.")
-trait CanAdd[A1, A2]
+@implicitNotFound("Cannot find CanSimplifyMeasure implementation that simplifies ${MI} to ${MD}.")
+trait CanSimplifyQuantity[N, MI, Q[_, _], MD] extends CanSimplifyMeasure[MI, MD]
 {
-  type R
+  type QR
 
-  def plus(addend1: A1, addend2: A2): R
+  def simplifyQuantity(inflated: Q[N, MI]): QR
 }
-

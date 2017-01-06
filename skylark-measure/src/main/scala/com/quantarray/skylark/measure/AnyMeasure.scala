@@ -68,17 +68,17 @@ trait AnyMeasure extends Product with Serializable with Dynamic
   @inline
   def collect[B](pf: PartialFunction[AnyMeasure, B]): B = pf(this)
 
-  def ^(exponent: Double)(implicit ce: CanExponentiate[AnyMeasure, AnyMeasure]): AnyMeasure = ce.pow(this, exponent)
+  def ^(exponent: Double)(implicit ce: CanExponentiateMeasure[AnyMeasure, AnyMeasure]): AnyMeasure = ce.pow(this, exponent)
 
-  def *(measure: AnyMeasure)(implicit cm: CanMultiply[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cm.times(this, measure)
+  def *(measure: AnyMeasure)(implicit cm: CanMultiplyMeasure[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cm.times(this, measure)
 
-  def /(measure: AnyMeasure)(implicit cd: CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cd.divide(this, measure)
+  def /(measure: AnyMeasure)(implicit cd: CanDivideMeasure[AnyMeasure, AnyMeasure, AnyMeasure]): AnyMeasure = cd.divide(this, measure)
 
   def to(target: AnyMeasure)(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): Option[Double] = cc.convert(this, target)
 
   def toOrElse[B >: Double](target: AnyMeasure, default: B)(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): B = to(target).getOrElse(default)
 
-  def simplify(implicit cs: CanSimplify[AnyMeasure, AnyMeasure]): AnyMeasure = cs.simplify(this)
+  def simplify(implicit cs: CanSimplifyMeasure[AnyMeasure, AnyMeasure]): AnyMeasure = cs.simplify(this)
 }
 
 trait AnyProductMeasure extends AnyMeasure

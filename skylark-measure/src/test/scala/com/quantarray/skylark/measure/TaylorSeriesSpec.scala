@@ -43,17 +43,23 @@ class TaylorSeriesSpec extends FlatSpec with Matchers
     }
   }
 
-  case class QuantifiedTaylorSeries1(f: AnyQuantity[Double] => AnyQuantity[Double]) extends ((AnyQuantity[Double]) => AnyQuantity[Double])
-  {
-    override def apply(x: AnyQuantity[Double]): AnyQuantity[Double] = f(x)
+  type Quoble = Quantity[Double, AnyMeasure]
 
-    def estimate(partials: Seq[AnyQuantity[Double] => AnyQuantity[Double]])(x: AnyQuantity[Double])(dx: AnyQuantity[Double]): AnyQuantity[Double] =
+  case class QuantifiedTaylorSeries1(f: Quantity[Double, AnyMeasure] => Quantity[Double, AnyMeasure]) extends (Quantity[Double, AnyMeasure] => Quantity[Double, AnyMeasure])
+  {
+    override def apply(x: Quantity[Double, AnyMeasure]): Quantity[Double, AnyMeasure] = f(x)
+
+    def estimate(partials: Seq[Quantity[Double, AnyMeasure] => Quantity[Double, AnyMeasure]])(x: Quantity[Double, AnyMeasure])(dx: Quantity[Double, AnyMeasure]): Quantity[Double, AnyMeasure] =
     {
       import com.quantarray.skylark.measure.any.arithmetic.unsafe._
       import com.quantarray.skylark.measure.any.conversion.default._
       import com.quantarray.skylark.measure.any.simplification.default._
 
-      partials.zipWithIndex.map(pi => pi._1(x) * (dx ^ pi._2) / CombinatoricsUtils.factorial(pi._2)).reduce(_.simplify + _.simplify)
+      partials.zipWithIndex.map(pi =>
+      {
+        val dxp = dx ^ pi._2
+        pi._1(x) * dxp / CombinatoricsUtils.factorial(pi._2)
+      }).reduce(_.simplify[AnyMeasure] + _.simplify[AnyMeasure])
     }
   }
 
@@ -84,15 +90,15 @@ class TaylorSeriesSpec extends FlatSpec with Matchers
     {
       import com.quantarray.skylark.measure.any.implicits._
 
-      val ts = QuantifiedTaylorSeries1(x => AnyQuantity(math.exp(x.value), USD))
+      val ts = QuantifiedTaylorSeries1(x => Quantity(math.exp(x.value), USD))
 
       // Derivative of e^x is e^x
       // The function is a special value function, measured in USD
       // The function input is price of oil, measured in USD / bbl
       // Thus the first derivative (i.e. change in function per change in input) is measured in USD / (USD / bbl) = bbl
       // And the second derivative (i.e. change in first derivative per change in input) is measured in bbl / (USD / bbl) = bbl ^ 2 / USD
-      val partials = Seq[AnyQuantity[Double] => AnyQuantity[Double]](ts, x => AnyQuantity(math.exp(x.value), bbl),
-        x => AnyQuantity(math.exp(x.value), (bbl ^ 2) / USD))
+      val partials = Seq[Quantity[Double, AnyMeasure] => Quantity[Double, AnyMeasure]](ts, x => Quantity(math.exp(x.value), bbl),
+        x => Quantity(math.exp(x.value), (bbl ^ 2) / USD))
       val estimate = ts.estimate(partials)(2.0 (USD / bbl))(0.01 (USD / bbl))
       val actual = ts(2.01 (USD / bbl))
 

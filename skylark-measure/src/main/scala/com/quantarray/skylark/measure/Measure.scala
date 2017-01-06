@@ -69,32 +69,32 @@ trait Measure[Self <: Measure[Self]] extends AnyMeasure
   /**
     * Adds another measure. CanAdd instance allows addition of apples and oranges to obtain bananas.
     */
-  def +[M2 <: Measure[M2]](addend: M2)(implicit ca: CanAdd[Self, M2]): ca.R = ca.plus(this, addend)
+  def +[M2 <: Measure[M2]](addend: M2)(implicit ca: CanAddMeasure[Self, M2]): ca.R = ca.plus(this, addend)
 
   /**
     * Subtracts another measure.
     */
-  def -[M2 <: Measure[M2]](subtrahend: M2)(implicit ca: CanAdd[Self, M2]): ca.R = ca.plus(this, subtrahend)
+  def -[M2 <: Measure[M2]](subtrahend: M2)(implicit ca: CanAddMeasure[Self, M2]): ca.R = ca.plus(this, subtrahend)
 
   /**
     * Divides by another measure.
     */
-  def /[M2 <: Measure[M2], R](denominator: M2)(implicit cd: CanDivide[Self, M2, R]): R = cd.divide(this, denominator)
+  def /[M2 <: Measure[M2], R](denominator: M2)(implicit cd: CanDivideMeasure[Self, M2, R]): R = cd.divide(this, denominator)
 
   /**
     * Multiplies by another measure.
     */
-  def *[M2 <: Measure[M2], R](multiplier: M2)(implicit cm: CanMultiply[Self, M2, R]): R = cm.times(this, multiplier)
+  def *[M2 <: Measure[M2], R](multiplier: M2)(implicit cm: CanMultiplyMeasure[Self, M2, R]): R = cm.times(this, multiplier)
 
   /**
     * Exponentiates this measure.
     */
-  def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiate[Self, R]): R = ce.pow(this, exponent)
+  def ^[R <: Measure[R]](exponent: Double)(implicit ce: CanExponentiateMeasure[Self, R]): R = ce.pow(this, exponent)
 
   /**
     * Gets an inverse of this measure.
     */
-  def inverse[R <: Measure[R]](implicit ce: CanExponentiate[Self, R]) = this ^ -exponent
+  def inverse[R <: Measure[R]](implicit ce: CanExponentiateMeasure[Self, R]) = this ^ -exponent
 
   /**
     * Converts to target measure.
@@ -109,7 +109,7 @@ trait Measure[Self <: Measure[Self]] extends AnyMeasure
   /**
     * Attempts to simplify to target type.
     */
-  def simplify[R <: Measure[R]](implicit cs: CanSimplify[Self, Option[R]]): Option[R] = cs.simplify(this)
+  def simplify[R <: Measure[R]](implicit cs: CanSimplifyMeasure[Self, Option[R]]): Option[R] = cs.simplify(this)
 }
 
 /**

@@ -45,7 +45,7 @@ package object measure extends DefaultDimensions
     object any
     {
 
-      @QuantifyAnyMeasure[DefaultMeasures, AnyQuantity[Double]](measuresScope)
+      @QuantifyAnyMeasure[DefaultMeasures, Quantity[Double, AnyMeasure]](measuresScope)
       class QuantifiedAnyMeasures(val value: Double)
 
     }
@@ -117,38 +117,68 @@ package object measure extends DefaultDimensions
 
       trait SafeArithmeticImplicits
       {
-        implicit def exponentialCanExponentiate = new CanExponentiate[AnyMeasure, AnyMeasure]
+        implicit def exponentialCanExponentiate = new CanExponentiateMeasure[AnyMeasure, AnyMeasure]
         {
           override def pow(base: AnyMeasure, exponent: Double): AnyMeasure = AnyExponentialMeasure(base, exponent)
         }
 
-        implicit def productCanMultiply = new CanMultiply[AnyMeasure, AnyMeasure, AnyMeasure]
+        implicit def productCanMultiply = new CanMultiplyMeasure[AnyMeasure, AnyMeasure, AnyMeasure]
         {
           override def times(multiplicand: AnyMeasure, multiplier: AnyMeasure): AnyMeasure = AnyProductMeasure(multiplicand, multiplier)
         }
 
-        implicit def ratioCanDivide = new CanDivide[AnyMeasure, AnyMeasure, AnyMeasure]
+        implicit def ratioCanDivide = new CanDivideMeasure[AnyMeasure, AnyMeasure, AnyMeasure]
         {
           override def divide(numerator: AnyMeasure, denominator: AnyMeasure): AnyMeasure = AnyRatioMeasure(numerator, denominator)
         }
 
-        implicit def lhsCanAddQuantity = new CanAddAnyQuantity[Double, AnyQuantity[Double], AnyQuantity[Double]]
+        implicit def lhsCanAddQuantity[N](implicit qn: QuasiNumeric[N]) = new CanAddQuantity[N, AnyMeasure, Quantity, AnyMeasure, Quantity, AnyMeasure]
         {
           type R = AnyMeasure
 
-          type QR = Option[AnyQuantity[Double]]
+          type QR = Option[Quantity[N, AnyMeasure]]
 
           override def plus(addend1: AnyMeasure, addend2: AnyMeasure): AnyMeasure = addend1
 
-          override def plus(addend1: AnyQuantity[Double], addend2: AnyQuantity[Double])(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): QR =
+          override def plus(addend1: Quantity[N, AnyMeasure], addend2: Quantity[N, AnyMeasure])
+                           (implicit cc1: CanConvert[AnyMeasure, AnyMeasure], cc2: CanConvert[AnyMeasure, AnyMeasure]): QR =
           {
             val targetMeasure = plus(addend1.measure, addend2.measure)
 
-            val a1 = cc.convert(addend1.measure, targetMeasure).map(_ * addend1.value)
-            val a2 = cc.convert(addend2.measure, targetMeasure).map(_ * addend2.value)
+            val a1 = cc1.convert(addend1.measure, targetMeasure).map(cf => qn.timesConstant(addend1.value, cf))
+            val a2 = cc2.convert(addend2.measure, targetMeasure).map(cf => qn.timesConstant(addend2.value, cf))
 
-            a1.flatMap(aa1 => a2.map(_ + aa1)).map(v => AnyQuantity(v, targetMeasure))
+            a1.flatMap(aa1 => a2.map(aa2 => qn.plus(aa1, aa2))).map(v => Quantity(v, targetMeasure))
           }
+        }
+
+        implicit def canDivideQuantity[N](implicit qn: QuasiNumeric[N]) = new CanDivideQuantity[N, AnyMeasure, Quantity, AnyMeasure, Quantity, AnyMeasure]
+        {
+          type QR = Quantity[N, AnyMeasure]
+
+          override def divide(numerator: AnyMeasure, denominator: AnyMeasure): AnyMeasure = AnyRatioMeasure(numerator, denominator)
+
+          override def divideQuantity(numerator: Quantity[N, AnyMeasure], denominator: Quantity[N, AnyMeasure]): QR =
+            Quantity(qn.divide(numerator.value, denominator.value), divide(numerator.measure, denominator.measure))
+        }
+
+        implicit def canMultiplyQuantity[N](implicit qn: QuasiNumeric[N]) = new CanMultiplyQuantity[N, AnyMeasure, Quantity, AnyMeasure, Quantity, AnyMeasure]
+        {
+          type QR = Quantity[N, AnyMeasure]
+
+          override def times(multiplicand: AnyMeasure, multiplier: AnyMeasure): AnyMeasure = AnyProductMeasure(multiplicand, multiplier)
+
+          override def timesQuantity(multiplicand: Quantity[N, AnyMeasure], multiplier: Quantity[N, AnyMeasure]): QR =
+            Quantity(qn.times(multiplicand.value, multiplier.value), times(multiplicand.measure, multiplier.measure))
+        }
+
+        implicit def canExponentiateQuantity[N](implicit qn: QuasiNumeric[N]) = new CanExponentiateQuantity[N, AnyMeasure, Quantity, AnyMeasure]
+        {
+          type QR = Quantity[N, AnyMeasure]
+
+          override def pow(base: AnyMeasure, exponent: Double): AnyMeasure = AnyExponentialMeasure(base, exponent)
+
+          override def powQuantity(base: Quantity[N, AnyMeasure], exponent: Double): QR = Quantity(qn.pow(base.value, exponent), pow(base.measure, exponent))
         }
       }
 
@@ -156,24 +186,25 @@ package object measure extends DefaultDimensions
 
       object unsafe extends SafeArithmeticImplicits
       {
-        implicit def lhsCanAddQuantityUnsafe = new CanAddAnyQuantity[Double, AnyQuantity[Double], AnyQuantity[Double]]
+        implicit def lhsCanAddQuantityUnsafe[N](implicit qn: QuasiNumeric[N]) = new CanAddQuantity[N, AnyMeasure, Quantity, AnyMeasure, Quantity, AnyMeasure]
         {
           type R = AnyMeasure
 
-          type QR = AnyQuantity[Double]
+          type QR = Quantity[N, AnyMeasure]
 
           override def plus(addend1: AnyMeasure, addend2: AnyMeasure): AnyMeasure = addend1
 
-          override def plus(addend1: AnyQuantity[Double], addend2: AnyQuantity[Double])(implicit cc: CanConvert[AnyMeasure, AnyMeasure]): QR =
+          override def plus(addend1: Quantity[N, AnyMeasure], addend2: Quantity[N, AnyMeasure])
+                           (implicit cc1: CanConvert[AnyMeasure, AnyMeasure], cc2: CanConvert[AnyMeasure, AnyMeasure]): QR =
           {
             val targetMeasure = plus(addend1.measure, addend2.measure)
 
-            val a1 = cc.convert(addend1.measure, targetMeasure).map(_ * addend1.value)
-            val a2 = cc.convert(addend2.measure, targetMeasure).map(_ * addend2.value)
+            val a1 = cc1.convert(addend1.measure, targetMeasure).map(cf => qn.timesConstant(addend1.value, cf))
+            val a2 = cc2.convert(addend2.measure, targetMeasure).map(cf => qn.timesConstant(addend2.value, cf))
 
             (a1, a2) match
             {
-              case (Some(aa1), Some(aa2)) => AnyQuantity(aa1 + aa2, targetMeasure)
+              case (Some(aa1), Some(aa2)) => Quantity(qn.plus(aa1, aa2), targetMeasure)
               case (Some(_), _) => throw ConvertException(addend2.measure, targetMeasure)
               case (_, Some(_)) => throw ConvertException(addend1.measure, targetMeasure)
               case _ => throw ConvertException(s"Cannot convert to $targetMeasure.")
@@ -215,8 +246,14 @@ package object measure extends DefaultDimensions
         {
           case (x * (same1 / y)) ⤇ same2 if same1 == same2 => x to y
           case ((x ^ -1.0) * (same1 * y)) ⤇ same2 if same1 == same2 => y to x
-          case (x / (dm: DimensionlessMeasure)) ⤇ y => x.to(y) |@| Unit.to(dm) map { _ * _ }
-          case (x * ((dm: DimensionlessMeasure) ^ -1.0)) ⤇ y => x.to(y) |@| Unit.to(dm) map { _ * _ }
+          case (x / (dm: DimensionlessMeasure)) ⤇ y => x.to(y) |@| Unit.to(dm) map
+            {
+              _ * _
+            }
+          case (x * ((dm: DimensionlessMeasure) ^ -1.0)) ⤇ y => x.to(y) |@| Unit.to(dm) map
+            {
+              _ * _
+            }
           case _ => super.convert(from, to)
         }
       }
@@ -342,7 +379,7 @@ package object measure extends DefaultDimensions
           }
         }
 
-        implicit val defaultCanSimplify = new CanSimplify[AnyMeasure, AnyMeasure]
+        implicit val defaultCanSimplify = new CanSimplifyMeasure[AnyMeasure, AnyMeasure]
         {
           override def simplify(inflated: AnyMeasure): AnyMeasure =
           {
@@ -350,6 +387,15 @@ package object measure extends DefaultDimensions
 
             DefaultReducer(productOfExponentials)
           }
+        }
+
+        implicit val defaultCanSimplifyQuantity = new CanSimplifyQuantity[Double, AnyMeasure, Quantity, AnyMeasure]
+        {
+          type QR = Quantity[Double, AnyMeasure]
+
+          override def simplify(inflated: AnyMeasure): AnyMeasure = defaultCanSimplify.simplify(inflated)
+
+          override def simplifyQuantity(inflated: Quantity[Double, AnyMeasure]): QR = Quantity(inflated.value, simplify(inflated.measure))
         }
 
       }

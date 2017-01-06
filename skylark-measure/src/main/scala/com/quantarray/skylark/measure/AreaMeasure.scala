@@ -32,5 +32,5 @@ case class AreaMeasure(name: String, system: SystemOfUnits, base: Option[(AreaMe
 
   override def composes(name: String, system: SystemOfUnits, multiple: Double): AreaMeasure = AreaMeasure(name, system, Some(this, multiple))
 
-  override def toString = name
+  override def toString: String = name
 }

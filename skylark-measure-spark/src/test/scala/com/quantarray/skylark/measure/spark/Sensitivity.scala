@@ -19,11 +19,11 @@
 
 package com.quantarray.skylark.measure.spark
 
-import com.quantarray.skylark.measure.AnyQuantityRef
+import com.quantarray.skylark.measure.QuantityRef
 
 /**
   * Sensitivity.
   *
   * @author Araik Grigoryan
   */
-case class Sensitivity(name: String, quantityRef: AnyQuantityRef[Double, String])
+case class Sensitivity(name: String, quantityRef: QuantityRef[Double, String])
