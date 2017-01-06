@@ -33,6 +33,7 @@ import scala.language.postfixOps
   */
 class TaylorSeriesSpec extends FlatSpec with Matchers
 {
+
   case class TaylorSeries1(f: Double => Double) extends ((Double) => Double)
   {
     override def apply(x: Double): Double = f(x)
@@ -45,21 +46,17 @@ class TaylorSeriesSpec extends FlatSpec with Matchers
 
   type Quoble = Quantity[Double, AnyMeasure]
 
-  case class QuantifiedTaylorSeries1(f: Quantity[Double, AnyMeasure] => Quantity[Double, AnyMeasure]) extends (Quantity[Double, AnyMeasure] => Quantity[Double, AnyMeasure])
+  case class QuantifiedTaylorSeries1(f: Quoble => Quoble) extends (Quoble => Quoble)
   {
-    override def apply(x: Quantity[Double, AnyMeasure]): Quantity[Double, AnyMeasure] = f(x)
+    override def apply(x: Quoble): Quoble = f(x)
 
-    def estimate(partials: Seq[Quantity[Double, AnyMeasure] => Quantity[Double, AnyMeasure]])(x: Quantity[Double, AnyMeasure])(dx: Quantity[Double, AnyMeasure]): Quantity[Double, AnyMeasure] =
+    def estimate(partials: Seq[Quoble => Quoble])(x: Quoble)(dx: Quoble): Quoble =
     {
       import com.quantarray.skylark.measure.any.arithmetic.unsafe._
       import com.quantarray.skylark.measure.any.conversion.default._
       import com.quantarray.skylark.measure.any.simplification.default._
 
-      partials.zipWithIndex.map(pi =>
-      {
-        val dxp = dx ^ pi._2
-        pi._1(x) * dxp / CombinatoricsUtils.factorial(pi._2)
-      }).reduce(_.simplify[AnyMeasure] + _.simplify[AnyMeasure])
+      partials.zipWithIndex.map(pi => pi._1(x) * (dx ^ pi._2) / CombinatoricsUtils.factorial(pi._2)).reduce(_.simplify[AnyMeasure] + _.simplify[AnyMeasure])
     }
   }
 
@@ -97,8 +94,7 @@ class TaylorSeriesSpec extends FlatSpec with Matchers
       // The function input is price of oil, measured in USD / bbl
       // Thus the first derivative (i.e. change in function per change in input) is measured in USD / (USD / bbl) = bbl
       // And the second derivative (i.e. change in first derivative per change in input) is measured in bbl / (USD / bbl) = bbl ^ 2 / USD
-      val partials = Seq[Quantity[Double, AnyMeasure] => Quantity[Double, AnyMeasure]](ts, x => Quantity(math.exp(x.value), bbl),
-        x => Quantity(math.exp(x.value), (bbl ^ 2) / USD))
+      val partials = Seq[Quoble => Quoble](ts, x => Quantity(math.exp(x.value), bbl), x => Quantity(math.exp(x.value), (bbl ^ 2) / USD))
       val estimate = ts.estimate(partials)(2.0 (USD / bbl))(0.01 (USD / bbl))
       val actual = ts(2.01 (USD / bbl))
 
