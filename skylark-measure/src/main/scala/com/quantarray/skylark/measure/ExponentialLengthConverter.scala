@@ -32,6 +32,7 @@ trait ExponentialLengthConverter extends SameTypeConverter[ExponentialLengthMeas
   {
     case `gal` ⤇ `in3` => Some(231)
     case `ha` ⤇ `km2` => Some(0.01)
+    case _ => super.convert(from, to)
   }
 }
 

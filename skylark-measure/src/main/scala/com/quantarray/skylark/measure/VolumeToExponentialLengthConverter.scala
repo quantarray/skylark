@@ -31,6 +31,7 @@ trait VolumeToExponentialLengthConverter extends Converter[VolumeMeasure, Expone
   override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = ⤇(from, to) match
   {
     case`bbl` ⤇ `gal` => Some(31.5)
+    case _ => None
   }
 }
 

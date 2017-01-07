@@ -102,6 +102,7 @@ package object conversion
       override def apply(from: VolumeMeasure, to: ExponentialLengthMeasure): Option[Double] = Conversion(from, to) match
       {
         case `bbl` ⤇ `gal` => Some(42.0)
+        case _ => None
       }
     }
 
