@@ -3,4 +3,4 @@ sudo: false
 matrix:
   include:
     - scala: 2.11.8
-      script: sbt ++$TRAVIS_SCALA_VERSION clean skylark-measure/test skylark-measure-spark/test
+      script: sbt ++$TRAVIS_SCALA_VERSION clean skylark-measure/test
