@@ -29,7 +29,7 @@ package object measure extends DefaultDimensions
   {
     measuresScope =>
 
-    @AscribeAnyMeasure[DefaultMeasures](measuresScope)
+    @AscribeMeasure[DefaultMeasures](measuresScope)
     object any
 
   }

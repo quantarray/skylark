@@ -23,13 +23,13 @@ import scala.annotation.{StaticAnnotation, compileTimeOnly}
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
-@compileTimeOnly("AscribeAnyMeasure annotation can only be used with classes")
-private[measure] class AscribeAnyMeasure[T](measuresScope: Any) extends StaticAnnotation
+@compileTimeOnly("AscribeMeasure annotation can only be used with classes")
+private[measure] class AscribeMeasure[T](measuresScope: Any) extends StaticAnnotation
 {
-  def macroTransform(annottees: Any*): Any = macro AscribeAnyMeasure.macroTransformImpl
+  def macroTransform(annottees: Any*): Any = macro AscribeMeasure.macroTransformImpl
 }
 
-private[measure] object AscribeAnyMeasure
+private[measure] object AscribeMeasure
 {
   def macroTransformImpl(c: blackbox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] =
   {
@@ -45,7 +45,7 @@ private[measure] object AscribeAnyMeasure
     val measuresScope: List[Tree] = c.prefix.tree match
     {
       case q"new $name[$targetTraitTpe](...$paramss)" if paramss.nonEmpty => paramss.head
-      case _ => c.abort(c.enclosingPosition, "AscribeAnyMeasure requires a single constructor parameter pointing to the scope where measures are defined.")
+      case _ => c.abort(c.enclosingPosition, "AscribeMeasure requires a single constructor parameter pointing to the scope where measures are defined.")
     }
 
     val measureValTermSymbols: List[TermSymbol] = targetTraitTpe.members.collect
@@ -64,7 +64,7 @@ private[measure] object AscribeAnyMeasure
     val objectName = annottees.map(_.tree) match
     {
       case List(q"$mods object $tpname extends { ..$earlyDefs } with ..$parents { $self => ..$stats }") => tpname
-      case _ => c.abort(c.enclosingPosition, s"AscribeAnyMeasure annotation can only be used with classes.")
+      case _ => c.abort(c.enclosingPosition, s"AscribeMeasure annotation can only be used with classes.")
     }
 
     c.Expr(
