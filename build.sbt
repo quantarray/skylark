@@ -116,28 +116,13 @@ lazy val `skylark-measure` = (project in file("skylark-measure")).
 
   ).dependsOn(`skylark-measure-macros`)
 
-lazy val `skylark-measure-spark` = (project in file("skylark-measure-spark")).
-  settings(commonSettings: _*).
-  settings(
-    name := "skylark-measure-spark",
-    libraryDependencies ++= Seq(
-      "org.scala-lang.modules" %% "scala-parser-combinators" % scalaParserCombinatorsVersion,
-      "org.slf4j" % "slf4j-api" % slf4jApiVersion,
-      "ch.qos.logback" % "logback-classic" % logbackClassicVersion,
-      "org.apache.spark" %% "spark-core" % sparkVersion,
-      "org.apache.spark" %% "spark-sql" % sparkVersion,
-      "org.scalatest" %% "scalatest" % scalatestVersion % "test"
-    )
-
-  ).dependsOn(`skylark-measure`)
-
 lazy val skylark = (project in file(".")).
   settings(commonSettings: _*).
   settings(
     name := "skylark",
     testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-u", "target/test-skylark")).
   aggregate(
-    `skylark-measure-macros`, `skylark-measure`, `skylark-measure-spark`
+    `skylark-measure-macros`, `skylark-measure`
   ).enablePlugins(OrnatePlugin)
 
 releaseTagComment := s"Release ${(version in ThisBuild).value}."
