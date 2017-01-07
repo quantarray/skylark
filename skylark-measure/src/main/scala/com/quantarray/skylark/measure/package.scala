@@ -45,7 +45,7 @@ package object measure extends DefaultDimensions
     object any
     {
 
-      @QuantifyAnyMeasure[DefaultMeasures, Quantity[Double, AnyMeasure]](measuresScope)
+      @QuantifyMeasure[DefaultMeasures, Quantity[Double, AnyMeasure]](measuresScope)
       class QuantifiedAnyMeasures(val value: Double)
 
     }

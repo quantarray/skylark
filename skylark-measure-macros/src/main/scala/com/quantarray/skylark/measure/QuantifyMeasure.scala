@@ -43,6 +43,17 @@ private[measure] object QuantifyMeasure
 
     val targetTraitTpe: Type = c.typecheck(q"0.asInstanceOf[$targetTraitTree]").tpe
 
+    val quantityTree: Tree = c.prefix.tree match
+    {
+      case q"new $name[$targetTraitTree, $quantityTree](...$paramss)" => quantityTree
+    }
+
+    val isAnyMeasure = quantityTree match
+    {
+      case tq"Quantity[$numericType, AnyMeasure]" => true
+      case _ => false
+    }
+
     val measuresScope: List[Tree] = c.prefix.tree match
     {
       case q"new $name[$targetTraitTpe, $quantityTpe](...$paramss)" if paramss.nonEmpty => paramss.head
@@ -59,7 +70,11 @@ private[measure] object QuantifyMeasure
           val quantityIdentifier = TermName(measureValTermSymbol.name.toString.trim)
           val measureTermName = TermName(measureValTermSymbol.name.toString.trim)
 
-          val quantityTpeIdentifier = q"""Quantity[Double, ${measureValTermSymbol.typeSignature}]"""
+          val quantityTpeIdentifier =
+            if (isAnyMeasure)
+              q"""Quantity[Double, AnyMeasure]"""
+            else
+              q"""Quantity[Double, ${measureValTermSymbol.typeSignature}]"""
 
           q"""def $quantityIdentifier = $quantityTpeIdentifier(value, ${measuresScope.head}.$measureTermName)"""
       })
@@ -79,8 +94,27 @@ private[measure] object QuantifyMeasure
       case _ => c.abort(c.enclosingPosition, s"QuantifyMeasure annotation can only be used with classes.")
     }
 
-    c.Expr(
-      q"""
+    if (isAnyMeasure)
+    {
+      c.Expr(
+        q"""
+      implicit class $className(val value: Double) extends AnyVal
+      {
+        implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
+
+        def apply(measure: AnyMeasure): Quantity[Double, AnyMeasure] = Quantity(value, measure)
+
+        def *(measure: AnyMeasure): Quantity[Double, AnyMeasure] = apply(measure)
+
+        ..$quantityDefs
+      }
+        """
+      )
+    }
+    else
+    {
+      c.Expr(
+        q"""
       implicit class $className(val value: Double) extends AnyVal
       {
         implicit def qn: QuasiNumeric[Double] = implicitly(QuasiNumeric.doubleQuasiNumeric)
@@ -92,6 +126,7 @@ private[measure] object QuantifyMeasure
         ..$quantityDefs
       }
         """
-    )
+      )
+    }
   }
 }
