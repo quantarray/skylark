@@ -20,6 +20,9 @@ Many units of measure are defined for you.
   lb
   Pa
   Hz
+
+  // Special unit of measure representing a dimensionless unitless measure
+  Unit
 ```
 
 Easily compose another unit of measure as stand-alone entities or in relation to an already-defined one.
