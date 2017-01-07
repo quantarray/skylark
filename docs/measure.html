@@ -51,97 +51,114 @@
 <h3 id="simple-usage" class="a_section" data-magellan-target="simple-usage">Simple usage<a class="a_hlink" href="#simple-usage"></a></h3>
 <p>Many units of measure are defined for you.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
 
-kg
-lb
-<span class="hljs-type">Pa</span>
-<span class="hljs-type">Hz</span>
+  kg
+  lb
+  <span class="hljs-type">Pa</span>
+  <span class="hljs-type">Hz</span>
+
+  <span class="hljs-comment">// Special unit of measure representing a dimensionless unitless measure</span>
+  <span class="hljs-type">Unit</span>
+</code></pre>
+</div></div>
+<p>Easily compose another unit of measure as stand-alone entities or in relation to an already-defined one.</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
+
+  <span class="hljs-comment">// On a distant planet Gayana, new units of measure exist</span>
+  <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">GA</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SystemOfUnits</span></span>
+  <span class="hljs-keyword">val</span> flog = <span class="hljs-type">LengthMeasure</span>(<span class="hljs-string">"flog"</span>, <span class="hljs-type">GA</span>)
+  <span class="hljs-keyword">val</span> kflog: <span class="hljs-type">LengthMeasure</span> = <span class="hljs-type">Kilo</span> * flog
+
 </code></pre>
 </div></div>
 <p>Any unit of measure will have a set of basic properties that you would naturally expect to interrogate.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
 
-kg.name should be(<span class="hljs-string">"kg"</span>)
-kg.dimension should be(<span class="hljs-type">Mass</span>)
-kg.system should be(<span class="hljs-type">SI</span>)
-kg.isStructuralAtom should be(<span class="hljs-literal">true</span>)
-kg.exponent should be(<span class="hljs-number">1.0</span>)
-kg * s should be(<span class="hljs-type">ProductMeasure</span>(kg, s))
-kg.inverse should be(<span class="hljs-type">ExponentialMeasure</span>(kg, <span class="hljs-number">-1.0</span>))
-kg to kg should be(<span class="hljs-type">Some</span>(<span class="hljs-number">1</span>))
-kg to lb should be(<span class="hljs-type">Some</span>(<span class="hljs-number">2.204625</span>))
-kg to g should be(<span class="hljs-type">Some</span>(<span class="hljs-number">1000</span>))
-kg to cg should be(<span class="hljs-type">Some</span>(<span class="hljs-number">100000</span>))
-kg to oz_metric should be(<span class="hljs-type">None</span>) <span class="hljs-comment">// Default conversion is not guaranteed to exist</span>
+  kg.name should be(<span class="hljs-string">"kg"</span>)
+  kg.dimension should be(<span class="hljs-type">Mass</span>)
+  kg.system should be(<span class="hljs-type">SI</span>)
+  kg.isStructuralAtom should be(<span class="hljs-literal">true</span>)
+  kg.exponent should be(<span class="hljs-number">1.0</span>)
+  kg * s should be(<span class="hljs-type">ProductMeasure</span>(kg, s))
+  kg.inverse should be(<span class="hljs-type">ExponentialMeasure</span>(kg, <span class="hljs-number">-1.0</span>))
+  kg to kg should be(<span class="hljs-type">Some</span>(<span class="hljs-number">1</span>))
+  kg to lb should be(<span class="hljs-type">Some</span>(<span class="hljs-number">2.204625</span>))
+  kg to g should be(<span class="hljs-type">Some</span>(<span class="hljs-number">1000</span>))
+  kg to cg should be(<span class="hljs-type">Some</span>(<span class="hljs-number">100000</span>))
+  kg to oz_metric should be(<span class="hljs-type">None</span>) <span class="hljs-comment">// Default conversion is not guaranteed to exist</span>
 </code></pre>
 </div></div>
-<p>You can take existing units and compose more complex ones by multiplying, dividing, and exponentiating.</p>
+<p>You can compose more complex ones by multiplying, dividing, and exponentiating.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
 
-<span class="hljs-keyword">val</span> <span class="hljs-type">N</span> = kg * m / sec ^ <span class="hljs-number">2</span>
+  <span class="hljs-keyword">val</span> <span class="hljs-type">N</span> = kg * m / (sec ^ <span class="hljs-number">2</span>)
 </code></pre>
 </div></div>
 <p>You can find our the conversion factor from one <code class="hljs">to</code> another. No conversion factor may exist.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
-<span class="hljs-keyword">import</span> org.scalatest.<span class="hljs-type">OptionValues</span>._
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
+  <span class="hljs-keyword">import</span> org.scalatest.<span class="hljs-type">OptionValues</span>._
 
-(kg to lb).value should be(<span class="hljs-number">2.204625</span>)
+  (kg to lb).value should be(<span class="hljs-number">2.204625</span>)
 </code></pre>
 </div></div>
 <p>When dealing with marshalling/encoding/serialization, you can store units of measure along with a numeric value as a plain string.
 With <code class="hljs">AnyMeasureParsers</code> you can turn that string back into a measure.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
-<span class="hljs-keyword">import</span> org.scalatest.<span class="hljs-type">OptionValues</span>._
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
+  <span class="hljs-keyword">import</span> org.scalatest.<span class="hljs-type">OptionValues</span>._
 
-<span class="hljs-keyword">val</span> parser = <span class="hljs-type">AnyMeasureParsers</span>(<span class="hljs-type">USD</span>, bbl) <span class="hljs-comment">// Declare the measure atom instances you expect to be present</span>
-parser.parse(<span class="hljs-string">"USD / bbl"</span>).value should equal(<span class="hljs-type">USD</span> / bbl)
+  <span class="hljs-keyword">val</span> parser = <span class="hljs-type">AnyMeasureParsers</span>(<span class="hljs-type">USD</span>, bbl) <span class="hljs-comment">// Declare the measure atom instances you expect to be present</span>
+  parser.parse(<span class="hljs-string">"USD / bbl"</span>).value should equal(<span class="hljs-type">USD</span> / bbl)
 </code></pre>
 </div></div>
-<p>It's easy to compose numerical quantities with units of measure using a dot or postfix syntax.</p>
+<p>It's easy to compose numerical quantities with units of measure using a dot or postfix syntax or via full instantiation.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
 
-<span class="hljs-number">10.</span>kg
-<span class="hljs-number">4</span> m
-<span class="hljs-number">1000.0</span>.bbl
+  <span class="hljs-keyword">val</span> mass = <span class="hljs-number">10.</span>kg
+  <span class="hljs-keyword">val</span> length = <span class="hljs-number">4</span> m
+  <span class="hljs-keyword">val</span> volume = <span class="hljs-number">1000.0</span>.bbl
+
+  <span class="hljs-keyword">val</span> pressure = <span class="hljs-type">Quantity</span>(<span class="hljs-number">30</span>, <span class="hljs-type">Pa</span>)
 </code></pre>
 </div></div>
 <p>You can perform the expected arithmetic operations on quantities.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
 
-<span class="hljs-number">10.</span>kg * <span class="hljs-number">4.</span>m should equal(<span class="hljs-number">40.0</span> * (kg * m))
-(<span class="hljs-number">4.</span>oz_troy * <span class="hljs-number">7.</span>percent).to(oz_troy) should equal(<span class="hljs-number">0.28</span>.oz_troy)
+  <span class="hljs-number">10.</span>kg * <span class="hljs-number">4.</span>m should equal(<span class="hljs-number">40.0</span> * (kg * m))
+  (<span class="hljs-number">4.</span>oz_troy * <span class="hljs-number">7.</span>percent).to(oz_troy) should equal(<span class="hljs-number">0.28</span>.oz_troy)
 
-<span class="hljs-number">10.</span>kg / <span class="hljs-number">2.</span>m should equal(<span class="hljs-number">5.0</span> * (kg / m))
-(<span class="hljs-number">10.</span><span class="hljs-type">USD</span> / <span class="hljs-number">2.</span>percent).to(<span class="hljs-type">USD</span>) should equal(<span class="hljs-number">500.</span><span class="hljs-type">USD</span>)
+  <span class="hljs-number">10.</span>kg / <span class="hljs-number">2.</span>m should equal(<span class="hljs-number">5.0</span> * (kg / m))
+  (<span class="hljs-number">10.</span><span class="hljs-type">USD</span> / <span class="hljs-number">2.</span>percent).to(<span class="hljs-type">USD</span>) should equal(<span class="hljs-number">500.</span><span class="hljs-type">USD</span>)
 
-<span class="hljs-number">10.</span>kg + <span class="hljs-number">3.</span>kg should equal(<span class="hljs-number">13.</span>kg)
-<span class="hljs-number">10.</span>kg - <span class="hljs-number">3.</span>kg should equal(<span class="hljs-number">7.</span>kg)
-<span class="hljs-number">10.</span>kg + (<span class="hljs-number">3.</span>lb to kg) should equal(<span class="hljs-number">11.360775642116007</span>.kg)
+  <span class="hljs-number">10.</span>kg + <span class="hljs-number">3.</span>kg should equal(<span class="hljs-number">13.</span>kg)
+  <span class="hljs-number">10.</span>kg - <span class="hljs-number">3.</span>kg should equal(<span class="hljs-number">7.</span>kg)
+  <span class="hljs-number">10.</span>kg + (<span class="hljs-number">3.</span>lb to kg) should equal(<span class="hljs-number">11.360775642116007</span>.kg)
 </code></pre>
 </div></div>
-<p>Quantity conversions are also supported via the same <code class="hljs">to</code> operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
+<p>Quantity conversions are supported via the same <code class="hljs">to</code> operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
 are defined by converters and require their own <code class="hljs">CanConvert</code> instances of their components' conversions.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
-<span class="hljs-keyword">import</span> org.scalatest.<span class="hljs-type">OptionValues</span>._
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
+  <span class="hljs-keyword">import</span> org.scalatest.<span class="hljs-type">OptionValues</span>._
 
-(<span class="hljs-number">1.</span>ft to in).value should equal(<span class="hljs-number">12.0</span> in)
-(<span class="hljs-number">12.</span>in to ft).value should equal(<span class="hljs-number">1.0</span> ft)
+  (<span class="hljs-number">1.</span>ft to in).value should equal(<span class="hljs-number">12.0</span> in)
+  (<span class="hljs-number">12.</span>in to ft).value should equal(<span class="hljs-number">1.0</span> ft)
 </code></pre>
 </div></div>
 <h3 id="measure-vs.-anymeasure" class="a_section" data-magellan-target="measure-vs.-anymeasure">Measure vs. AnyMeasure<a class="a_hlink" href="#measure-vs.-anymeasure"></a></h3>
@@ -151,17 +168,17 @@ The choice of which to work with depends on the individual API you would like to
 someone can pass a quantity in units of <code class="hljs">LuminousFluxMeasure</code>, for example, where a quantity in units of <code class="hljs">MassMeasure</code> is expected (unless one finds compiler errors
 aesthetically pleasing).</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">VelocityMeasure</span> </span>= <span class="hljs-type">RatioMeasure</span>[<span class="hljs-type">LengthMeasure</span>, <span class="hljs-type">TimeMeasure</span>]
+<pre class="hljs"><code class="language-scala">  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">VelocityMeasure</span> </span>= <span class="hljs-type">RatioMeasure</span>[<span class="hljs-type">LengthMeasure</span>, <span class="hljs-type">TimeMeasure</span>]
 
-<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">MomentumMeasure</span> </span>= <span class="hljs-type">ProductMeasure</span>[<span class="hljs-type">MassMeasure</span>, <span class="hljs-type">VelocityMeasure</span>]
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">MomentumMeasure</span> </span>= <span class="hljs-type">ProductMeasure</span>[<span class="hljs-type">MassMeasure</span>, <span class="hljs-type">VelocityMeasure</span>]
 
-<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Mass</span> </span>= <span class="hljs-type">Quantity</span>[<span class="hljs-type">Double</span>, <span class="hljs-type">MassMeasure</span>]
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Mass</span> </span>= <span class="hljs-type">Quantity</span>[<span class="hljs-type">Double</span>, <span class="hljs-type">MassMeasure</span>]
 
-<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Velocity</span> </span>= <span class="hljs-type">Quantity</span>[<span class="hljs-type">Double</span>, <span class="hljs-type">VelocityMeasure</span>]
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Velocity</span> </span>= <span class="hljs-type">Quantity</span>[<span class="hljs-type">Double</span>, <span class="hljs-type">VelocityMeasure</span>]
 
-<span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Momentum</span> </span>= <span class="hljs-type">Quantity</span>[<span class="hljs-type">Double</span>, <span class="hljs-type">MomentumMeasure</span>]
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Momentum</span> </span>= <span class="hljs-type">Quantity</span>[<span class="hljs-type">Double</span>, <span class="hljs-type">MomentumMeasure</span>]
 
-<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">momentum</span></span>(mass: <span class="hljs-type">Mass</span>, velocity: <span class="hljs-type">Velocity</span>): <span class="hljs-type">Momentum</span> = mass * velocity
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">momentum</span></span>(mass: <span class="hljs-type">Mass</span>, velocity: <span class="hljs-type">Velocity</span>): <span class="hljs-type">Momentum</span> = mass * velocity
 </code></pre>
 </div></div>
 <p>In other situations, where knowledge of a measure's dimension is uncertain, one would rely on <code class="hljs">AnyMeasure</code>.
@@ -181,59 +198,59 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 <p>For example, say when one does <code class="hljs">b / s</code> (bits per second), one wants to work with a custom <code class="hljs">BitRateMeasure</code> instead of the default <code class="hljs">RatioMeasure(bit, s)</code>.</p>
 <p>One would then need to define the custom object like <code class="hljs">InformationTimeCanDivide</code>:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">custom</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">com</span>.<span class="hljs-title">quantarray</span>.<span class="hljs-title">skylark</span>.<span class="hljs-title">measure</span>.<span class="hljs-title">arithmetic</span>.<span class="hljs-title">SafeArithmeticImplicits</span></span>
-{
-
-  <span class="hljs-keyword">implicit</span> <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">InformationTimeCanDivide</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CanDivide</span>[<span class="hljs-type">InformationMeasure</span>, <span class="hljs-type">TimeMeasure</span>, <span class="hljs-type">BitRateMeasure</span>]</span>
+<pre class="hljs"><code class="language-scala">  <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">custom</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">com</span>.<span class="hljs-title">quantarray</span>.<span class="hljs-title">skylark</span>.<span class="hljs-title">measure</span>.<span class="hljs-title">arithmetic</span>.<span class="hljs-title">SafeArithmeticImplicits</span></span>
   {
-    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">divide</span></span>(numerator: <span class="hljs-type">InformationMeasure</span>, denominator: <span class="hljs-type">TimeMeasure</span>): <span class="hljs-type">BitRateMeasure</span> = <span class="hljs-type">BitRateMeasure</span>(numerator, denominator)
-  }
 
-}
+    <span class="hljs-keyword">implicit</span> <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">InformationTimeCanDivide</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">CanDivide</span>[<span class="hljs-type">InformationMeasure</span>, <span class="hljs-type">TimeMeasure</span>, <span class="hljs-type">BitRateMeasure</span>]</span>
+    {
+      <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">divide</span></span>(numerator: <span class="hljs-type">InformationMeasure</span>, denominator: <span class="hljs-type">TimeMeasure</span>): <span class="hljs-type">BitRateMeasure</span> = <span class="hljs-type">BitRateMeasure</span>(numerator, denominator)
+    }
+
+  }
 </code></pre>
 </div></div>
 <h4 id="conversion" class="a_section" data-magellan-target="conversion">Conversion<a class="a_hlink" href="#conversion"></a></h4>
 <p><strong>skylark-measure</strong> relies on the presence of <code class="hljs">implicit</code> type class <code class="hljs">CanConvert</code> and helper <code class="hljs">Converter</code> type to convert between measures of different type.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">VolumeToExponentialLengthConverter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Converter</span>[<span class="hljs-type">VolumeMeasure</span>, <span class="hljs-type">ExponentialLengthMeasure</span>]</span>
-{
-  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
-
-  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">apply</span></span>(from: <span class="hljs-type">VolumeMeasure</span>, to: <span class="hljs-type">ExponentialLengthMeasure</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">Double</span>] = <span class="hljs-type">Conversion</span>(from, to) <span class="hljs-keyword">match</span>
+<pre class="hljs"><code class="language-scala">  <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">VolumeToExponentialLengthConverter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Converter</span>[<span class="hljs-type">VolumeMeasure</span>, <span class="hljs-type">ExponentialLengthMeasure</span>]</span>
   {
-    <span class="hljs-keyword">case</span> `bbl` ⤇ `gal` =&gt; <span class="hljs-type">Some</span>(<span class="hljs-number">42.0</span>)
-  }
-}
+    <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
 
-<span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">BaseCommodityConversionImplicits</span></span>
-{
-
-  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">val</span> volumeToExponentialLengthCanConvert = <span class="hljs-keyword">new</span> <span class="hljs-type">CanConvert</span>[<span class="hljs-type">VolumeMeasure</span>, <span class="hljs-type">ExponentialLengthMeasure</span>]
-  {
-    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">convert</span></span>: <span class="hljs-type">Converter</span>[<span class="hljs-type">VolumeMeasure</span>, <span class="hljs-type">ExponentialLengthMeasure</span>] = <span class="hljs-type">VolumeToExponentialLengthConverter</span>
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">apply</span></span>(from: <span class="hljs-type">VolumeMeasure</span>, to: <span class="hljs-type">ExponentialLengthMeasure</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">Double</span>] = <span class="hljs-type">Conversion</span>(from, to) <span class="hljs-keyword">match</span>
+    {
+      <span class="hljs-keyword">case</span> `bbl` ⤇ `gal` =&gt; <span class="hljs-type">Some</span>(<span class="hljs-number">42.0</span>)
+    }
   }
 
-}
+  <span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">BaseCommodityConversionImplicits</span></span>
+  {
+
+    <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">val</span> volumeToExponentialLengthCanConvert = <span class="hljs-keyword">new</span> <span class="hljs-type">CanConvert</span>[<span class="hljs-type">VolumeMeasure</span>, <span class="hljs-type">ExponentialLengthMeasure</span>]
+    {
+      <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">convert</span></span>: <span class="hljs-type">Converter</span>[<span class="hljs-type">VolumeMeasure</span>, <span class="hljs-type">ExponentialLengthMeasure</span>] = <span class="hljs-type">VolumeToExponentialLengthConverter</span>
+    }
+
+  }
 </code></pre>
 </div></div>
 <h4 id="simplification" class="a_section" data-magellan-target="simplification">Simplification<a class="a_hlink" href="#simplification"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">EnergyPriceTimesFXMeasure</span> </span>= <span class="hljs-type">ProductMeasure</span>[<span class="hljs-type">EnergyPrice</span>, <span class="hljs-type">FX</span>]
+<pre class="hljs"><code class="language-scala">  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">EnergyPriceTimesFXMeasure</span> </span>= <span class="hljs-type">ProductMeasure</span>[<span class="hljs-type">EnergyPrice</span>, <span class="hljs-type">FX</span>]
 
-<span class="hljs-keyword">implicit</span> <span class="hljs-keyword">val</span> energyPriceTimesCurrencyPriceCanSimplify = <span class="hljs-keyword">new</span> <span class="hljs-type">CanSimplify</span>[<span class="hljs-type">EnergyPriceTimesFXMeasure</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>]]
-{
-  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">simplify</span></span>(inflated: <span class="hljs-type">EnergyPriceTimesFXMeasure</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>] =
+  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">val</span> energyPriceTimesCurrencyPriceCanSimplify = <span class="hljs-keyword">new</span> <span class="hljs-type">CanSimplify</span>[<span class="hljs-type">EnergyPriceTimesFXMeasure</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>]]
   {
-    <span class="hljs-keyword">if</span> (inflated.multiplicand.numerator == inflated.multiplier.denominator)
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">simplify</span></span>(inflated: <span class="hljs-type">EnergyPriceTimesFXMeasure</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>] =
     {
-      <span class="hljs-type">Some</span>(<span class="hljs-type">RatioMeasure</span>(inflated.multiplier.numerator, inflated.multiplicand.denominator))
-    }
-    <span class="hljs-keyword">else</span>
-    {
-      <span class="hljs-type">None</span>
+      <span class="hljs-keyword">if</span> (inflated.multiplicand.numerator == inflated.multiplier.denominator)
+      {
+        <span class="hljs-type">Some</span>(<span class="hljs-type">RatioMeasure</span>(inflated.multiplier.numerator, inflated.multiplicand.denominator))
+      }
+      <span class="hljs-keyword">else</span>
+      {
+        <span class="hljs-type">None</span>
+      }
     }
   }
-}
 </code></pre>
 </div></div>
 <h3 id="package-organization" class="a_section" data-magellan-target="package-organization">Package organization<a class="a_hlink" href="#package-organization"></a></h3>
@@ -261,7 +278,7 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 </code></pre>
 </div></div>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// AnyQuantity(s) (use these if it's more convenient to match on the quantity measure's shape at run time)</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Quantity[N, AnyMeasure] (use these if it's more convenient to match on the quantity measure's shape at run time)</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.quantities._
 </code></pre>
 </div></div>
@@ -280,6 +297,7 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
 </code></pre>
 </div></div>
+<p>Similarly, arithmetic with <code class="hljs">Quantity[N, AnyMeasure]</code></p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Safe arithmetic (no exceptions thrown)</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.arithmetic.safe._

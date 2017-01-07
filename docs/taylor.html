@@ -62,45 +62,48 @@ derivatives at a given point. The <a href="https://en.wikipedia.org/wiki/Taylor_
 <p>Each derivative quantity above has its own unique unit of measure. Keeping track of the measure is essential to
 computing the final estimate. The example below shows how the measures are defined, multiplied, summed, and simplified.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> com.quantarray.skylark.measure._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.measures._
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.quantities._
-<span class="hljs-keyword">import</span> org.apache.commons.math3.util.<span class="hljs-type">CombinatoricsUtils</span>
-<span class="hljs-keyword">import</span> org.scalatest.{<span class="hljs-type">FlatSpec</span>, <span class="hljs-type">Matchers</span>}
+<pre class="hljs"><code class="language-scala">
+  <span class="hljs-keyword">import</span> org.apache.commons.math3.util.<span class="hljs-type">CombinatoricsUtils</span>
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.measures._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.quantities._
+  <span class="hljs-keyword">import</span> org.scalatest.{<span class="hljs-type">FlatSpec</span>, <span class="hljs-type">Matchers</span>}
 
-<span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">QuantifiedTaylorSeries1</span>(<span class="hljs-params">f: <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>] =&gt; <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>]</span>) <span class="hljs-keyword">extends</span> (<span class="hljs-params">(<span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>]</span>) <span class="hljs-title">=&gt;</span> <span class="hljs-title">AnyQuantity</span>[<span class="hljs-type">Double</span>])</span>
-{
-  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">apply</span></span>(x: <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>]): <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>] = f(x)
+  <span class="hljs-keyword">import</span> scala.language.postfixOps
 
-  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">estimate</span></span>(partials: <span class="hljs-type">Seq</span>[<span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>] =&gt; <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>]])(x: <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>])(dx: <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>]): <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>] =
+  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">Quoble</span> </span>= <span class="hljs-type">Quantity</span>[<span class="hljs-type">Double</span>, <span class="hljs-type">AnyMeasure</span>]
+
+  <span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">QuantifiedTaylorSeries1</span>(<span class="hljs-params">f: <span class="hljs-type">Quoble</span> =&gt; <span class="hljs-type">Quoble</span></span>) <span class="hljs-keyword">extends</span> (<span class="hljs-params"><span class="hljs-type">Quoble</span> =&gt; <span class="hljs-type">Quoble</span></span>)</span>
   {
-    <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.arithmetic.unsafe._
-    <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.conversion.<span class="hljs-keyword">default</span>._
-    <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.simplification.<span class="hljs-keyword">default</span>._
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">apply</span></span>(x: <span class="hljs-type">Quoble</span>): <span class="hljs-type">Quoble</span> = f(x)
 
-    partials.zipWithIndex.map(pi =&gt; pi._1(x) * (dx ^ pi._2) / <span class="hljs-type">CombinatoricsUtils</span>.factorial(pi._2)).reduce(_.simplify + _.simplify)
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">estimate</span></span>(partials: <span class="hljs-type">Seq</span>[<span class="hljs-type">Quoble</span> =&gt; <span class="hljs-type">Quoble</span>])(x: <span class="hljs-type">Quoble</span>)(dx: <span class="hljs-type">Quoble</span>): <span class="hljs-type">Quoble</span> =
+    {
+      <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.arithmetic.unsafe._
+      <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.conversion.<span class="hljs-keyword">default</span>._
+      <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.simplification.<span class="hljs-keyword">default</span>._
+
+      partials.zipWithIndex.map(pi =&gt; pi._1(x) * (dx ^ pi._2) / <span class="hljs-type">CombinatoricsUtils</span>.factorial(pi._2)).reduce(_.simplify[<span class="hljs-type">AnyMeasure</span>] + _.simplify[<span class="hljs-type">AnyMeasure</span>])
+    }
   }
-}
 
-<span class="hljs-string">"QuantifiedTaylorSeries1"</span> should <span class="hljs-string">"estimate e^x"</span> in
-  {
-    <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.implicits._
+  <span class="hljs-string">"QuantifiedTaylorSeries1"</span> should <span class="hljs-string">"estimate e^x"</span> in
+    {
+      <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.implicits._
 
-    <span class="hljs-keyword">val</span> ts = <span class="hljs-type">QuantifiedTaylorSeries1</span>(x =&gt; <span class="hljs-type">AnyQuantity</span>(math.exp(x.value), <span class="hljs-type">USD</span>))
+      <span class="hljs-keyword">val</span> ts = <span class="hljs-type">QuantifiedTaylorSeries1</span>(x =&gt; <span class="hljs-type">Quantity</span>(math.exp(x.value), <span class="hljs-type">USD</span>))
 
-    <span class="hljs-comment">// Derivative of e^x is e^x</span>
-    <span class="hljs-comment">// The function is a special value function, measured in USD</span>
-    <span class="hljs-comment">// The function input is price of oil, measured in USD / bbl</span>
-    <span class="hljs-comment">// Thus the first derivative (i.e. change in function per change in input) is measured in USD / (USD / bbl) = bbl</span>
-    <span class="hljs-comment">// And the second derivative (i.e. change in first derivative per change in input) is measured in bbl / (USD / bbl) = bbl ^ 2 / USD</span>
-    <span class="hljs-keyword">val</span> partials = <span class="hljs-type">Seq</span>[<span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>] =&gt; <span class="hljs-type">AnyQuantity</span>[<span class="hljs-type">Double</span>]](ts, x =&gt; <span class="hljs-type">AnyQuantity</span>(math.exp(x.value), bbl),
-      x =&gt; <span class="hljs-type">AnyQuantity</span>(math.exp(x.value), (bbl ^ <span class="hljs-number">2</span>) / <span class="hljs-type">USD</span>))
-    <span class="hljs-keyword">val</span> estimate = ts.estimate(partials)(<span class="hljs-number">2.0</span> (<span class="hljs-type">USD</span> / bbl))(<span class="hljs-number">0.01</span> (<span class="hljs-type">USD</span> / bbl))
-    <span class="hljs-keyword">val</span> actual = ts(<span class="hljs-number">2.01</span> (<span class="hljs-type">USD</span> / bbl))
+      <span class="hljs-comment">// Derivative of e^x is e^x</span>
+      <span class="hljs-comment">// The function is a special value function, measured in USD</span>
+      <span class="hljs-comment">// The function input is price of oil, measured in USD / bbl</span>
+      <span class="hljs-comment">// Thus the first derivative (i.e. change in function per change in input) is measured in USD / (USD / bbl) = bbl</span>
+      <span class="hljs-comment">// And the second derivative (i.e. change in first derivative per change in input) is measured in bbl / (USD / bbl) = bbl ^ 2 / USD</span>
+      <span class="hljs-keyword">val</span> partials = <span class="hljs-type">Seq</span>[<span class="hljs-type">Quoble</span> =&gt; <span class="hljs-type">Quoble</span>](ts, x =&gt; <span class="hljs-type">Quantity</span>(math.exp(x.value), bbl), x =&gt; <span class="hljs-type">Quantity</span>(math.exp(x.value), (bbl ^ <span class="hljs-number">2</span>) / <span class="hljs-type">USD</span>))
+      <span class="hljs-keyword">val</span> estimate = ts.estimate(partials)(<span class="hljs-number">2.0</span> (<span class="hljs-type">USD</span> / bbl))(<span class="hljs-number">0.01</span> (<span class="hljs-type">USD</span> / bbl))
+      <span class="hljs-keyword">val</span> actual = ts(<span class="hljs-number">2.01</span> (<span class="hljs-type">USD</span> / bbl))
 
-    estimate.measure should be(<span class="hljs-type">USD</span>)
-    math.abs((estimate - actual).get.value) should be &lt; <span class="hljs-number">1e-5</span>
-  }
+      estimate.measure should be(<span class="hljs-type">USD</span>)
+      math.abs((estimate - actual).get.value) should be &lt; <span class="hljs-number">1e-5</span>
+    }
 
 </code></pre>
 <a href="https://github.com/quantarray/skylark/tree/master/skylark-measure/src/test/scala/com/quantarray/skylark/measure/TaylorSeriesSpec.scala" class="a_sourcelink">TaylorSeriesSpec.scala</a></div></div>
