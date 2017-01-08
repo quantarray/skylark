@@ -8,7 +8,7 @@ import scala.language.implicitConversions
 /*
  * Skylark
  *
- * © 2012-2016, Quantarray
+ * © 2012-2017, Quantarray
  * http://skylark.io
  */
 package object duration

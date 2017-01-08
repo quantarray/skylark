@@ -3,7 +3,7 @@ package com.quantarray.skylark.measure
 /*
  * Skylark
  *
- * © 2012-2016, Quantarray
+ * © 2012-2017, Quantarray
  * http://skylark.io
  */
 package object conversion

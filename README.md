@@ -2,7 +2,7 @@
   Title: Skylark
   Description: Collection of libraries for quantitative and financial computation.
   Author: Araik Grigoryan
-  Copyright: 2012-2016 Quantarray, LLC
+  Copyright: 2012-2017 Quantarray, LLC
 -->
   
 <meta name='keywords' content='scala, unit of measure, skylark'>
