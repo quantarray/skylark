@@ -1,6 +1,19 @@
 language: scala
 sudo: false
+scala:
+    - 2.11.8
+    - 2.12.1
+env:
+    - JDK=oraclejdk8
+    - JDK=openjdk8
+    - JDK=oraclejdk7
+    - JDK=openjdk7
+before_script:
+    - jdk_switcher use $JDK
 matrix:
-  include:
-    - scala: 2.11.8
-      script: sbt ++$TRAVIS_SCALA_VERSION clean skylark-measure/test
+  exclude:
+    - scala: 2.12.1
+      env: JDK=oraclejdk7
+    - scala: 2.12.1
+      env: JDK=openjdk7
+script: sbt ++$TRAVIS_SCALA_VERSION clean skylark-measure/test
