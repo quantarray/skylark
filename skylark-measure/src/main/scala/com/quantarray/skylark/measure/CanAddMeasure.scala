@@ -34,3 +34,7 @@ trait CanAddMeasure[A1, A2]
   def plus(addend1: A1, addend2: A2): R
 }
 
+object CanAddMeasure
+{
+  type Aux[A1, A2, R0] = CanAddMeasure[A1, A2] { type R = R0 }
+}

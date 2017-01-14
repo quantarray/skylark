@@ -28,10 +28,10 @@ import scala.language.higherKinds
   * @author Araik Grigoryan
   */
 @implicitNotFound("Cannot find CanAddQuantity implementation that adds ${Q1} and ${Q2}.")
-trait CanAddQuantity[N, M1, Q1[_, _], M2, Q2[_, _], RM] extends CanAddMeasure[M1, M2]
+trait CanAddQuantity[N, M1, Q1[_, _], M2, Q2, RM]
 {
   type QR
 
-  def plus(addend1: Q1[N, M1], addend2: Q2[N, M2])(implicit cc1: CanConvert[M1, RM], cc2: CanConvert[M2, RM]): QR
+  def plus(addend1: Q1[N, M1], addend2: Q2)(implicit cc1: CanConvert[M1, RM], cc2: CanConvert[M2, RM]): QR
 }
 

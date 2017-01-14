@@ -31,29 +31,42 @@ package object arithmetic
       override def pow(base: B, exponent: Double): ExponentialMeasure[B] = ExponentialMeasure(base, exponent)
     }
 
-    implicit def lhsCanAdd[M1 <: Measure[M1], M2 <: Measure[M2]] = new CanAddMeasure[M1, M2]
+    implicit def lhsCanAddMeasure[M1 <: Measure[M1], M2 <: Measure[M2]] = new CanAddMeasure[M1, M2]
     {
       type R = M1
 
       override def plus(addend1: M1, addend2: M2): R = addend1
     }
 
-    implicit def lhsCanAddQuantity[N, M <: Measure[M]](implicit qn: QuasiNumeric[N]) = new CanAddQuantity[N, M, Quantity, M, Quantity, M]
+    implicit def lhsCanAddQuantity[N, M <: Measure[M]](implicit qn: QuasiNumeric[N], cam: CanAddMeasure.Aux[M, M, M]) = new CanAddQuantity[N, M, Quantity, M, Quantity[N, M], M]
     {
-      type R = M
-
       type QR = Option[Quantity[N, M]]
-
-      override def plus(addend1: M, addend2: M): M = addend1
 
       override def plus(addend1: Quantity[N, M], addend2: Quantity[N, M])(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): QR =
       {
-        val targetMeasure = plus(addend1.measure, addend2.measure)
+        val targetMeasure = cam.plus(addend1.measure, addend2.measure)
 
         val a1 = cc1.convert(addend1.measure, targetMeasure).map(cf => qn.timesConstant(addend1.value, cf))
         val a2 = cc2.convert(addend2.measure, targetMeasure).map(cf => qn.timesConstant(addend2.value, cf))
 
         a1.flatMap(aa1 => a2.map(aa2 => qn.plus(aa1, aa2))).map(v => Quantity(v, targetMeasure))
+      }
+    }
+
+    implicit def lhsCanAddOptionQuantity[N, M <: Measure[M]](implicit qn: QuasiNumeric[N], cam: CanAddMeasure.Aux[M, M, M]) = new CanAddQuantity[N, M, Quantity, M, Option[Quantity[N, M]], M]
+    {
+      type QR = Option[Quantity[N, M]]
+
+      override def plus(addend1: Quantity[N, M], addend2: Option[Quantity[N, M]])(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): QR =
+      {
+        import cats.implicits._
+
+        val targetMeasure = addend2.map(m2 => cam.plus(addend1.measure, m2.measure))
+
+        val a1 = targetMeasure.flatMap(tm => cc1.convert(addend1.measure, tm).map(cf => qn.timesConstant(addend1.value, cf)))
+        val a2 = (addend2 |@| targetMeasure map ((a2, tm) => cc2.convert(a2.measure, tm).map(cf => qn.timesConstant(a2.value, cf)))).flatten
+
+        a1 |@| a2 |@| targetMeasure map ((a1, a2, tm) => Quantity(qn.plus(a1, a2), tm))
       }
     }
 
@@ -93,17 +106,15 @@ package object arithmetic
 
   object unsafe extends SafeArithmeticImplicits
   {
-    implicit def lhsCanAddQuantityUnsafe[N, M <: Measure[M]](implicit qn: QuasiNumeric[N]) = new CanAddQuantity[N, M, Quantity, M, Quantity, M]
+    implicit def lhsCanAddQuantityUnsafe[N, M <: Measure[M]](implicit qn: QuasiNumeric[N], cam: CanAddMeasure.Aux[M, M, M]) = new CanAddQuantity[N, M, Quantity, M, Quantity[N, M], M]
     {
       type R = M
 
       type QR = Quantity[N, M]
 
-      override def plus(addend1: M, addend2: M): M = addend1
-
       override def plus(addend1: Quantity[N, M], addend2: Quantity[N, M])(implicit cc1: CanConvert[M, M], cc2: CanConvert[M, M]): QR =
       {
-        val targetMeasure = plus(addend1.measure, addend2.measure)
+        val targetMeasure = cam.plus(addend1.measure, addend2.measure)
 
         val a1 = cc1.convert(addend1.measure, targetMeasure).map(cf => qn.timesConstant(addend1.value, cf))
         val a2 = cc2.convert(addend2.measure, targetMeasure).map(cf => qn.timesConstant(addend2.value, cf))

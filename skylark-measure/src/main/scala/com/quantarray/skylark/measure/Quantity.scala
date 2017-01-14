@@ -35,18 +35,30 @@ case class Quantity[N, M](value: N, measure: M)(implicit qn: QuasiNumeric[N])
   def /(constant: Double) = Quantity(qn.divideByConstant(value, constant), measure)
 
   /**
-    * Adds another quantity. CanAddQuantity instance allows addition of apples and oranges to obtain bananas.
+    * Adds another Quantity. CanAddQuantity instance allows addition of apples and oranges to obtain bananas.
     */
   def +[M2](quantity: Quantity[N, M2])
-           (implicit caq: CanAddQuantity[N, M, Quantity, M2, Quantity, M],
-            cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.QR = caq.plus(this, quantity)
+           (implicit caq: CanAddQuantity[N, M, Quantity, M2, Quantity[N, M2], M], cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.QR = caq.plus(this, quantity)
 
   /**
-    * Subtracts another quantity. CanAddQuantity instance allows addition of apples and oranges to obtain bananas.
+    * Adds another Option[Quantity]. CanAddQuantity instance allows addition of apples and oranges to obtain bananas.
+    */
+  def +[M2](quantity: Option[Quantity[N, M2]])
+           (implicit caq: CanAddQuantity[N, M, Quantity, M2, Option[Quantity[N, M2]], M], cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.QR =
+    caq.plus(this, quantity)
+
+  /**
+    * Subtracts another Quantity. CanAddQuantity instance allows subtraction of apples and oranges to obtain bananas.
     */
   def -[M2](quantity: Quantity[N, M2])
-           (implicit caq: CanAddQuantity[N, M, Quantity, M2, Quantity, M],
-            cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.QR = caq.plus(this, -quantity)
+           (implicit caq: CanAddQuantity[N, M, Quantity, M2, Quantity[N, M2], M], cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.QR = caq.plus(this, -quantity)
+
+  /**
+    * Subtracts another Option[Quantity]. CanAddQuantity instance allows subtraction of apples and oranges to obtain bananas.
+    */
+  def -[M2](quantity: Option[Quantity[N, M2]])
+           (implicit caq: CanAddQuantity[N, M, Quantity, M2, Option[Quantity[N, M2]], M], cc1: CanConvert[M, M], cc2: CanConvert[M2, M]): caq.QR =
+    caq.plus(this, quantity.map(_.unary_-()))
 
   /**
     * Divides by another quantity.

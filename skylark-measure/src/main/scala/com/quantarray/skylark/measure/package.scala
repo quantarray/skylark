@@ -117,11 +117,6 @@ package object measure extends DefaultDimensions
 
       trait SafeArithmeticImplicits
       {
-        implicit def exponentialCanExponentiate = new CanExponentiateMeasure[AnyMeasure, AnyMeasure]
-        {
-          override def pow(base: AnyMeasure, exponent: Double): AnyMeasure = AnyExponentialMeasure(base, exponent)
-        }
-
         implicit def productCanMultiply = new CanMultiplyMeasure[AnyMeasure, AnyMeasure, AnyMeasure]
         {
           override def times(multiplicand: AnyMeasure, multiplier: AnyMeasure): AnyMeasure = AnyProductMeasure(multiplicand, multiplier)
@@ -132,18 +127,27 @@ package object measure extends DefaultDimensions
           override def divide(numerator: AnyMeasure, denominator: AnyMeasure): AnyMeasure = AnyRatioMeasure(numerator, denominator)
         }
 
-        implicit def lhsCanAddQuantity[N](implicit qn: QuasiNumeric[N]) = new CanAddQuantity[N, AnyMeasure, Quantity, AnyMeasure, Quantity, AnyMeasure]
+        implicit def lhsCanAddMeasure = new CanAddMeasure[AnyMeasure, AnyMeasure]
         {
           type R = AnyMeasure
 
-          type QR = Option[Quantity[N, AnyMeasure]]
+          override def plus(addend1: AnyMeasure, addend2: AnyMeasure): R = addend1
+        }
 
-          override def plus(addend1: AnyMeasure, addend2: AnyMeasure): AnyMeasure = addend1
+        implicit def exponentialCanExponentiate = new CanExponentiateMeasure[AnyMeasure, AnyMeasure]
+        {
+          override def pow(base: AnyMeasure, exponent: Double): AnyMeasure = AnyExponentialMeasure(base, exponent)
+        }
+
+        implicit def lhsCanAddQuantity[N](implicit qn: QuasiNumeric[N], cam: CanAddMeasure.Aux[AnyMeasure, AnyMeasure, AnyMeasure]) =
+          new CanAddQuantity[N, AnyMeasure, Quantity, AnyMeasure, Quantity[N, AnyMeasure], AnyMeasure]
+        {
+          type QR = Option[Quantity[N, AnyMeasure]]
 
           override def plus(addend1: Quantity[N, AnyMeasure], addend2: Quantity[N, AnyMeasure])
                            (implicit cc1: CanConvert[AnyMeasure, AnyMeasure], cc2: CanConvert[AnyMeasure, AnyMeasure]): QR =
           {
-            val targetMeasure = plus(addend1.measure, addend2.measure)
+            val targetMeasure = cam.plus(addend1.measure, addend2.measure)
 
             val a1 = cc1.convert(addend1.measure, targetMeasure).map(cf => qn.timesConstant(addend1.value, cf))
             val a2 = cc2.convert(addend2.measure, targetMeasure).map(cf => qn.timesConstant(addend2.value, cf))
@@ -186,18 +190,15 @@ package object measure extends DefaultDimensions
 
       object unsafe extends SafeArithmeticImplicits
       {
-        implicit def lhsCanAddQuantityUnsafe[N](implicit qn: QuasiNumeric[N]) = new CanAddQuantity[N, AnyMeasure, Quantity, AnyMeasure, Quantity, AnyMeasure]
+        implicit def lhsCanAddQuantityUnsafe[N](implicit qn: QuasiNumeric[N], cam: CanAddMeasure.Aux[AnyMeasure, AnyMeasure, AnyMeasure]) =
+          new CanAddQuantity[N, AnyMeasure, Quantity, AnyMeasure, Quantity[N, AnyMeasure], AnyMeasure]
         {
-          type R = AnyMeasure
-
           type QR = Quantity[N, AnyMeasure]
-
-          override def plus(addend1: AnyMeasure, addend2: AnyMeasure): AnyMeasure = addend1
 
           override def plus(addend1: Quantity[N, AnyMeasure], addend2: Quantity[N, AnyMeasure])
                            (implicit cc1: CanConvert[AnyMeasure, AnyMeasure], cc2: CanConvert[AnyMeasure, AnyMeasure]): QR =
           {
-            val targetMeasure = plus(addend1.measure, addend2.measure)
+            val targetMeasure = cam.plus(addend1.measure, addend2.measure)
 
             val a1 = cc1.convert(addend1.measure, targetMeasure).map(cf => qn.timesConstant(addend1.value, cf))
             val a2 = cc2.convert(addend2.measure, targetMeasure).map(cf => qn.timesConstant(addend2.value, cf))

@@ -57,6 +57,9 @@ class QuantitySpec extends FlatSpec with Matchers
       (10.kg - 3.kg) should equal(Some(7 kg))
       (10.kg + 3.lb) should equal(Some(11.360775642116007 kg))
       (10.lb - 3.kg) should equal(Some(3.386125 lb))
+
+      10.kg + (3.lb to kg) should equal(Some(11.360775642116007.kg))
+      10.kg - (3.lb to kg) should equal(Some(8.639224357883993.kg))
     }
 
   it should "be passable to typesafe method" in
