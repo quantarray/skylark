@@ -5,7 +5,6 @@ scala:
     - 2.12.1
 env:
     - JDK=oraclejdk8
-    - JDK=openjdk8
     - JDK=oraclejdk7
     - JDK=openjdk7
 before_script:
