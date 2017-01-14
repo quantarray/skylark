@@ -45,7 +45,7 @@
 <p><strong>skylark-measure</strong> is a library dealing with unit-of-measure definition, arithmetic, simplification and conversions in a type-safe manner.</p>
 <h3 id="configuration" class="a_section" data-magellan-target="configuration">Configuration<a class="a_hlink" href="#configuration"></a></h3>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">libraryDependencies += <span class="hljs-string">"com.quantarray"</span> %% <span class="hljs-string">"skylark-measure"</span> % <span class="hljs-string">"0.16.0"</span>
+<pre class="hljs"><code class="language-scala">libraryDependencies += <span class="hljs-string">"com.quantarray"</span> %% <span class="hljs-string">"skylark-measure"</span> % <span class="hljs-string">"0.17.0"</span>
 </code></pre>
 </div></div>
 <h3 id="simple-usage" class="a_section" data-magellan-target="simple-usage">Simple usage<a class="a_hlink" href="#simple-usage"></a></h3>
@@ -59,7 +59,7 @@
   <span class="hljs-type">Pa</span>
   <span class="hljs-type">Hz</span>
 
-  <span class="hljs-comment">// Special unit of measure representing a dimensionless unitless measure</span>
+  <span class="hljs-comment">// Special unit of measure representing a dimensionless, unitless measure</span>
   <span class="hljs-type">Unit</span>
 </code></pre>
 </div></div>
@@ -136,18 +136,16 @@ With <code class="hljs">AnyMeasureParsers</code> you can turn that string back i
 </div></div>
 <p>You can perform the expected arithmetic operations on quantities.</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
-  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
-
-  <span class="hljs-number">10.</span>kg * <span class="hljs-number">4.</span>m should equal(<span class="hljs-number">40.0</span> * (kg * m))
-  (<span class="hljs-number">4.</span>oz_troy * <span class="hljs-number">7.</span>percent).to(oz_troy) should equal(<span class="hljs-number">0.28</span>.oz_troy)
+<pre class="hljs"><code class="language-scala">  <span class="hljs-number">10.</span>kg * <span class="hljs-number">4.</span>m should equal(<span class="hljs-number">40.0</span> * (kg * m))
+  (<span class="hljs-number">4.</span>oz_troy * <span class="hljs-number">7.</span>percent).to(oz_troy).value should equal(<span class="hljs-number">0.28</span>.oz_troy)
 
   <span class="hljs-number">10.</span>kg / <span class="hljs-number">2.</span>m should equal(<span class="hljs-number">5.0</span> * (kg / m))
-  (<span class="hljs-number">10.</span><span class="hljs-type">USD</span> / <span class="hljs-number">2.</span>percent).to(<span class="hljs-type">USD</span>) should equal(<span class="hljs-number">500.</span><span class="hljs-type">USD</span>)
+  (<span class="hljs-number">10.</span><span class="hljs-type">USD</span> / <span class="hljs-number">2.</span>percent).to(<span class="hljs-type">USD</span>).value should equal(<span class="hljs-number">500</span> <span class="hljs-type">USD</span>)
 
-  <span class="hljs-number">10.</span>kg + <span class="hljs-number">3.</span>kg should equal(<span class="hljs-number">13.</span>kg)
-  <span class="hljs-number">10.</span>kg - <span class="hljs-number">3.</span>kg should equal(<span class="hljs-number">7.</span>kg)
-  <span class="hljs-number">10.</span>kg + (<span class="hljs-number">3.</span>lb to kg) should equal(<span class="hljs-number">11.360775642116007</span>.kg)
+  (<span class="hljs-number">10.</span>kg + <span class="hljs-number">3.</span>kg) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">13</span> kg))
+  (<span class="hljs-number">10.</span>kg - <span class="hljs-number">3.</span>kg) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">7</span> kg))
+  (<span class="hljs-number">10.</span>kg + <span class="hljs-number">3.</span>lb) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">11.360775642116007</span> kg))
+  (<span class="hljs-number">10.</span>lb - <span class="hljs-number">3.</span>kg) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">3.386125</span> lb))
 </code></pre>
 </div></div>
 <p>Quantity conversions are supported via the same <code class="hljs">to</code> operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
@@ -159,6 +157,21 @@ are defined by converters and require their own <code class="hljs">CanConvert</c
 
   (<span class="hljs-number">1.</span>ft to in).value should equal(<span class="hljs-number">12.0</span> in)
   (<span class="hljs-number">12.</span>in to ft).value should equal(<span class="hljs-number">1.0</span> ft)
+</code></pre>
+</div></div>
+<p>Ambiguity in choosing the right conversion factor due to a substance or its properties (e.g. specific gravity) can be resolved by importing right implicits.</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
+  <span class="hljs-keyword">import</span> org.scalatest.<span class="hljs-type">OptionValues</span>._
+
+  <span class="hljs-comment">// Some general substance, like water</span>
+  (<span class="hljs-number">1.</span>bbl to gal).value should equal(<span class="hljs-number">31.5</span>.gal)
+
+  <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.conversion.commodity.<span class="hljs-keyword">default</span>._
+
+  <span class="hljs-comment">// Specific petroleum substance, having a special conversion</span>
+  (<span class="hljs-number">1.</span>bbl to gal).value should equal(<span class="hljs-number">42.</span>gal)
 </code></pre>
 </div></div>
 <h3 id="measure-vs.-anymeasure" class="a_section" data-magellan-target="measure-vs.-anymeasure">Measure vs. AnyMeasure<a class="a_hlink" href="#measure-vs.-anymeasure"></a></h3>
@@ -187,14 +200,14 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 <h3 id="overriding-default-behavior" class="a_section" data-magellan-target="overriding-default-behavior">Overriding default behavior<a class="a_hlink" href="#overriding-default-behavior"></a></h3>
 <p>The default arithmetic, conversion, and simplification operations are defined for both dimensional measure types and <code class="hljs">AnyMeasure</code>.</p>
 <h4 id="arithmetic" class="a_section" data-magellan-target="arithmetic">Arithmetic<a class="a_hlink" href="#arithmetic"></a></h4>
-<p><strong>skylark-measure</strong> relies on the presence of <code class="hljs">implicit</code> type classes <code class="hljs">CanMultiply</code>, <code class="hljs">CanDivide</code>, and <code class="hljs">CanExponentiate</code> to perform arithmetic operations.</p>
+<p><strong>skylark-measure</strong> relies on the presence of <code class="hljs">implicit</code> type classes <code class="hljs">CanMultiplyMeasure</code>, <code class="hljs">CanDivideMeasure</code>, and <code class="hljs">CanExponentiateMeasure</code> to perform arithmetic operations.</p>
 <p>By default</p>
 <ul>
 <li><code class="hljs">m1 * m2</code> returns <code class="hljs">ProductMeasure(m1, m2)</code>;</li>
 <li><code class="hljs">m1 / m2</code> returns <code class="hljs">RatioMeasure(m1, m2)</code>;</li>
 <li><code class="hljs">m ^ n</code> return <code class="hljs">ExponentialMeasure(m, n</code>).</li>
 </ul>
-<p>One can, however, override the return type by proving a custom implicit class that derives from one of the three <code class="hljs">Can*</code> traits.</p>
+<p>One can, however, override the return type by proving a custom implicit class that derives from one of the three <code class="hljs">Can*Measure</code> traits.</p>
 <p>For example, say when one does <code class="hljs">b / s</code> (bits per second), one wants to work with a custom <code class="hljs">BitRateMeasure</code> instead of the default <code class="hljs">RatioMeasure(bit, s)</code>.</p>
 <p>One would then need to define the custom object like <code class="hljs">InformationTimeCanDivide</code>:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
@@ -237,7 +250,7 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">  <span class="hljs-class"><span class="hljs-keyword">type</span> <span class="hljs-title">EnergyPriceTimesFXMeasure</span> </span>= <span class="hljs-type">ProductMeasure</span>[<span class="hljs-type">EnergyPrice</span>, <span class="hljs-type">FX</span>]
 
-  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">val</span> energyPriceTimesCurrencyPriceCanSimplify = <span class="hljs-keyword">new</span> <span class="hljs-type">CanSimplify</span>[<span class="hljs-type">EnergyPriceTimesFXMeasure</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>]]
+  <span class="hljs-keyword">implicit</span> <span class="hljs-keyword">val</span> canSimplifyEnergyPriceTimesCurrencyPrice = <span class="hljs-keyword">new</span> <span class="hljs-type">CanSimplifyMeasure</span>[<span class="hljs-type">EnergyPriceTimesFXMeasure</span>, <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>]]
   {
     <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">simplify</span></span>(inflated: <span class="hljs-type">EnergyPriceTimesFXMeasure</span>): <span class="hljs-type">Option</span>[<span class="hljs-type">EnergyPrice</span>] =
     {
@@ -282,33 +295,39 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.quantities._
 </code></pre>
 </div></div>
-<h4 id="arithmetic-simplification-conversion" class="a_section" data-magellan-target="arithmetic-simplification-conversion">Arithmetic, simplification, conversion<a class="a_hlink" href="#arithmetic-simplification-conversion"></a></h4>
+<h4 id="arithmetic-1" class="a_section" data-magellan-target="arithmetic-1">Arithmetic<a class="a_hlink" href="#arithmetic-1"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Safe arithmetic (no exceptions thrown)</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.arithmetic.safe._
 
-<span class="hljs-comment">// Default simplification</span>
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.simplification.<span class="hljs-keyword">default</span>._
-
-<span class="hljs-comment">// Default conversion</span>
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.conversion.<span class="hljs-keyword">default</span>._
-
-<span class="hljs-comment">// Safe arithmetic, default simplification, and default conversion in one shot</span>
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
+<span class="hljs-comment">// Safe arithmetic with `Quantity[N, AnyMeasure]`</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.arithmetic.safe._
 </code></pre>
 </div></div>
-<p>Similarly, arithmetic with <code class="hljs">Quantity[N, AnyMeasure]</code></p>
+<h4 id="simplification-1" class="a_section" data-magellan-target="simplification-1">Simplification<a class="a_hlink" href="#simplification-1"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Safe arithmetic (no exceptions thrown)</span>
-<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.arithmetic.safe._
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Default simplification</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.simplification.<span class="hljs-keyword">default</span>._
 
-<span class="hljs-comment">// Default simplification</span>
+<span class="hljs-comment">// Default simplification with `Quantity[N, AnyMeasure]`</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.simplification.<span class="hljs-keyword">default</span>._
+</code></pre>
+</div></div>
+<h4 id="conversion-1" class="a_section" data-magellan-target="conversion-1">Conversion<a class="a_hlink" href="#conversion-1"></a></h4>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Default conversion</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.conversion.<span class="hljs-keyword">default</span>._
 
-<span class="hljs-comment">// Default conversion</span>
+<span class="hljs-comment">// Default conversion with `Quantity[N, AnyMeasure]`</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.conversion.<span class="hljs-keyword">default</span>._
+</code></pre>
+</div></div>
+<h4 id="arithmetic-simplification-and-conversion-all-at-once" class="a_section" data-magellan-target="arithmetic-simplification-and-conversion-all-at-once">Arithmetic, simplification, and conversion all at once<a class="a_hlink" href="#arithmetic-simplification-and-conversion-all-at-once"></a></h4>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Safe arithmetic, default simplification, and default conversion</span>
+<span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
 
-<span class="hljs-comment">// Safe arithmetic, default simplification, and default conversion in one shot</span>
+<span class="hljs-comment">// Safe arithmetic, default simplification, and default conversion with `Quantity[N, AnyMeasure]`</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.implicits._
 </code></pre>
 </div></div>
@@ -455,7 +474,28 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
   
   <li>
     
-       <a href="#arithmetic-simplification-conversion">Arithmetic, simplification, conversion</a> 
+       <a href="#arithmetic-1">Arithmetic</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#simplification-1">Simplification</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#conversion-1">Conversion</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#arithmetic-simplification-and-conversion-all-at-once">Arithmetic, simplification, and conversion all at once</a> 
     
     
   </li>
