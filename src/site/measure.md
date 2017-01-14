@@ -129,6 +129,22 @@ are defined by converters and require their own `CanConvert` instances of their 
   (12.in to ft).value should equal(1.0 ft)
 ```
 
+Ambiguity in choosing the right conversion factor due to a substance or its properties (e.g. specific gravity) can be resolved by importing right implicits.
+
+```scala
+  import com.quantarray.skylark.measure.implicits._
+  import com.quantarray.skylark.measure.quantities._
+  import org.scalatest.OptionValues._
+
+  // Some general substance, like water
+  (1.bbl to gal).value should equal(31.5.gal)
+
+  import com.quantarray.skylark.measure.conversion.commodity.default._
+
+  // Specific petroleum substance, having a special conversion
+  (1.bbl to gal).value should equal(42.gal)
+```
+
 ### Measure vs. AnyMeasure
 
 **skylark-measure** gives you the freedom and flexibility to work with measures of a defined dimension (e.g. `MassMeasure`) or `AnyMeasure` - a measure whose dimension can only be known at run time.
