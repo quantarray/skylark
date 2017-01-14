@@ -21,7 +21,7 @@ Many units of measure are defined for you.
   Pa
   Hz
 
-  // Special unit of measure representing a dimensionless unitless measure
+  // Special unit of measure representing a dimensionless, unitless measure
   Unit
 ```
 
@@ -105,18 +105,16 @@ It's easy to compose numerical quantities with units of measure using a dot or p
 You can perform the expected arithmetic operations on quantities.
 
 ```scala
-  import com.quantarray.skylark.measure.implicits._
-  import com.quantarray.skylark.measure.quantities._
-
   10.kg * 4.m should equal(40.0 * (kg * m))
-  (4.oz_troy * 7.percent).to(oz_troy) should equal(0.28.oz_troy)
+  (4.oz_troy * 7.percent).to(oz_troy).value should equal(0.28.oz_troy)
 
   10.kg / 2.m should equal(5.0 * (kg / m))
-  (10.USD / 2.percent).to(USD) should equal(500.USD)
+  (10.USD / 2.percent).to(USD).value should equal(500 USD)
 
-  10.kg + 3.kg should equal(13.kg)
-  10.kg - 3.kg should equal(7.kg)
-  10.kg + (3.lb to kg) should equal(11.360775642116007.kg)
+  (10.kg + 3.kg) should equal(Some(13 kg))
+  (10.kg - 3.kg) should equal(Some(7 kg))
+  (10.kg + 3.lb) should equal(Some(11.360775642116007 kg))
+  (10.lb - 3.kg) should equal(Some(3.386125 lb))
 ```
 
 Quantity conversions are supported via the same `to` operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
@@ -164,7 +162,7 @@ The default arithmetic, conversion, and simplification operations are defined fo
 
 #### Arithmetic
 
-**skylark-measure** relies on the presence of `implicit` type classes `CanMultiply`, `CanDivide`, and `CanExponentiate` to perform arithmetic operations.
+**skylark-measure** relies on the presence of `implicit` type classes `CanMultiplyMeasure`, `CanDivideMeasure`, and `CanExponentiateMeasure` to perform arithmetic operations.
 
 By default
 
@@ -172,7 +170,7 @@ By default
 * `m1 / m2` returns `RatioMeasure(m1, m2)`;
 * `m ^ n` return `ExponentialMeasure(m, n`).
 
-One can, however, override the return type by proving a custom implicit class that derives from one of the three `Can*` traits.
+One can, however, override the return type by proving a custom implicit class that derives from one of the three `Can*Measure` traits.
 
 For example, say when one does `b / s` (bits per second), one wants to work with a custom `BitRateMeasure` instead of the default `RatioMeasure(bit, s)`.
 
@@ -221,7 +219,7 @@ One would then need to define the custom object like `InformationTimeCanDivide`:
 ```scala
   type EnergyPriceTimesFXMeasure = ProductMeasure[EnergyPrice, FX]
 
-  implicit val energyPriceTimesCurrencyPriceCanSimplify = new CanSimplify[EnergyPriceTimesFXMeasure, Option[EnergyPrice]]
+  implicit val canSimplifyEnergyPriceTimesCurrencyPrice = new CanSimplifyMeasure[EnergyPriceTimesFXMeasure, Option[EnergyPrice]]
   {
     override def simplify(inflated: EnergyPriceTimesFXMeasure): Option[EnergyPrice] =
     {
@@ -270,34 +268,42 @@ import com.quantarray.skylark.measure.quantities._
 import com.quantarray.skylark.measure.any.quantities._
 ```
 
-#### Arithmetic, simplification, conversion
+#### Arithmetic
 
 ```scala
 // Safe arithmetic (no exceptions thrown)
 import com.quantarray.skylark.measure.arithmetic.safe._
 
+// Safe arithmetic with `Quantity[N, AnyMeasure]`
+import com.quantarray.skylark.measure.any.arithmetic.safe._
+```
+
+#### Simplification
+
+```scala
 // Default simplification
 import com.quantarray.skylark.measure.simplification.default._
 
+// Default simplification with `Quantity[N, AnyMeasure]`
+import com.quantarray.skylark.measure.any.simplification.default._
+```
+
+#### Conversion
+
+```scala
 // Default conversion
 import com.quantarray.skylark.measure.conversion.default._
 
-// Safe arithmetic, default simplification, and default conversion in one shot
-import com.quantarray.skylark.measure.implicits._
+// Default conversion with `Quantity[N, AnyMeasure]`
+import com.quantarray.skylark.measure.any.conversion.default._
 ```
 
-Similarly, arithmetic with `Quantity[N, AnyMeasure]`
+#### Arithmetic, simplification, and conversion all at once
 
 ```scala
-// Safe arithmetic (no exceptions thrown)
-import com.quantarray.skylark.measure.any.arithmetic.safe._
+// Safe arithmetic, default simplification, and default conversion
+import com.quantarray.skylark.measure.implicits._
 
-// Default simplification
-import com.quantarray.skylark.measure.any.simplification.default._
-
-// Default conversion
-import com.quantarray.skylark.measure.any.conversion.default._
-
-// Safe arithmetic, default simplification, and default conversion in one shot
+// Safe arithmetic, default simplification, and default conversion with `Quantity[N, AnyMeasure]`
 import com.quantarray.skylark.measure.any.implicits._
 ```
