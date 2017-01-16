@@ -146,6 +146,9 @@ With <code class="hljs">AnyMeasureParsers</code> you can turn that string back i
   (<span class="hljs-number">10.</span>kg - <span class="hljs-number">3.</span>kg) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">7</span> kg))
   (<span class="hljs-number">10.</span>kg + <span class="hljs-number">3.</span>lb) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">11.360775642116007</span> kg))
   (<span class="hljs-number">10.</span>lb - <span class="hljs-number">3.</span>kg) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">3.386125</span> lb))
+
+  <span class="hljs-number">10.</span>kg + (<span class="hljs-number">3.</span>lb to kg) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">11.360775642116007</span>.kg))
+  <span class="hljs-number">10.</span>kg - (<span class="hljs-number">3.</span>lb to kg) should equal(<span class="hljs-type">Some</span>(<span class="hljs-number">8.639224357883993</span>.kg))
 </code></pre>
 </div></div>
 <p>Quantity conversions are supported via the same <code class="hljs">to</code> operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
@@ -174,7 +177,7 @@ are defined by converters and require their own <code class="hljs">CanConvert</c
   (<span class="hljs-number">1.</span>bbl to gal).value should equal(<span class="hljs-number">42.</span>gal)
 </code></pre>
 </div></div>
-<h3 id="measure-vs.-anymeasure" class="a_section" data-magellan-target="measure-vs.-anymeasure">Measure vs. AnyMeasure<a class="a_hlink" href="#measure-vs.-anymeasure"></a></h3>
+<h3 id="typed-measure-vs.-untyped-anymeasure" class="a_section" data-magellan-target="typed-measure-vs.-untyped-anymeasure">Typed <code class="hljs">Measure</code> vs. untyped <code class="hljs">AnyMeasure</code><a class="a_hlink" href="#typed-measure-vs.-untyped-anymeasure"></a></h3>
 <p><strong>skylark-measure</strong> gives you the freedom and flexibility to work with measures of a defined dimension (e.g. <code class="hljs">MassMeasure</code>) or <code class="hljs">AnyMeasure</code> - a measure whose dimension can only be known at run time.
 The choice of which to work with depends on the individual API you would like to expose and enforce.</p>
 <p>In the situation where you know you must receive a <code class="hljs">MassMeasure</code>, you would encode exactly as natural logic or physics would dictate. There is, hence, no chance
@@ -275,18 +278,18 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 </div></div>
 <h4 id="measures" class="a_section" data-magellan-target="measures">Measures<a class="a_hlink" href="#measures"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Dimensional measures</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Typed dimensional measures</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.measures._
 </code></pre>
 </div></div>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// AnyMeasure(s) (use these if it's more convenient to match on the measure's shape at run time)</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Untyped AnyMeasure(s) (use these if it's more convenient to match on the measure's shape at run time)</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.measures._
 </code></pre>
 </div></div>
 <h4 id="quantities" class="a_section" data-magellan-target="quantities">Quantities<a class="a_hlink" href="#quantities"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Dimensional quantities</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Typed dimensional quantities</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.quantities._
 </code></pre>
 </div></div>
@@ -297,37 +300,37 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
 </div></div>
 <h4 id="arithmetic-1" class="a_section" data-magellan-target="arithmetic-1">Arithmetic<a class="a_hlink" href="#arithmetic-1"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Safe arithmetic (no exceptions thrown)</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Typed safe arithmetic (no exceptions thrown)</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.arithmetic.safe._
 
-<span class="hljs-comment">// Safe arithmetic with `Quantity[N, AnyMeasure]`</span>
+<span class="hljs-comment">// Untyped safe arithmetic</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.arithmetic.safe._
 </code></pre>
 </div></div>
 <h4 id="simplification-1" class="a_section" data-magellan-target="simplification-1">Simplification<a class="a_hlink" href="#simplification-1"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Default simplification</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Typed default simplification</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.simplification.<span class="hljs-keyword">default</span>._
 
-<span class="hljs-comment">// Default simplification with `Quantity[N, AnyMeasure]`</span>
+<span class="hljs-comment">// Untyped default simplification</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.simplification.<span class="hljs-keyword">default</span>._
 </code></pre>
 </div></div>
 <h4 id="conversion-1" class="a_section" data-magellan-target="conversion-1">Conversion<a class="a_hlink" href="#conversion-1"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Default conversion</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Typed default conversion</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.conversion.<span class="hljs-keyword">default</span>._
 
-<span class="hljs-comment">// Default conversion with `Quantity[N, AnyMeasure]`</span>
+<span class="hljs-comment">// Untyped default conversion</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.conversion.<span class="hljs-keyword">default</span>._
 </code></pre>
 </div></div>
 <h4 id="arithmetic-simplification-and-conversion-all-at-once" class="a_section" data-magellan-target="arithmetic-simplification-and-conversion-all-at-once">Arithmetic, simplification, and conversion all at once<a class="a_hlink" href="#arithmetic-simplification-and-conversion-all-at-once"></a></h4>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Safe arithmetic, default simplification, and default conversion</span>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Typed Safe arithmetic, default simplification, and default conversion</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.implicits._
 
-<span class="hljs-comment">// Safe arithmetic, default simplification, and default conversion with `Quantity[N, AnyMeasure]`</span>
+<span class="hljs-comment">// Untyped safe arithmetic, default simplification, and default conversion</span>
 <span class="hljs-keyword">import</span> com.quantarray.skylark.measure.any.implicits._
 </code></pre>
 </div></div>
@@ -399,7 +402,7 @@ You can always <code class="hljs">match</code> on <code class="hljs">AnyMeasure<
   
   <li>
     
-       <a href="#measure-vs.-anymeasure">Measure vs. AnyMeasure</a> 
+       <a href="#typed-measure-vs.-untyped-anymeasure">Typed Measure vs. untyped AnyMeasure</a> 
     
     
   </li>
