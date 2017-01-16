@@ -115,6 +115,9 @@ You can perform the expected arithmetic operations on quantities.
   (10.kg - 3.kg) should equal(Some(7 kg))
   (10.kg + 3.lb) should equal(Some(11.360775642116007 kg))
   (10.lb - 3.kg) should equal(Some(3.386125 lb))
+
+  10.kg + (3.lb to kg) should equal(Some(11.360775642116007.kg))
+  10.kg - (3.lb to kg) should equal(Some(8.639224357883993.kg))
 ```
 
 Quantity conversions are supported via the same `to` operator. Basic converters are pre-defined. Conversions for product, ratio, and exponential measures
@@ -145,7 +148,7 @@ Ambiguity in choosing the right conversion factor due to a substance or its prop
   (1.bbl to gal).value should equal(42.gal)
 ```
 
-### Measure vs. AnyMeasure
+### Typed `Measure` vs. untyped `AnyMeasure`
 
 **skylark-measure** gives you the freedom and flexibility to work with measures of a defined dimension (e.g. `MassMeasure`) or `AnyMeasure` - a measure whose dimension can only be known at run time.
 The choice of which to work with depends on the individual API you would like to expose and enforce.
@@ -263,19 +266,19 @@ import com.quantarray.skylark.measure._
 #### Measures
 
 ```scala
-// Dimensional measures
+// Typed dimensional measures
 import com.quantarray.skylark.measure.measures._
 ```
 
 ```scala
-// AnyMeasure(s) (use these if it's more convenient to match on the measure's shape at run time)
+// Untyped AnyMeasure(s) (use these if it's more convenient to match on the measure's shape at run time)
 import com.quantarray.skylark.measure.any.measures._
 ```
 
 #### Quantities
 
 ```scala
-// Dimensional quantities
+// Typed dimensional quantities
 import com.quantarray.skylark.measure.quantities._
 ```
 
@@ -287,39 +290,39 @@ import com.quantarray.skylark.measure.any.quantities._
 #### Arithmetic
 
 ```scala
-// Safe arithmetic (no exceptions thrown)
+// Typed safe arithmetic (no exceptions thrown)
 import com.quantarray.skylark.measure.arithmetic.safe._
 
-// Safe arithmetic with `Quantity[N, AnyMeasure]`
+// Untyped safe arithmetic
 import com.quantarray.skylark.measure.any.arithmetic.safe._
 ```
 
 #### Simplification
 
 ```scala
-// Default simplification
+// Typed default simplification
 import com.quantarray.skylark.measure.simplification.default._
 
-// Default simplification with `Quantity[N, AnyMeasure]`
+// Untyped default simplification
 import com.quantarray.skylark.measure.any.simplification.default._
 ```
 
 #### Conversion
 
 ```scala
-// Default conversion
+// Typed default conversion
 import com.quantarray.skylark.measure.conversion.default._
 
-// Default conversion with `Quantity[N, AnyMeasure]`
+// Untyped default conversion
 import com.quantarray.skylark.measure.any.conversion.default._
 ```
 
 #### Arithmetic, simplification, and conversion all at once
 
 ```scala
-// Safe arithmetic, default simplification, and default conversion
+// Typed Safe arithmetic, default simplification, and default conversion
 import com.quantarray.skylark.measure.implicits._
 
-// Safe arithmetic, default simplification, and default conversion with `Quantity[N, AnyMeasure]`
+// Untyped safe arithmetic, default simplification, and default conversion
 import com.quantarray.skylark.measure.any.implicits._
 ```

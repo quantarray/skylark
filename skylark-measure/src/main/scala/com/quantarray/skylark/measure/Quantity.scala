@@ -71,7 +71,7 @@ case class Quantity[N, M](value: N, measure: M)(implicit qn: QuasiNumeric[N])
   def *[M2, R](quantity: Quantity[N, M2])(implicit cmq: CanMultiplyQuantity[N, M, Quantity, M2, Quantity, R]): cmq.QR = cmq.timesQuantity(this, quantity)
 
   /**
-    * Raises this quantity to expoenent.
+    * Raises this quantity to exponent.
     */
   def ^[R](exponent: Double)(implicit ceq: CanExponentiateQuantity[N, M, Quantity, R]): ceq.QR = ceq.powQuantity(this, exponent)
 
@@ -86,6 +86,9 @@ case class Quantity[N, M](value: N, measure: M)(implicit qn: QuasiNumeric[N])
   @inline
   def toOrElse[M2, B >: Quantity[N, M2]](target: M2, default: B)(implicit cc: CanConvert[M, M2]): B = to(target).getOrElse(default)
 
+  /**
+    * Simplifies this quantity to type R.
+    */
   def simplify[R](implicit csq: CanSimplifyQuantity[N, M, Quantity, R]): csq.QR = csq.simplifyQuantity(this)
 
   override def toString = s"$value $measure"
