@@ -1,6 +1,6 @@
 # Measure
 
-**skylark-measure** is a library dealing with unit-of-measure definition, arithmetic, simplification and conversions in a type-safe manner.
+**skylark-measure** is a library dealing with unit-of-measure definition, dimensional analysis, arithmetic, simplification and conversions in a type-safe manner.
 
 ### Configuration
 

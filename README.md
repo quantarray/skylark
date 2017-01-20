@@ -13,4 +13,10 @@
 
 Skylark is a collection of libraries for quantitative computation.
 
+**skylark-measure** is a library dealing with unit-of-measure definition, dimensional analysis, arithmetic, simplification and conversions in a type-safe manner.
+
 Documentation can be found at http://quantarray.github.io/skylark.
+
+# Contributors
+
+* Araik Grigoryan
